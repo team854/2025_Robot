@@ -96,6 +96,7 @@ public final class Elastic {
          */
         public Notification() {
             this(NotificationLevel.INFO, "", "");
+
         }
 
         /**
