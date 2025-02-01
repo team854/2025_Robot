@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.Elastic;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 
@@ -32,8 +33,14 @@ public class SwerveSubsystem extends SubsystemBase {
     /** Creates a new ExampleSubsystem. */
 
 
-    File        directory = new File(Filesystem.getDeployDirectory(), "swerve");
-    SwerveDrive swerveDrive;
+    File                 directory       = new File(Filesystem.getDeployDirectory(), "swerve");
+
+    SwerveDrive          swerveDrive;
+
+    // Elastic notifications
+    Elastic.Notification nullAutoWarning = new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING,
+        "No Auto Selected",
+        "No auto is currently selected, auto will not run");
 
     public SwerveSubsystem() {
         try {
@@ -93,7 +100,7 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveDrive.driveFieldOriented(velocity);
     }
 
-//Swerve Command
+    // Swerve Command
     public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
         return run(() -> {
             swerveDrive.driveFieldOriented(velocity.get());
@@ -168,6 +175,10 @@ public class SwerveSubsystem extends SubsystemBase {
      */
     public Command getAutonomousCommand(String pathName) {
         // Create a path following command using AutoBuilder. This will also trigger event markers.
+
+        if (pathName == null) {
+            Elastic.sendNotification(nullAutoWarning);
+        }
         return new PathPlannerAuto(pathName);
     }
 
