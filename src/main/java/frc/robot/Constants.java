@@ -18,7 +18,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
     public static class OperatorConstants {
         public static final int    kDriverControllerPort    = 0;
-        public static final double DEADBAND                 = 0.1;
+        public static final double DEADBAND                 = 0.05;
         public static final double SWERVE_TRANSLATION_SCALE = 1;
         public static final double SWERVE_ROTATION_SCALE    = 1.2; // Negative values invert right stick
     }
