@@ -28,6 +28,8 @@ import frc.robot.Constants;
 import frc.robot.util.Elastic;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveSubsystem extends SubsystemBase {
     /** Creates a new ExampleSubsystem. */
@@ -43,6 +45,7 @@ public class SwerveSubsystem extends SubsystemBase {
         "No auto is currently selected, auto will not run");
 
     public SwerveSubsystem() {
+        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
         try {
             swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED,
                 new Pose2d(new Translation2d(Meter.of(1),
