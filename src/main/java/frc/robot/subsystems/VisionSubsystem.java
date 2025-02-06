@@ -16,10 +16,8 @@ import limelight.Limelight;
 import limelight.estimator.LimelightPoseEstimator;
 import limelight.estimator.PoseEstimate;
 import limelight.structures.AngularVelocity3d;
-import limelight.structures.LimelightResults;
 import limelight.structures.LimelightSettings.LEDMode;
 import limelight.structures.Orientation3d;
-import limelight.structures.target.pipeline.NeuralClassifier;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -63,21 +61,21 @@ public class VisionSubsystem extends SubsystemBase {
             // and the average ambiguity between tags is less than 30%, then we update the pose estimation.
             if (poseEstimate.avgTagDist < 4 && poseEstimate.tagCount > 0 && poseEstimate.getMinTagAmbiguity() < 0.3) {
 
-                // Perform an action with the poseEstimate here.
+
 
             }
         });
 
-        limelight.getLatestResults().ifPresent((LimelightResults result) -> {
+        // limelight.getLatestResults().ifPresent((LimelightResults result) -> {
 
-            // example object detection
-            for (NeuralClassifier object : result.targets_Classifier) {
-                if (object.className.equals("algae")) {
-                    if (object.ty > 2 && object.ty < 1) {
-                        // do stuff
-                    }
-                }
-            }
-        });
+        // // example object detection
+        // for (NeuralClassifier object : result.targets_Classifier) {
+        // if (object.className.equals("algae")) {
+        // if (object.ty > 2 && object.ty < 1) {
+        // // do stuff
+        // }
+        // }
+        // }
+        // });
     }
 }
