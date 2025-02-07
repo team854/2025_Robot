@@ -9,6 +9,7 @@ import java.util.Optional;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,15 +22,17 @@ import limelight.structures.Orientation3d;
 
 public class VisionSubsystem extends SubsystemBase {
 
-    Pose3d                 cameraOffset = new Pose3d(Inches.of(5).in(Meters),
+    Pose3d                 cameraOffset  = new Pose3d(Inches.of(5).in(Meters),
         Inches.of(5).in(Meters),
         Inches.of(5).in(Meters),
         Rotation3d.kZero);
 
     Limelight              limelight;
-    LimelightPoseEstimator poseEstimator;
+    LimelightPoseEstimator poseEstimator = new LimelightPoseEstimator(limelight, true);
+    SwerveSubsystem        swerveSubsystem;
 
-    AHRS                   navx         = new AHRS(NavXComType.kMXP_SPI);
+    AHRS                   navx          = new AHRS(NavXComType.kMXP_SPI);
+    public Pose2d          swervPose2d;
 
 
     public VisionSubsystem() {
@@ -41,6 +44,7 @@ public class VisionSubsystem extends SubsystemBase {
         poseEstimator = limelight.getPoseEstimator(true);
 
     }
+
 
     @Override
     public void periodic() {
@@ -54,14 +58,12 @@ public class VisionSubsystem extends SubsystemBase {
             .save();
 
         // Get the vision estimate.
-        Optional<PoseEstimate> visionEstimate = poseEstimator.getPoseEstimate();
+        Optional<PoseEstimate> visionEstimate = poseEstimator.getAlliancePoseEstimate();
         visionEstimate.ifPresent(poseEstimate -> {
             // If the average tag distance is less than 4 meters,
             // there are more than 0 tags in view,
             // and the average ambiguity between tags is less than 30%, then we update the pose estimation.
             if (poseEstimate.avgTagDist < 4 && poseEstimate.tagCount > 0 && poseEstimate.getMinTagAmbiguity() < 0.3) {
-
-
 
             }
         });

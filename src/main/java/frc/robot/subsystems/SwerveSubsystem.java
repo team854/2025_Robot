@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meter;
 
 import java.io.File;
@@ -15,17 +16,25 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.Elastic;
+import limelight.Limelight;
+import limelight.estimator.LimelightPoseEstimator;
+import limelight.structures.AngularVelocity3d;
+import limelight.structures.Orientation3d;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -35,17 +44,26 @@ public class SwerveSubsystem extends SubsystemBase {
     /** Creates a new ExampleSubsystem. */
 
 
-    File                 directory       = new File(Filesystem.getDeployDirectory(), "swerve");
+    File                     directory       = new File(Filesystem.getDeployDirectory(), "swerve");
 
-    SwerveDrive          swerveDrive;
+    SwerveDrive              swerveDrive;
+    Limelight                limelight;
+
+    VisionSubsystem          limelightVision;
+    LimelightPoseEstimator   poseEstimator;
+    Pose2d                   swervePoseEstimate2D;
+    AHRS                     navx            = new AHRS(NavXComType.kMXP_SPI);
+    SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
     // Elastic notifications
-    Elastic.Notification nullAutoWarning = new Elastic.Notification(Elastic.Notification.NotificationLevel.WARNING,
+    Elastic.Notification     nullAutoWarning = new Elastic.Notification(
+        Elastic.Notification.NotificationLevel.WARNING,
         "No Auto Selected",
         "No auto is currently selected, auto will not run");
 
     public SwerveSubsystem() {
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+        swerveDrive.setAngularVelocityCompensation(true, true, 0.1);
         try {
             swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED,
                 new Pose2d(new Translation2d(Meter.of(1),
@@ -87,7 +105,15 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+        limelight.settingsBuilder()
+            .withRobotOrientation(new Orientation3d(navx.getRotation3d(),
+                new AngularVelocity3d(DegreesPerSecond.of(navx.getRobotCentricVelocityZ()),
+                    DegreesPerSecond.of(navx.getRobotCentricVelocityX()),
+                    DegreesPerSecond.of(navx.getRobotCentricVelocityY()))))
+            .save();
+
+        swerveDrive.updateOdometry();
+        swerveDrive.addVisionMeasurement(swervePoseEstimate2D, Timer.getFPGATimestamp());
     }
 
     @Override
