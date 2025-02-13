@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkMaxAlternateEncoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
@@ -43,12 +44,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     /** Moves the bottom stage up */
     public void moveBottomUp() {
-        bottomMotor.set(1.0); // Full power up
+        bottomMotor.set(ElevatorConstants.ELEVATOR_BOTTOM_STAGE_RISE_SPEED);
     }
 
     /** Moves the bottom stage down */
     public void moveBottomDown() {
-        bottomMotor.set(-1.0); // Full power down
+        bottomMotor.set(ElevatorConstants.ELEVATOR_BOTTOM_STAGE_FALL_SPEED);
     }
 
     /** Stops the bottom stage */
@@ -77,7 +78,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Display encoder value on SmartDashboard (if needed)
+        // Display encoder value on SmartDashboard
         System.out.println("Top Encoder Position: " + topEncoder.getPosition());
     }
 }

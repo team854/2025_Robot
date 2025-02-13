@@ -23,5 +23,10 @@ public final class Constants {
         public static final double SWERVE_ROTATION_SCALE    = 1.2; // Negative values invert right stick
     }
 
+    public static class ElevatorConstants {
+        public static final double ELEVATOR_BOTTOM_STAGE_RISE_SPEED = 0.5;
+        public static final double ELEVATOR_BOTTOM_STAGE_FALL_SPEED = 0.5;
+    }
+
     public static final double MAX_SPEED = Units.feetToMeters(6);
 }
