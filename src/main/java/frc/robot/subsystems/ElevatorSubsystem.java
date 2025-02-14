@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -19,18 +20,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final PIDController            topPIDController;
 
     // Conversion factors: Encoder Rotations → Feet
-    private static final double            DRUM_DIAMETER_INCHES  = 2.0;
-    private static final double            GEAR_RATIO            = 5.0;
-    private static final double            INCHES_TO_FEET        = 1.0 / 12.0;
+    private static final double            DRUM_DIAMETER_INCHES  = ElevatorConstants.ELEVATOR_DRUM_DIAMETER_INCHES;
+    private static final double            GEAR_RATIO            = ElevatorConstants.ELEVATOR_GEAR_RATIO;
+    private static final double            INCHES_TO_FEET        = Constants.INCHES_TO_FEET;
     private static final double            ROTATIONS_TO_FEET     = (Math.PI * DRUM_DIAMETER_INCHES * INCHES_TO_FEET) / GEAR_RATIO;
 
     // Predefined setpoints for the upper stage (in feet)
-    private static final double[]          UPPER_STAGE_SETPOINTS = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+    private static final double[]          UPPER_STAGE_SETPOINTS = ElevatorConstants.ELEVATOR_UPPER_STAGE_SETPOINTS;
 
     // PID Constants for the upper stage
-    private static final double            kP                    = 1.0;
-    private static final double            kI                    = 0.0;
-    private static final double            kD                    = 0.0;
+    private static final double            kP                    = ElevatorConstants.kElevatrorP;
+    private static final double            kI                    = ElevatorConstants.kElevatrorI;
+    private static final double            kD                    = ElevatorConstants.kElevatrorD;
 
     /**
      * Constructs the ElevatorSubsystem.

@@ -25,8 +25,22 @@ public final class Constants {
     }
 
     public static class ElevatorConstants {
-        public static final double ELEVATOR_BOTTOM_STAGE_RISE_SPEED = 0.5;
-        public static final double ELEVATOR_BOTTOM_STAGE_FALL_SPEED = 0.5;
+
+        // Bottom stage speeds set without a PID Controller
+        public static final double   ELEVATOR_BOTTOM_STAGE_RISE_SPEED = 0.5;
+        public static final double   ELEVATOR_BOTTOM_STAGE_FALL_SPEED = 0.5;
+
+        // Elevator top stage PID
+        public static final double   kElevatrorP                      = 0.0;
+        public static final double   kElevatrorI                      = 0.0;
+        public static final double   kElevatrorD                      = 0.0;
+
+        // Elevator ratios
+        public static final double   ELEVATOR_GEAR_RATIO              = 5.0;
+        public static final double   ELEVATOR_DRUM_DIAMETER_INCHES    = 0.5;
+
+        // Elevator setpoints
+        public static final double[] ELEVATOR_UPPER_STAGE_SETPOINTS   = { 0.0, 1.0, 2.0, 3.0, 4.0 };
     }
 
     public static class ArmConstants {
@@ -62,5 +76,6 @@ public final class Constants {
         public static final double WRIST_ALLOWED_CLOSED_LOOP_ERROR    = 1.0;
     }
 
-    public static final double NEO_MOTOR_Kv_VALUE = 473.0; // This value will not change
+    public static final double NEO_MOTOR_Kv_VALUE = 473.0;
+    public static final double INCHES_TO_FEET     = 1.0 / 12.0;
 }
