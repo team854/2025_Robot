@@ -6,79 +6,114 @@ import com.revrobotics.spark.SparkMaxAlternateEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    private final MotorController          bottomMotor;
-    private final SparkMax                 topMotor;
-    private final SparkMaxAlternateEncoder topEncoder;
-    private final PIDController            pidController;
+    // Motors for the two stages of the elevator
+    private final MotorController          lowerStageMotor;
+    private final SparkMax                 upperStageMotor;
+    private final SparkMaxAlternateEncoder upperStageEncoder;
+    private final PIDController            topPIDController;
 
-    // Conversion factor: Encoder Rotations → Feet
-    private static final double            DRUM_DIAMETER_INCHES = 2.0;
-    private static final double            GEAR_RATIO           = 5.0;
+    // Conversion factors: Encoder Rotations → Feet
+    private static final double            DRUM_DIAMETER_INCHES  = 2.0;
+    private static final double            GEAR_RATIO            = 5.0;
+    private static final double            INCHES_TO_FEET        = 1.0 / 12.0;
+    private static final double            ROTATIONS_TO_FEET     = (Math.PI * DRUM_DIAMETER_INCHES * INCHES_TO_FEET) / GEAR_RATIO;
 
-    private static final double            INCHES_TO_FEET       = 1.0 / 12.0;
-    private static final double            ROTATIONS_TO_FEET    = (Math.PI * DRUM_DIAMETER_INCHES * INCHES_TO_FEET) / GEAR_RATIO;
+    // Predefined setpoints for the upper stage (in feet)
+    private static final double[]          UPPER_STAGE_SETPOINTS = { 0.0, 1.0, 2.0, 3.0, 4.0 };
 
-    // Define setpoints for the second stage
-    private static final double[]          SETPOINTS_FEET       = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+    // PID Constants for the upper stage
+    private static final double            kP                    = 1.0;
+    private static final double            kI                    = 0.0;
+    private static final double            kD                    = 0.0;
 
-    // PID Constants
-    private static final double            kP                   = 1.0;
-    private static final double            kI                   = 0.0;
-    private static final double            kD                   = 0.0;
+    /**
+     * Constructs the ElevatorSubsystem.
+     *
+     * @param lowerMotorPort Port for the lower stage motor.
+     * @param upperMotorPort Port for the upper stage motor.
+     */
+    public ElevatorSubsystem(int lowerMotorPort, int upperMotorPort) {
+        lowerStageMotor   = new SparkMax(lowerMotorPort, MotorType.kBrushed);
+        upperStageMotor   = new SparkMax(upperMotorPort, MotorType.kBrushless);
 
-    public ElevatorSubsystem(int bottomMotorPort, int topMotorPort) {
-        bottomMotor   = new SparkMax(bottomMotorPort, MotorType.kBrushed);
-        topMotor      = new SparkMax(topMotorPort, MotorType.kBrushless);
+        upperStageEncoder = (SparkMaxAlternateEncoder) upperStageMotor.getEncoder();
 
-        topEncoder    = (SparkMaxAlternateEncoder) topMotor.getEncoder();
-
-        // Configure PID controller for second stage
-        pidController = new PIDController(kP, kI, kD);
-        pidController.setTolerance(0.01); // Small tolerance for precise stopping
+        topPIDController  = new PIDController(kP, kI, kD);
+        topPIDController.setTolerance(0.01); // Tolerance for precise stopping
     }
 
-    /** Moves the bottom stage up */
-    public void moveBottomUp() {
-        bottomMotor.set(ElevatorConstants.ELEVATOR_BOTTOM_STAGE_RISE_SPEED);
+    /**
+     * Converts a distance in feet to the equivalent number of encoder rotations.
+     *
+     * @param feet the distance in feet.
+     * @return the equivalent encoder rotations.
+     */
+    private double feetToRotations(double feet) {
+        return feet / ROTATIONS_TO_FEET;
     }
 
-    /** Moves the bottom stage down */
-    public void moveBottomDown() {
-        bottomMotor.set(ElevatorConstants.ELEVATOR_BOTTOM_STAGE_FALL_SPEED);
+    /**
+     * Moves the lower stage upward.
+     */
+    public void moveLowerStageUp() {
+        lowerStageMotor.set(ElevatorConstants.ELEVATOR_BOTTOM_STAGE_RISE_SPEED);
     }
 
-    /** Stops the bottom stage */
-    public void stopBottom() {
-        bottomMotor.set(0.0);
+    /**
+     * Moves the lower stage downward.
+     */
+    public void moveLowerStageDown() {
+        lowerStageMotor.set(ElevatorConstants.ELEVATOR_BOTTOM_STAGE_FALL_SPEED);
     }
 
-    /** Moves the second stage to a specific setpoint in feet */
-    public void setTopStagePosition(int positionIndex) {
-        if (positionIndex < 0 || positionIndex >= SETPOINTS_FEET.length) {
-            System.out.println("Invalid setpoint index");
+    /**
+     * Stops the lower stage motor.
+     */
+    public void stopLowerStage() {
+        lowerStageMotor.set(0.0);
+    }
+
+    /**
+     * Moves the upper stage to a specific setpoint based on the provided index.
+     *
+     * @param setpointIndex the index of the desired setpoint.
+     */
+    public void setUpperStagePosition(int setpointIndex) {
+        if (setpointIndex < 0 || setpointIndex >= UPPER_STAGE_SETPOINTS.length) {
+            SmartDashboard.putString("Elevator Error", "Invalid setpoint index: " + setpointIndex);
             return;
         }
-
-        double targetFeet      = SETPOINTS_FEET[positionIndex];
-        double targetRotations = targetFeet / ROTATIONS_TO_FEET;
-
-        double power           = pidController.calculate(topEncoder.getPosition(), targetRotations);
-        topMotor.set(power);
+        double targetFeet       = UPPER_STAGE_SETPOINTS[setpointIndex];
+        double targetRotations  = feetToRotations(targetFeet);
+        double currentRotations = upperStageEncoder.getPosition();
+        double pidOutput        = topPIDController.calculate(currentRotations, targetRotations);
+        upperStageMotor.set(pidOutput);
     }
 
-    /** Stops the second stage */
-    public void stopTop() {
-        topMotor.set(0.0);
+    /**
+     * Stops the upper stage motor.
+     */
+    public void stopUpperStage() {
+        upperStageMotor.set(0.0);
+    }
+
+    /**
+     * Resets the upper stage encoder to zero.
+     */
+    public void resetUpperStageEncoder() {
+        upperStageEncoder.setPosition(0.0);
     }
 
     @Override
     public void periodic() {
-        // Display encoder value on SmartDashboard
-        System.out.println("Top Encoder Position: " + topEncoder.getPosition());
+        // Update SmartDashboard with current diagnostics
+        SmartDashboard.putNumber("Upper Stage Encoder", upperStageEncoder.getPosition());
+        SmartDashboard.putNumber("Elevator PID Error", topPIDController.getPositionError());
     }
 }
