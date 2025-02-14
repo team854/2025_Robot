@@ -20,7 +20,8 @@ public final class Constants {
         public static final int    kDriverControllerPort    = 0;
         public static final double DEADBAND                 = 0.05;
         public static final double SWERVE_TRANSLATION_SCALE = 1;
-        public static final double SWERVE_ROTATION_SCALE    = 1.2; // Negative values invert right stick
+        public static final double SWERVE_ROTATION_SCALE    = 1.2;                  // Negative values invert right stick
+        public static final double MAX_SPEED                = Units.feetToMeters(6);
     }
 
     public static class ElevatorConstants {
@@ -28,5 +29,38 @@ public final class Constants {
         public static final double ELEVATOR_BOTTOM_STAGE_FALL_SPEED = 0.5;
     }
 
-    public static final double MAX_SPEED = Units.feetToMeters(6);
+    public static class ArmConstants {
+        public static final int    SHOULDER_MOTOR_ID                  = 0;
+        public static final int    WRIST_MOTOR_ID                     = 1;
+
+        // Shoulder PID Values
+        public static final double kShoulderP                         = 0.0;
+        public static final double kShoulderI                         = 0.0;
+        public static final double kShoulderD                         = 0.0;
+
+        // Shoulder Closed Loop Config
+        public static final double SHOULDER_MAX_OUTPUT                = 1.0;
+        public static final double SHOULDER_MIN_OUTPUT                = -1.0;
+
+        // Shoulder MAXMotion Config
+        public static final double SHOULDER_MAX_VELOCITY              = 1.0;
+        public static final double SHOULDER_MAX_ACCELERATION          = 1.0;
+        public static final double SHOULDER_ALLOWED_CLOSED_LOOP_ERROR = 1.0;
+
+        // Wrist PID Values
+        public static final double kWristP                            = 0.0;
+        public static final double kWristI                            = 0.0;
+        public static final double kWristD                            = 0.0;
+
+        // Wrist Closed Loop Config
+        public static final double WRIST_MAX_OUTPUT                   = 1.0;
+        public static final double WRIST_MIN_OUTPUT                   = -1.0;
+
+        // Wrist MAXMotion Config
+        public static final double WRIST_MAX_VELOCITY                 = 1.0;
+        public static final double WRIST_MAX_ACCELERATION             = 1.0;
+        public static final double WRIST_ALLOWED_CLOSED_LOOP_ERROR    = 1.0;
+    }
+
+    public static final double NEO_MOTOR_Kv_VALUE = 473.0; // This value will not change
 }

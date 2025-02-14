@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.util.Elastic;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
@@ -59,7 +59,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public SwerveSubsystem() {
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
         try {
-            swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED,
+            swerveDrive = new SwerveParser(directory).createSwerveDrive(OperatorConstants.MAX_SPEED,
                 new Pose2d(new Translation2d(Meter.of(1),
                     Meter.of(4)),
                     Rotation2d.fromDegrees(0)));
