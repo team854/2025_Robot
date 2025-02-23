@@ -41,12 +41,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
     File                              directory           = new File(Filesystem.getDeployDirectory(), "swerve");
+    VisionSubsystem                   visionSubsystem;
 
     SwerveDrive                       swerveDrive;
-
-    private VisionSubsystem           visionSubsystem;
-    AHRS                              navx                = new AHRS(NavXComType.kMXP_SPI);
     SwerveDrivePoseEstimator          swerveDrivePoseEstimator;
+
+    AHRS                              navx                = new AHRS(NavXComType.kMXP_SPI);
+
 
     private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
 
@@ -100,9 +101,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Update robot pose based on vision
         swerveDrive.updateOdometry();
-        visionSubsystem.updatePoseEstimation(swerveDrive);
+        visionSubsystem.updatePoseEstimation();
+
     }
 
     @Override
@@ -123,10 +124,6 @@ public class SwerveSubsystem extends SubsystemBase {
         return run(() -> {
             swerveDrive.driveFieldOriented(velocity.get());
         });
-    }
-
-    public void setupPhotonVision() {
-        visionSubsystem = new VisionSubsystem(swerveDrive::getPose, swerveDrive.field);
     }
 
     public void setupPathPlanner() {

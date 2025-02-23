@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -74,6 +75,36 @@ public final class Constants {
         public static final double WRIST_MAX_VELOCITY                 = 1.0;
         public static final double WRIST_MAX_ACCELERATION             = 1.0;
         public static final double WRIST_ALLOWED_CLOSED_LOOP_ERROR    = 1.0;
+    }
+
+    public static class VisionConstants {
+
+        public static final String     LIMELIGHT_NAME1           = "Limelight 4";
+        public static final String     LIMELIGHT_NAME2           = "Limelight 3G";
+        public static final String     LIMELIGHT_NAME3           = "Limelight 3";
+
+        // In Meters
+        public static final double     LIMELIGHT_OFFSET_X        = 0.0;
+        public static final double     LIMELIGHT_OFFSET_Y        = 0.0;
+        public static final double     LIMELIGHT_OFFSET_Z        = 0.0;
+
+        // Degrees
+        public static final double     LIMELIGHT_ROTATION_X      = 0.0;
+        public static final double     LIMELIGHT_ROTATION_Y      = 0.0;
+        public static final double     LIMELIGHT_ROTATION_Z      = 0.0;
+        public static final Rotation3d LIMELIGHT_OFFSET_ROTATION = new Rotation3d(LIMELIGHT_ROTATION_X, LIMELIGHT_OFFSET_Y,
+            LIMELIGHT_ROTATION_Z);
+
+        /* Conditions to check if vision measurement should be added */
+
+        // Average distance of visible tags > this value (meters)
+        public static final double  AVG_TAG_DIST_FILTER     = 5.0;
+
+        // If there are more than this many tags visible
+        public static final Integer MIN_TAGS_VISIBLE_FILTER = 0;
+
+        // If average ambiguity between tags is less than this value
+        public static final double  TAG_AMBIGUITY_FILTER    = 0.3;
     }
 
     public static final double NEO_MOTOR_Kv_VALUE = 473.0;
