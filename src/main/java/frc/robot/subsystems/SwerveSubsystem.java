@@ -18,8 +18,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -40,19 +38,16 @@ public class SwerveSubsystem extends SubsystemBase {
     /** Creates a new ExampleSubsystem. */
 
 
-    File                              directory           = new File(Filesystem.getDeployDirectory(), "swerve");
-    VisionSubsystem                   visionSubsystem;
+    File                     directory       = new File(Filesystem.getDeployDirectory(), "swerve");
+    VisionSubsystem          visionSubsystem;
 
-    SwerveDrive                       swerveDrive;
-    SwerveDrivePoseEstimator          swerveDrivePoseEstimator;
+    SwerveDrive              swerveDrive;
+    SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
-    AHRS                              navx                = new AHRS(NavXComType.kMXP_SPI);
-
-
-    private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
+    AHRS                     navx            = new AHRS(NavXComType.kMXP_SPI);
 
     // Elastic notifications
-    Elastic.Notification              nullAutoWarning     = new Elastic.Notification(
+    Elastic.Notification     nullAutoWarning = new Elastic.Notification(
         Elastic.Notification.NotificationLevel.WARNING,
         "No Auto Selected",
         "No auto is currently selected, auto will not run");

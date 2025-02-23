@@ -13,6 +13,9 @@ import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
+
+    public final int                       elevatorUpperStageCANID = ElevatorConstants.UPPER_STAGE_MOTOR_CANID;
+    public final int                       eLevatorLowerStagePort  = ElevatorConstants.LOWER_STAGE_MOTOR_CANID;
     // Motors for the two stages of the elevator
     private final MotorController          lowerStageMotor;
     private final SparkMax                 upperStageMotor;
@@ -20,18 +23,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final PIDController            topPIDController;
 
     // Conversion factors: Encoder Rotations → Feet
-    private static final double            DRUM_DIAMETER_INCHES  = ElevatorConstants.ELEVATOR_DRUM_DIAMETER_INCHES;
-    private static final double            GEAR_RATIO            = ElevatorConstants.ELEVATOR_GEAR_RATIO;
-    private static final double            INCHES_TO_FEET        = Constants.INCHES_TO_FEET;
-    private static final double            ROTATIONS_TO_FEET     = (Math.PI * DRUM_DIAMETER_INCHES * INCHES_TO_FEET) / GEAR_RATIO;
+    private static final double            DRUM_DIAMETER_INCHES    = ElevatorConstants.ELEVATOR_DRUM_DIAMETER_INCHES;
+    private static final double            GEAR_RATIO              = ElevatorConstants.ELEVATOR_GEAR_RATIO;
+    private static final double            INCHES_TO_FEET          = Constants.INCHES_TO_FEET;
+    private static final double            ROTATIONS_TO_FEET       = (Math.PI * DRUM_DIAMETER_INCHES * INCHES_TO_FEET)
+        / GEAR_RATIO;
 
     // Predefined setpoints for the upper stage (in feet)
-    public static final double[]           UPPER_STAGE_SETPOINTS = ElevatorConstants.ELEVATOR_UPPER_STAGE_SETPOINTS;
+    public static final double[]           UPPER_STAGE_SETPOINTS   = ElevatorConstants.ELEVATOR_UPPER_STAGE_SETPOINTS;
 
     // PID Constants for the upper stage
-    private static final double            kP                    = ElevatorConstants.kElevatrorP;
-    private static final double            kI                    = ElevatorConstants.kElevatrorI;
-    private static final double            kD                    = ElevatorConstants.kElevatrorD;
+    private static final double            kP                      = ElevatorConstants.kElevatrorP;
+    private static final double            kI                      = ElevatorConstants.kElevatrorI;
+    private static final double            kD                      = ElevatorConstants.kElevatrorD;
 
     /**
      * Constructs the ElevatorSubsystem.
@@ -39,9 +43,9 @@ public class ElevatorSubsystem extends SubsystemBase {
      * @param lowerMotorPort Port for the lower stage motor.
      * @param upperMotorPort Port for the upper stage motor.
      */
-    public ElevatorSubsystem(int lowerMotorPort, int upperMotorPort) {
-        lowerStageMotor   = new SparkMax(lowerMotorPort, MotorType.kBrushed);
-        upperStageMotor   = new SparkMax(upperMotorPort, MotorType.kBrushless);
+    public ElevatorSubsystem() {
+        lowerStageMotor   = new SparkMax(eLevatorLowerStagePort, MotorType.kBrushed);
+        upperStageMotor   = new SparkMax(elevatorUpperStageCANID, MotorType.kBrushless);
 
         upperStageEncoder = (SparkMaxAlternateEncoder) upperStageMotor.getEncoder();
 
