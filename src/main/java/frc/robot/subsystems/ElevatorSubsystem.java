@@ -26,7 +26,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private static final double            ROTATIONS_TO_FEET     = (Math.PI * DRUM_DIAMETER_INCHES * INCHES_TO_FEET) / GEAR_RATIO;
 
     // Predefined setpoints for the upper stage (in feet)
-    private static final double[]          UPPER_STAGE_SETPOINTS = ElevatorConstants.ELEVATOR_UPPER_STAGE_SETPOINTS;
+    public static final double[]           UPPER_STAGE_SETPOINTS = ElevatorConstants.ELEVATOR_UPPER_STAGE_SETPOINTS;
 
     // PID Constants for the upper stage
     private static final double            kP                    = ElevatorConstants.kElevatrorP;
@@ -109,6 +109,10 @@ public class ElevatorSubsystem extends SubsystemBase {
      */
     public void resetUpperStageEncoder() {
         upperStageEncoder.setPosition(0.0);
+    }
+
+    public double getUpperStageEncoderPosition() {
+        return upperStageEncoder.getPosition();
     }
 
     @Override
