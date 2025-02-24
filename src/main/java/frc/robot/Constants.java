@@ -46,7 +46,23 @@ public final class Constants {
         public static final double   ELEVATOR_DRUM_DIAMETER_INCHES    = 0.5;
 
         // Elevator setpoints
-        public static final double[] ELEVATOR_UPPER_STAGE_SETPOINTS   = { 0.0, 1.0, 2.0, 3.0, 4.0 };
+        public static final double   ELEVATOR_INTAKE_SETPOINT         = 0.0;
+        public static final double   ELEVATOR_L1_SETPOINT             = 0.0;
+        public static final double   ELEVATOR_L2_SETPOINT             = 0.0;
+        public static final double   ELEVATOR_L3_SETPOINT             = 0.0;
+        public static final double   ELEVATOR_L4_SETPOINT             = 0.0;
+        public static final double   ELEVATOR_NET_SETPOINT            = 0.0;
+        public static final double   ELEVATOR_PROCESSOR_SETPOINT      = 0.0;
+
+        // All setpoints for elevator
+        public static final double[] ELEVATOR_UPPER_STAGE_SETPOINTS   = {
+                ELEVATOR_INTAKE_SETPOINT,
+                ELEVATOR_L1_SETPOINT,
+                ELEVATOR_L2_SETPOINT,
+                ELEVATOR_L3_SETPOINT,
+                ELEVATOR_L4_SETPOINT,
+                ELEVATOR_NET_SETPOINT,
+                ELEVATOR_PROCESSOR_SETPOINT };
     }
 
     public static class ArmConstants {
