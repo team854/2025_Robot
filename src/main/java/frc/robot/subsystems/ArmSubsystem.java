@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -18,27 +19,27 @@ public class ArmSubsystem extends SubsystemBase {
     private final SparkMax                  shoulderMotor;
     private final SparkMax                  wristMotor;
 
-    // Closed-loop controllers and encoders for each joint
+    // Closed-loop controllers and encoders for the shoulder joint
     private final SparkClosedLoopController shoulderClosedLoop;
-    private final SparkClosedLoopController wristClosedLoop;
     private final RelativeEncoder           shoulderEncoder;
-    private final RelativeEncoder           wristEncoder;
+
+    // Limit switch for wrist
+    private final DigitalInput              wristLimitSwitch;
 
     // Setpoints (can be adjusted via ArmConstants or dynamically tuned)
     private double                          shoulderSetpoint;
-    private double                          wristSetpoint;
 
     public ArmSubsystem() {
         // Initialize motors on the appropriate CAN IDs
         shoulderMotor      = new SparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
-        wristMotor         = new SparkMax(ArmConstants.WRIST_MOTOR_ID, MotorType.kBrushless);
+        wristMotor         = new SparkMax(ArmConstants.WRIST_MOTOR_ID, MotorType.kBrushed);
 
-        // Retrieve built-in closed-loop controllers and encoders
+        // Retrieve built-in closed-loop controllers and encoders for the shoulder
         shoulderClosedLoop = shoulderMotor.getClosedLoopController();
-        wristClosedLoop    = wristMotor.getClosedLoopController();
-
         shoulderEncoder    = shoulderMotor.getEncoder();
-        wristEncoder       = wristMotor.getEncoder();
+
+        // Initialize limit switch (assuming it's on a DIO port)
+        wristLimitSwitch   = new DigitalInput(ArmConstants.WRIST_LIMIT_SWITCH_PORT);
 
         // Set up closed loop for shoulder
         SparkMaxConfig shoulderConfig = new SparkMaxConfig();
@@ -48,9 +49,8 @@ public class ArmSubsystem extends SubsystemBase {
             .p(ArmConstants.kShoulderP)
             .i(ArmConstants.kShoulderI)
             .d(ArmConstants.kShoulderD)
-            .velocityFF(1 / Constants.NEO_MOTOR_Kv_VALUE) // Feed Forward value (reciprocal of the kV value for NEO V1.1 motor)
+            .velocityFF(1 / Constants.NEO_MOTOR_Kv_VALUE)
             .outputRange(ArmConstants.SHOULDER_MIN_OUTPUT, ArmConstants.SHOULDER_MAX_OUTPUT);
-
 
         // Set up REV MaxMotion config for the shoulder motor
         shoulderConfig.closedLoop.maxMotion
@@ -58,27 +58,8 @@ public class ArmSubsystem extends SubsystemBase {
             .maxAcceleration(ArmConstants.SHOULDER_MAX_ACCELERATION)
             .allowedClosedLoopError(ArmConstants.SHOULDER_ALLOWED_CLOSED_LOOP_ERROR);
 
-        // Set up closed loop for wrist
-        SparkMaxConfig wristConfig = new SparkMaxConfig();
-
-        // Set PID gains
-        wristConfig.closedLoop
-            .p(ArmConstants.kWristP)
-            .i(ArmConstants.kWristI)
-            .d(ArmConstants.kWristD)
-            .velocityFF(1 / Constants.NEO_MOTOR_Kv_VALUE) // Feed Forward value (reciprocal of the kV value for NEO V1.1 motor)
-            .outputRange(ArmConstants.WRIST_MIN_OUTPUT, ArmConstants.WRIST_MAX_OUTPUT);
-
-
-        // Set up REV MaxMotion config for the wrist motor
-        wristConfig.closedLoop.maxMotion
-            .maxVelocity(ArmConstants.WRIST_MAX_VELOCITY)
-            .maxAcceleration(ArmConstants.WRIST_MAX_ACCELERATION)
-            .allowedClosedLoopError(ArmConstants.WRIST_ALLOWED_CLOSED_LOOP_ERROR);
-
         // Initialize setpoints to the current positions (or default positions as needed)
         shoulderSetpoint = shoulderEncoder.getPosition();
-        wristSetpoint    = wristEncoder.getPosition();
     }
 
     /**
@@ -92,13 +73,25 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     /**
-     * Command the wrist joint to move to the specified setpoint.
+     * Moves the wrist to either 0 degrees or 90 degrees using open-loop control.
+     * Assumes the hard stop or limit switch determines the position.
      *
-     * @param setpoint The target position (encoder units or degrees)
+     * @param toNinetyDegrees If true, move to 90 degrees; if false, move to 0 degrees.
      */
-    public void moveWristToSetpoint(double setpoint) {
-        wristSetpoint = setpoint;
-        wristClosedLoop.setReference(wristSetpoint, ControlType.kMAXMotionPositionControl);
+    public void moveWrist(boolean toNinetyDegrees) {
+        if (toNinetyDegrees) {
+            wristMotor.set(ArmConstants.WRIST_UP_SPEED);
+        }
+        else {
+            wristMotor.set(ArmConstants.WRIST_DOWN_SPEED);
+        }
+    }
+
+    /**
+     * Stops the wrist motor.
+     */
+    public void stopWrist() {
+        wristMotor.stopMotor();
     }
 
     /**
@@ -106,7 +99,7 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void stop() {
         shoulderMotor.stopMotor();
-        wristMotor.stopMotor();
+        stopWrist();
     }
 
     @Override
@@ -114,7 +107,11 @@ public class ArmSubsystem extends SubsystemBase {
         // Publish current positions and setpoints to SmartDashboard for tuning and debugging
         SmartDashboard.putNumber("Arm/Shoulder Position", shoulderEncoder.getPosition());
         SmartDashboard.putNumber("Arm/Shoulder Setpoint", shoulderSetpoint);
-        SmartDashboard.putNumber("Arm/Wrist Position", wristEncoder.getPosition());
-        SmartDashboard.putNumber("Arm/Wrist Setpoint", wristSetpoint);
+        SmartDashboard.putBoolean("Arm/Wrist Limit Switch", wristLimitSwitch.get());
+
+        // Stop wrist if limit switch is triggered
+        if (!wristLimitSwitch.get()) {
+            stopWrist();
+        }
     }
 }

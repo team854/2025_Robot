@@ -52,6 +52,7 @@ public final class Constants {
     public static class ArmConstants {
         public static final int    SHOULDER_MOTOR_ID                  = 0;
         public static final int    WRIST_MOTOR_ID                     = 1;
+        public static final int    WRIST_LIMIT_SWITCH_PORT            = 0;
 
         // Shoulder PID Values
         public static final double kShoulderP                         = 0.0;
@@ -67,19 +68,10 @@ public final class Constants {
         public static final double SHOULDER_MAX_ACCELERATION          = 1.0;
         public static final double SHOULDER_ALLOWED_CLOSED_LOOP_ERROR = 1.0;
 
-        // Wrist PID Values
-        public static final double kWristP                            = 0.0;
-        public static final double kWristI                            = 0.0;
-        public static final double kWristD                            = 0.0;
+        // Wrist speeds
+        public static final double WRIST_UP_SPEED                     = 0.1;
+        public static final double WRIST_DOWN_SPEED                   = 0.1;
 
-        // Wrist Closed Loop Config
-        public static final double WRIST_MAX_OUTPUT                   = 1.0;
-        public static final double WRIST_MIN_OUTPUT                   = -1.0;
-
-        // Wrist MAXMotion Config
-        public static final double WRIST_MAX_VELOCITY                 = 1.0;
-        public static final double WRIST_MAX_ACCELERATION             = 1.0;
-        public static final double WRIST_ALLOWED_CLOSED_LOOP_ERROR    = 1.0;
     }
 
     public static class VisionConstants {
