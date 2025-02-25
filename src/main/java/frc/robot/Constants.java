@@ -28,10 +28,14 @@ public final class Constants {
     }
 
     public class Tolerances {
+        // Commands
         public static final double SHOULDER_LOWER_TOLERANCE = 1.0;
         public static final double SHOULDER_UPPER_TOLERANCE = 1.0;
         public static final double ELEVATOR_LOWER_TOLERANCE = 1.0;
         public static final double ELEVATOR_UPPER_TOLERANCE = 1.0;
+
+        // Subsystems
+        public static final double ELEVATOR_PID_TOLERANCE   = 0.05;
     }
 
     public static class ElevatorConstants {

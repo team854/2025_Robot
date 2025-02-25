@@ -50,7 +50,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         upperStageEncoder = (SparkMaxAlternateEncoder) upperStageMotor.getEncoder();
 
         topPIDController  = new PIDController(kP, kI, kD);
-        topPIDController.setTolerance(0.01); // Tolerance for precise stopping
+        topPIDController.setTolerance(0.05); // Tolerance for precise stopping
     }
 
     /**
