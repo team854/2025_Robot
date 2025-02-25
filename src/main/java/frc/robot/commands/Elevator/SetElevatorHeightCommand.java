@@ -1,6 +1,7 @@
 package frc.robot.commands.Elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.Tolerances;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class SetElevatorHeightCommand extends Command {
@@ -48,9 +49,8 @@ public class SetElevatorHeightCommand extends Command {
     @Override
     public boolean isFinished() {
         // Define when the command is finished.
-        // You can add tolerance checks to ensure that the top stage is at the desired height.
-        return elevatorSubsystem.getUpperStageEncoderPosition() >= targetHeight - 0.1 &&
-            elevatorSubsystem.getUpperStageEncoderPosition() <= targetHeight + 0.1;
+        return elevatorSubsystem.getUpperStageEncoderPosition() >= targetHeight - Tolerances.ELEVATOR_LOWER_TOLERANCE &&
+            elevatorSubsystem.getUpperStageEncoderPosition() <= targetHeight + Tolerances.ELEVATOR_UPPER_TOLERANCE;
     }
 
     private int findSetpointIndexForHeight(double height) {

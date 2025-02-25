@@ -102,6 +102,10 @@ public class ArmSubsystem extends SubsystemBase {
         stopWrist();
     }
 
+    public double getShoulderEncoderPosition() {
+        return shoulderEncoder.getPosition();
+    }
+
     @Override
     public void periodic() {
         // Publish current positions and setpoints to SmartDashboard for tuning and debugging

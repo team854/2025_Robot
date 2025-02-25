@@ -27,6 +27,13 @@ public final class Constants {
         public static final double MAX_SPEED                = Units.feetToMeters(6);
     }
 
+    public class Tolerances {
+        public static final double SHOULDER_LOWER_TOLERANCE = 1.0;
+        public static final double SHOULDER_UPPER_TOLERANCE = 1.0;
+        public static final double ELEVATOR_LOWER_TOLERANCE = 1.0;
+        public static final double ELEVATOR_UPPER_TOLERANCE = 1.0;
+    }
+
     public static class ElevatorConstants {
 
         public static final int      LOWER_STAGE_MOTOR_CANID          = 2;
