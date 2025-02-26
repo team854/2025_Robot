@@ -23,7 +23,7 @@ public class ClimbSubsystem extends SubsystemBase {
         return climbMotor.getActiveTrajectoryVelocity();
     }
 
-    public void setClimbPosition(double setSpeed) {
+    public void setClimbSpeed(double setSpeed) {
         climbMotor.set(VictorSPXControlMode.Velocity, setSpeed);
     }
 }
