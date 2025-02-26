@@ -76,6 +76,10 @@ public final class Constants {
                 ELEVATOR_PROCESSOR_SETPOINT };
     }
 
+    public static class ClimbConstants {
+        public static final int CLIMB_MOTOR_ID = 0;
+    }
+
     public static class ArmConstants {
         public static final int    SHOULDER_MOTOR_ID                  = 0;
         public static final int    WRIST_MOTOR_ID                     = 1;
