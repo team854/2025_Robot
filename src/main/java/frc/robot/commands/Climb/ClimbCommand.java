@@ -10,6 +10,8 @@ public class ClimbCommand extends Command {
     public ClimbCommand(ClimbSubsystem climbSubsystem, double setSpeed) {
         this.climbSubsystem = climbSubsystem;
         this.setSpeed       = setSpeed;
+
+        addRequirements(climbSubsystem);
     }
 
     @Override

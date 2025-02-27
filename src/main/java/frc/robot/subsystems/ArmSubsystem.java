@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -89,6 +90,15 @@ public class ArmSubsystem extends SubsystemBase {
         }
         else {
             wristMotor.set(ArmConstants.WRIST_DOWN_SPEED);
+        }
+    }
+
+    public void setIntakeSpeed(int intakeSpeed, Boolean isReversed) {
+        if (isReversed) {
+            intakeMotor.set(VictorSPXControlMode.Velocity, intakeSpeed * -1);
+        }
+        else {
+            intakeMotor.set(VictorSPXControlMode.Velocity, intakeSpeed);
         }
     }
 

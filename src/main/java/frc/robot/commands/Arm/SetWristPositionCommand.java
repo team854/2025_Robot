@@ -11,6 +11,7 @@ public class SetWristPositionCommand extends Command {
         this.armSubsystem    = armSubsystem;
         this.toNinetyDegrees = toNinetyDegrees;
 
+        addRequirements(armSubsystem);
     }
 
     @Override
