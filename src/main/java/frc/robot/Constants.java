@@ -83,6 +83,7 @@ public final class Constants {
     public static class ArmConstants {
         public static final int    SHOULDER_MOTOR_ID                  = 0;
         public static final int    WRIST_MOTOR_ID                     = 1;
+        public static final int    INTAKE_MOTOR_ID                    = 2;
         public static final int    WRIST_LIMIT_SWITCH_PORT            = 0;
 
         // Shoulder PID Values

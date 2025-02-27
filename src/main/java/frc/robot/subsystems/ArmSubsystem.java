@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -19,6 +20,9 @@ public class ArmSubsystem extends SubsystemBase {
     private final SparkMax                  shoulderMotor;
     private final SparkMax                  wristMotor;
 
+    // Controller for the intake wheels
+    private final VictorSPX                 intakeMotor;
+
     // Closed-loop controllers and encoders for the shoulder joint
     private final SparkClosedLoopController shoulderClosedLoop;
     private final RelativeEncoder           shoulderEncoder;
@@ -33,6 +37,7 @@ public class ArmSubsystem extends SubsystemBase {
         // Initialize motors on the appropriate CAN IDs
         shoulderMotor      = new SparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
         wristMotor         = new SparkMax(ArmConstants.WRIST_MOTOR_ID, MotorType.kBrushed);
+        intakeMotor        = new VictorSPX(ArmConstants.INTAKE_MOTOR_ID);
 
         // Retrieve built-in closed-loop controllers and encoders for the shoulder
         shoulderClosedLoop = shoulderMotor.getClosedLoopController();
