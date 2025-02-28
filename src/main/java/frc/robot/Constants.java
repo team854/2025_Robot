@@ -54,7 +54,7 @@ public final class Constants {
 
         // Elevator ratios
         public static final double   ELEVATOR_GEAR_RATIO              = 5.0;
-        public static final double   ELEVATOR_DRUM_DIAMETER_INCHES    = 0.5;
+        public static final double   ELEVATOR_DRUM_DIAMETER_INCHES    = 2.25;
 
         // Elevator setpoints
         public static final double   ELEVATOR_DEFAULT_SETPOINT        = 0.0;
