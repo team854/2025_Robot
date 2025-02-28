@@ -5,7 +5,7 @@ import frc.robot.subsystems.ClimbSubsystem;
 
 public class ClimbCommand extends Command {
     public final ClimbSubsystem climbSubsystem;
-    public final double         setSpeed;
+    public double               setSpeed;
 
     public ClimbCommand(ClimbSubsystem climbSubsystem, double setSpeed) {
         this.climbSubsystem = climbSubsystem;
@@ -16,7 +16,7 @@ public class ClimbCommand extends Command {
 
     @Override
     public void initialize() {
-        climbSubsystem.setClimbSpeed(0);
+        climbSubsystem.setClimbSpeed(setSpeed);
     }
 
     @Override

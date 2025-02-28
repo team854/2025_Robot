@@ -6,9 +6,9 @@ import frc.robot.subsystems.ArmSubsystem;
 public class IntakeCommand extends Command {
     private final ArmSubsystem armSubsystem;
     public boolean             isReversed;
-    public int                 intakeSpeed;
+    public double              intakeSpeed;
 
-    public IntakeCommand(ArmSubsystem armSubsystem, Boolean isReversed, int intakeSpeed) {
+    public IntakeCommand(ArmSubsystem armSubsystem, Boolean isReversed, Double intakeSpeed) {
         this.armSubsystem = armSubsystem;
         this.intakeSpeed  = intakeSpeed;
         this.isReversed   = isReversed;

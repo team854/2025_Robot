@@ -93,7 +93,7 @@ public class ArmSubsystem extends SubsystemBase {
         }
     }
 
-    public void setIntakeSpeed(int intakeSpeed, Boolean isReversed) {
+    public void setIntakeSpeed(double intakeSpeed, Boolean isReversed) {
         if (isReversed) {
             intakeMotor.set(VictorSPXControlMode.Velocity, intakeSpeed * -1);
         }

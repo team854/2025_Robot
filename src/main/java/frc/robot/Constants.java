@@ -57,7 +57,7 @@ public final class Constants {
         public static final double   ELEVATOR_DRUM_DIAMETER_INCHES    = 0.5;
 
         // Elevator setpoints
-        public static final double   ELEVATOR_INTAKE_SETPOINT         = 0.0;
+        public static final double   ELEVATOR_DEFAULT_SETPOINT        = 0.0;
         public static final double   ELEVATOR_L1_SETPOINT             = 0.0;
         public static final double   ELEVATOR_L2_SETPOINT             = 0.0;
         public static final double   ELEVATOR_L3_SETPOINT             = 0.0;
@@ -67,7 +67,6 @@ public final class Constants {
 
         // All setpoints for elevator
         public static final double[] ELEVATOR_UPPER_STAGE_SETPOINTS   = {
-                ELEVATOR_INTAKE_SETPOINT,
                 ELEVATOR_L1_SETPOINT,
                 ELEVATOR_L2_SETPOINT,
                 ELEVATOR_L3_SETPOINT,
@@ -77,7 +76,8 @@ public final class Constants {
     }
 
     public static class ClimbConstants {
-        public static final int CLIMB_MOTOR_ID = 0;
+        public static final int    CLIMB_MOTOR_ID = 0;
+        public static final double CLIMB_SPEED    = 0.1;
     }
 
     public static class ArmConstants {
@@ -85,6 +85,20 @@ public final class Constants {
         public static final int    WRIST_MOTOR_ID                     = 1;
         public static final int    INTAKE_MOTOR_ID                    = 2;
         public static final int    WRIST_LIMIT_SWITCH_PORT            = 0;
+
+        public static final double ARM_L1_ANGLE                       = 20;
+        public static final double ARM_L2_ANGLE                       = -10;
+        public static final double ARM_L3_ANGLE                       = 20;
+        public static final double ARM_L4_ANGLE                       = 45;
+
+        public static final double ARM_SOURCE_ANGLE                   = 45;
+        public static final double ARM_GROUND_ANGLE                   = -45;
+        public static final double ARM_DEFAULT_ANGLE                  = 0;
+
+        public static final double INTAKE_GROUND_SPEED                = 1.0;
+        public static final double INTAKE_SOURCE_SPEED                = 0.9;
+        public static final double BRANCH_SCORE_SPEED                 = 0.5;
+        public static final double TROUGH_SCORE_SPEED                 = 0.3;
 
         // Shoulder PID Values
         public static final double kShoulderP                         = 0.0;

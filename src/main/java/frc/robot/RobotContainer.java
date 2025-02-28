@@ -5,9 +5,19 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ClimbConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Arm.IntakeCommand;
+import frc.robot.commands.Arm.SetArmAngleCommand;
+import frc.robot.commands.Arm.SetWristPositionCommand;
+import frc.robot.commands.Climb.ClimbCommand;
+import frc.robot.commands.Elevator.SetElevatorHeightCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -23,14 +33,16 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final SwerveSubsystem       drivebase          = new SwerveSubsystem();
-    private final VisionSubsystem       visionSubsystem    = new VisionSubsystem();
-    private final ElevatorSubsystem     elevatorSubsystem  = new ElevatorSubsystem();
-    private final ArmSubsystem          armSubsystem       = new ArmSubsystem();
-    private final ClimbSubsystem        climbSubsystem     = new ClimbSubsystem();
+    private final SwerveSubsystem       drivebase            = new SwerveSubsystem();
+    private final VisionSubsystem       visionSubsystem      = new VisionSubsystem();
+    private final ElevatorSubsystem     elevatorSubsystem    = new ElevatorSubsystem();
+    private final ArmSubsystem          armSubsystem         = new ArmSubsystem();
+    private final ClimbSubsystem        climbSubsystem       = new ClimbSubsystem();
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
-    private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    private final CommandXboxController m_driverController   = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    private final CommandXboxController s_operatorController = new CommandXboxController(
+        OperatorConstants.kOperatorControllerPort);
 
     // The container for the robot. Contains subsystems, OI devices, and commands.
     public RobotContainer() {
@@ -78,7 +90,56 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
+        /*
+         * Driver Controller Commands
+         */
 
+        // Score coral
+        m_driverController.rightTrigger().onTrue(new ParallelCommandGroup(
+            new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED),
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_DEFAULT_ANGLE),
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_DEFAULT_SETPOINT, false)));
+        /*
+         * Operator Controller Commands
+         */
+
+        // Trough Setpoint
+        s_operatorController.a().onTrue(new SequentialCommandGroup(
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L1_SETPOINT, false),
+            new SetWristPositionCommand(armSubsystem, false)));
+
+        // L2 Setpoint
+        s_operatorController.x().onTrue(new SequentialCommandGroup(
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L2_SETPOINT, true),
+            new SetWristPositionCommand(armSubsystem, true)));
+
+        // L3 Setpoint
+        s_operatorController.y().onTrue(new SequentialCommandGroup(
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L3_SETPOINT, true),
+            new SetWristPositionCommand(armSubsystem, true)));
+
+        // L4 Setpoint
+        s_operatorController.b().onTrue(new SequentialCommandGroup(
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L4_SETPOINT, true)));
+
+
+        // Intake From Source
+        s_operatorController.leftTrigger().onTrue(new ParallelCommandGroup(
+            new SetElevatorHeightCommand(elevatorSubsystem, 0, false),
+            new SetArmAngleCommand(armSubsystem, 45),
+            new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_SOURCE_SPEED)));
+
+        // Intake From Ground
+        s_operatorController.leftBumper().onTrue(new ParallelCommandGroup(
+            new SetElevatorHeightCommand(elevatorSubsystem, 0, false),
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
+            new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED)));
+
+        // Climb
+        s_operatorController.pov(90).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_SPEED).withTimeout(3));
+    }
+
+    public void configureNamedCommands() {
 
     }
 
