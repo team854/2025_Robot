@@ -64,6 +64,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * Moves the lower stage upward.
      */
     public void moveLowerStageUp() {
+        System.out.println("Elevator: Moved lower stage up");
         lowerStageMotor.set(ElevatorConstants.ELEVATOR_BOTTOM_STAGE_RISE_SPEED);
     }
 
@@ -71,6 +72,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * Moves the lower stage downward.
      */
     public void moveLowerStageDown() {
+        System.out.println("Elevator: Moved lower stage down");
         lowerStageMotor.set(ElevatorConstants.ELEVATOR_BOTTOM_STAGE_FALL_SPEED);
     }
 
@@ -78,6 +80,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * Stops the lower stage motor.
      */
     public void stopLowerStage() {
+        System.out.println("Elevator: Stopped lower stage");
         lowerStageMotor.set(0.0);
     }
 
@@ -102,6 +105,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * Stops the upper stage motor.
      */
     public void stopUpperStage() {
+        System.out.println("Elevator: Stopped upper stage");
         upperStageMotor.set(0.0);
     }
 
@@ -109,6 +113,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * Resets the upper stage encoder to zero.
      */
     public void resetUpperStageEncoder() {
+        System.out.println("Elevator: Reset upper stage encoder position");
         upperStageEncoder.setPosition(0.0);
     }
 

@@ -40,7 +40,8 @@ public class RobotContainer {
     private final ClimbSubsystem        climbSubsystem       = new ClimbSubsystem();
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
-    private final CommandXboxController m_driverController   = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    private final CommandXboxController m_driverController   = new CommandXboxController(
+        OperatorConstants.kDriverControllerPort);
     private final CommandXboxController s_operatorController = new CommandXboxController(
         OperatorConstants.kOperatorControllerPort);
 
