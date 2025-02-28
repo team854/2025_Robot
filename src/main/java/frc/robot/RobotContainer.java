@@ -103,7 +103,7 @@ public class RobotContainer {
 
         // Score In Processor
         m_driverController.leftTrigger().whileTrue(new ParallelCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, 0, false),
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_GROUND_SETPOINT, false),
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
             new IntakeCommand(armSubsystem, true, 1.0)));
         /*
@@ -128,17 +128,18 @@ public class RobotContainer {
         // L4 Setpoint
         s_operatorController.b().onTrue(new SequentialCommandGroup(
             new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L4_SETPOINT, true)));
+        new SetWristPositionCommand(armSubsystem, true);
 
 
         // Intake From Source
         s_operatorController.leftBumper().onTrue(new ParallelCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, 0, false),
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_GROUND_SETPOINT, false),
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_SOURCE_ANGLE),
             new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_SOURCE_SPEED)));
 
         // Intake From Ground
         s_operatorController.leftTrigger().onTrue(new ParallelCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, 0, false),
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_GROUND_SETPOINT, false),
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
             new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED)));
 

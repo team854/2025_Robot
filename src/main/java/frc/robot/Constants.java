@@ -58,6 +58,7 @@ public final class Constants {
 
         // Elevator setpoints
         public static final double   ELEVATOR_DEFAULT_SETPOINT        = 0.0;
+        public static final double   ELEVATOR_GROUND_SETPOINT         = 0.0;
         public static final double   ELEVATOR_L1_SETPOINT             = 0.0;
         public static final double   ELEVATOR_L2_SETPOINT             = 0.0;
         public static final double   ELEVATOR_L3_SETPOINT             = 0.0;
