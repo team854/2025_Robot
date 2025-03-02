@@ -40,34 +40,52 @@ public final class Constants {
 
     public static class ElevatorConstants {
 
-        public static final int      LOWER_STAGE_MOTOR_CANID          = 2;
-        public static final int      UPPER_STAGE_MOTOR_CANID          = 3;
+        public static final int      LOWER_STAGE_MOTOR_CANID               = 2;
+        public static final int      UPPER_STAGE_MOTOR_CANID               = 3;
 
         // Bottom stage speeds set without a PID Controller
-        public static final double   ELEVATOR_BOTTOM_STAGE_RISE_SPEED = 0.5;
-        public static final double   ELEVATOR_BOTTOM_STAGE_FALL_SPEED = 0.5;
+        public static final double   ELEVATOR_BOTTOM_STAGE_RISE_SPEED      = 0.8;
+        public static final double   ELEVATOR_BOTTOM_STAGE_FALL_SPEED      = -0.4;
 
         // Elevator top stage PID
-        public static final double   kElevatrorP                      = 0.0;
-        public static final double   kElevatrorI                      = 0.0;
-        public static final double   kElevatrorD                      = 0.0;
+        public static final double   kUpperStageP                          = 0.1;
+        public static final double   kUpperStageI                          = 0.0;
+        public static final double   kUpperStageD                          = 0.01;
+        public static final double   UPPER_STAGE_MAX_OUTPUT                = 1.0;
+        public static final double   UPPER_STAGE_MIN_OUTPUT                = -1.0;
+        public static final double   UPPER_STAGE_MAX_VELOCITY              = 60.0;
+        public static final double   UPPER_STAGE_MAX_ACCELERATION          = 120.0;
+        public static final double   UPPER_STAGE_ALLOWED_CLOSED_LOOP_ERROR = 0.1;
+
+        // Elevator bottom stage PID
+        public static final double   kLowerStageP                          = 0.1;
+        public static final double   kLowerStageI                          = 0.0;
+        public static final double   kLowerStageD                          = 0.01;
+        public static final double   LOWER_STAGE_MIN_OUTPUT                = -1.0;
+        public static final double   LOWER_STAGE_MAX_OUTPUT                = 1.0;
+
+        // Max and Min Height (feet) for lower stage
+        public static final double   LOWER_STAGE_MIN_HEIGHT                = 0.0;
+        public static final double   LOWER_STAGE_MAX_HEIGHT                = 3.0;
 
         // Elevator ratios
-        public static final double   ELEVATOR_GEAR_RATIO              = 5.0;
-        public static final double   ELEVATOR_DRUM_DIAMETER_INCHES    = 2.25;
+        public static final double   ELEVATOR_GEAR_RATIO                   = 10.0;
+        public static final double   ELEVATOR_DRUM_DIAMETER_INCHES         = 2.25;
+        public static final double   ROTATIONS_TO_FEET                     = (Math.PI * ELEVATOR_DRUM_DIAMETER_INCHES / 12.0)
+            / ELEVATOR_GEAR_RATIO;
 
         // Elevator setpoints
-        public static final double   ELEVATOR_DEFAULT_SETPOINT        = 0.0;
-        public static final double   ELEVATOR_GROUND_SETPOINT         = 0.0;
-        public static final double   ELEVATOR_L1_SETPOINT             = 0.0;
-        public static final double   ELEVATOR_L2_SETPOINT             = 0.0;
-        public static final double   ELEVATOR_L3_SETPOINT             = 0.0;
-        public static final double   ELEVATOR_L4_SETPOINT             = 0.0;
-        public static final double   ELEVATOR_NET_SETPOINT            = 0.0;
-        public static final double   ELEVATOR_PROCESSOR_SETPOINT      = 0.0;
+        public static final double   ELEVATOR_DEFAULT_SETPOINT             = 0.0;
+        public static final double   ELEVATOR_GROUND_SETPOINT              = 0.0;
+        public static final double   ELEVATOR_L1_SETPOINT                  = 1.0;
+        public static final double   ELEVATOR_L2_SETPOINT                  = 2.0;
+        public static final double   ELEVATOR_L3_SETPOINT                  = 3.0;
+        public static final double   ELEVATOR_L4_SETPOINT                  = 4.0;
+        public static final double   ELEVATOR_NET_SETPOINT                 = 5.0;
+        public static final double   ELEVATOR_PROCESSOR_SETPOINT           = 1.5;
 
         // All setpoints for elevator
-        public static final double[] ELEVATOR_UPPER_STAGE_SETPOINTS   = {
+        public static final double[] ELEVATOR_UPPER_STAGE_SETPOINTS        = {
                 ELEVATOR_L1_SETPOINT,
                 ELEVATOR_L2_SETPOINT,
                 ELEVATOR_L3_SETPOINT,

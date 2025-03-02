@@ -1,119 +1,98 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkMaxAlternateEncoder;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    // Motors for the two stages of the elevator
-    private final MotorController          lowerStageMotor;
-    private final SparkMax                 upperStageMotor;
-    private final SparkMaxAlternateEncoder upperStageEncoder;
-    private final PIDController            topPIDController;
+    private final SparkMax                  lowerStageMotor;
+    private final SparkMax                  upperStageMotor;
 
-    // Conversion factors: Encoder Rotations → Feet
-    private static final double            DRUM_DIAMETER_INCHES  = ElevatorConstants.ELEVATOR_DRUM_DIAMETER_INCHES;
-    private static final double            GEAR_RATIO            = ElevatorConstants.ELEVATOR_GEAR_RATIO;
-    private static final double            INCHES_TO_FEET        = Constants.INCHES_TO_FEET;
-    private static final double            ROTATIONS_TO_FEET     = (Math.PI * DRUM_DIAMETER_INCHES * INCHES_TO_FEET)
-        / GEAR_RATIO;
+    private final RelativeEncoder           lowerStageEncoder;
+    private final RelativeEncoder           upperStageEncoder;
 
-    // Predefined setpoints for the upper stage (in feet)
-    public static final double[]           UPPER_STAGE_SETPOINTS = ElevatorConstants.ELEVATOR_UPPER_STAGE_SETPOINTS;
+    private final SparkClosedLoopController lowerStageClosedLoop;
+    private final SparkClosedLoopController upperStageClosedLoop;
 
-    // PID Constants for the upper stage
-    private static final double            kP                    = ElevatorConstants.kElevatrorP;
-    private static final double            kI                    = ElevatorConstants.kElevatrorI;
-    private static final double            kD                    = ElevatorConstants.kElevatrorD;
+    private double                          upperStageSetpoint;
 
-    /**
-     * Constructs the ElevatorSubsystem.
-     *
-     * @param lowerMotorPort Port for the lower stage motor.
-     * @param upperMotorPort Port for the upper stage motor.
-     */
     public ElevatorSubsystem() {
-        lowerStageMotor   = new SparkMax(ElevatorConstants.LOWER_STAGE_MOTOR_CANID, MotorType.kBrushed);
-        upperStageMotor   = new SparkMax(ElevatorConstants.UPPER_STAGE_MOTOR_CANID, MotorType.kBrushless);
+        // Initialize motors
+        lowerStageMotor      = new SparkMax(ElevatorConstants.LOWER_STAGE_MOTOR_CANID, MotorType.kBrushless);
+        upperStageMotor      = new SparkMax(ElevatorConstants.UPPER_STAGE_MOTOR_CANID, MotorType.kBrushless);
 
-        upperStageEncoder = (SparkMaxAlternateEncoder) upperStageMotor.getEncoder();
+        // Retrieve controllers and encoders
+        lowerStageClosedLoop = lowerStageMotor.getClosedLoopController();
+        lowerStageEncoder    = lowerStageMotor.getEncoder();
+        upperStageClosedLoop = upperStageMotor.getClosedLoopController();
+        upperStageEncoder    = upperStageMotor.getEncoder();
 
-        topPIDController  = new PIDController(kP, kI, kD);
-        topPIDController.setTolerance(0.05); // Tolerance for precise stopping
+        // Configure lower stage motor (position-based control)
+        SparkMaxConfig lowerStageConfig = new SparkMaxConfig();
+        lowerStageConfig.closedLoop
+            .p(ElevatorConstants.kLowerStageP)
+            .i(ElevatorConstants.kLowerStageI)
+            .d(ElevatorConstants.kLowerStageD)
+            .outputRange(ElevatorConstants.LOWER_STAGE_MIN_OUTPUT, ElevatorConstants.LOWER_STAGE_MAX_OUTPUT);
+
+        // Configure upper stage motor (motion control)
+        SparkMaxConfig upperStageConfig = new SparkMaxConfig();
+        upperStageConfig.closedLoop
+            .p(ElevatorConstants.kUpperStageP)
+            .i(ElevatorConstants.kUpperStageI)
+            .d(ElevatorConstants.kUpperStageD)
+            .outputRange(ElevatorConstants.UPPER_STAGE_MIN_OUTPUT, ElevatorConstants.UPPER_STAGE_MAX_OUTPUT);
+        upperStageConfig.closedLoop.maxMotion
+            .maxVelocity(ElevatorConstants.UPPER_STAGE_MAX_VELOCITY)
+            .maxAcceleration(ElevatorConstants.UPPER_STAGE_MAX_ACCELERATION)
+            .allowedClosedLoopError(ElevatorConstants.UPPER_STAGE_ALLOWED_CLOSED_LOOP_ERROR);
+
+        upperStageSetpoint = upperStageEncoder.getPosition();
     }
 
-    /**
-     * Converts a distance in feet to the equivalent number of encoder rotations.
-     *
-     * @param feet the distance in feet.
-     * @return the equivalent encoder rotations.
-     */
-    private double feetToRotations(double feet) {
-        return feet / ROTATIONS_TO_FEET;
-    }
-
-    /**
-     * Moves the lower stage upward.
-     */
     public void moveLowerStageUp() {
-        System.out.println("Elevator: Moved lower stage up");
-        lowerStageMotor.set(ElevatorConstants.ELEVATOR_BOTTOM_STAGE_RISE_SPEED);
+        lowerStageClosedLoop.setReference(ElevatorConstants.LOWER_STAGE_MAX_HEIGHT, ControlType.kPosition);
     }
 
-    /**
-     * Moves the lower stage downward.
-     */
     public void moveLowerStageDown() {
-        System.out.println("Elevator: Moved lower stage down");
-        lowerStageMotor.set(ElevatorConstants.ELEVATOR_BOTTOM_STAGE_FALL_SPEED);
+        lowerStageClosedLoop.setReference(ElevatorConstants.LOWER_STAGE_MIN_HEIGHT, ControlType.kPosition);
     }
 
-    /**
-     * Stops the lower stage motor.
-     */
     public void stopLowerStage() {
-        System.out.println("Elevator: Stopped lower stage");
-        lowerStageMotor.set(0.0);
+        lowerStageMotor.stopMotor();
     }
 
-    /**
-     * Moves the upper stage to a specific setpoint based on the provided index.
-     *
-     * @param setpointIndex the index of the desired setpoint.
-     */
+    public void setUpperStageHeight(double heightRotations) {
+        upperStageSetpoint = heightRotations;
+        upperStageClosedLoop.setReference(heightRotations, ControlType.kMAXMotionPositionControl);
+    }
+
+    public double feetToRotations(double heightFeet) {
+        return heightFeet * ElevatorConstants.ROTATIONS_TO_FEET;
+    }
+
     public void setUpperStagePosition(int setpointIndex) {
-        if (setpointIndex < 0 || setpointIndex >= UPPER_STAGE_SETPOINTS.length) {
+        if (setpointIndex < 0 || setpointIndex >= ElevatorConstants.ELEVATOR_UPPER_STAGE_SETPOINTS.length) {
             SmartDashboard.putString("Elevator Error", "Invalid setpoint index: " + setpointIndex);
             return;
         }
-        double targetFeet       = UPPER_STAGE_SETPOINTS[setpointIndex];
-        double targetRotations  = feetToRotations(targetFeet);
-        double currentRotations = upperStageEncoder.getPosition();
-        double pidOutput        = topPIDController.calculate(currentRotations, targetRotations);
-        upperStageMotor.set(pidOutput);
+        upperStageSetpoint = ElevatorConstants.ELEVATOR_UPPER_STAGE_SETPOINTS[setpointIndex];
+        upperStageClosedLoop.setReference(upperStageSetpoint, ControlType.kMAXMotionPositionControl);
     }
 
-    /**
-     * Stops the upper stage motor.
-     */
     public void stopUpperStage() {
-        System.out.println("Elevator: Stopped upper stage");
-        upperStageMotor.set(0.0);
+        upperStageMotor.stopMotor();
     }
 
-    /**
-     * Resets the upper stage encoder to zero.
-     */
     public void resetUpperStageEncoder() {
-        System.out.println("Elevator: Reset upper stage encoder position");
         upperStageEncoder.setPosition(0.0);
     }
 
@@ -123,8 +102,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Update SmartDashboard with current diagnostics
-        SmartDashboard.putNumber("Upper Stage Encoder", upperStageEncoder.getPosition());
-        SmartDashboard.putNumber("Elevator PID Error", topPIDController.getPositionError());
+        SmartDashboard.putNumber("Elevator/Lower Stage Position", lowerStageEncoder.getPosition());
+        SmartDashboard.putNumber("Elevator/Upper Stage Position", upperStageEncoder.getPosition());
+        SmartDashboard.putNumber("Elevator/Upper Stage Setpoint", upperStageSetpoint);
     }
 }
