@@ -67,33 +67,42 @@ public class RobotContainer {
     }
 
     public void configureNamedCommands() {
+
         NamedCommands.registerCommand("GroundIntake",
             new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED));
+
         NamedCommands.registerCommand("SourceIntake", new ParallelCommandGroup(
             new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_GROUND_SETPOINT, false),
             new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_SOURCE_ANGLE),
             new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_SOURCE_SPEED)));
+
         NamedCommands.registerCommand("ScoreCoral", new ParallelCommandGroup(
             new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED),
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_DEFAULT_ANGLE),
             new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_DEFAULT_SETPOINT, false)));
+
         NamedCommands.registerCommand("ProcessorScore", new ParallelCommandGroup(
             new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_GROUND_SETPOINT, false),
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
             new IntakeCommand(armSubsystem, true, ArmConstants.PROCESSOR_SCORE_SPEED)));
+
         NamedCommands.registerCommand("Setpoint: Trough", new SequentialCommandGroup(
             new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L1_SETPOINT, false),
             new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES)));
+
         NamedCommands.registerCommand("Setpoint: L2", new SequentialCommandGroup(
             new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L2_SETPOINT, true),
             new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+
         NamedCommands.registerCommand("Setpoint: L3", new SequentialCommandGroup(
             new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L3_SETPOINT, true),
             new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+
         NamedCommands.registerCommand("Setpoint: L4", new SequentialCommandGroup(
             new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L4_SETPOINT, true),
             new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+
         NamedCommands.registerCommand("Climb", new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_SPEED).withTimeout(3));
     }
 
