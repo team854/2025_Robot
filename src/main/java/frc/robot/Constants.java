@@ -136,6 +136,7 @@ public final class Constants {
         // Shoulder Closed Loop Config
         public static final double SHOULDER_MAX_OUTPUT                = 1.0;
         public static final double SHOULDER_MIN_OUTPUT                = -1.0;
+        public static final double SHOULDER_GEAR_RATIO                = 5.25;
 
         // Wrist PID Values
         public static final double kWristP                            = 0.0;

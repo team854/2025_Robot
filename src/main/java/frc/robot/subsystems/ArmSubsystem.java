@@ -74,7 +74,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void moveShoulderToSetpoint(double setpoint) {
-        shoulderSetpoint = setpoint;
+        shoulderSetpoint = setpoint / (360 * ArmConstants.SHOULDER_GEAR_RATIO);
         shoulderClosedLoop.setReference(shoulderSetpoint, ControlType.kMAXMotionPositionControl);
     }
 
