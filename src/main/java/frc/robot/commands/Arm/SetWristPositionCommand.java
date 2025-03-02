@@ -5,23 +5,23 @@ import frc.robot.subsystems.ArmSubsystem;
 
 public class SetWristPositionCommand extends Command {
     public final ArmSubsystem armSubsystem;
-    public final boolean      toNinetyDegrees;
+    public final double       wristSetpoint;
 
-    public SetWristPositionCommand(ArmSubsystem armSubsystem, boolean toNinetyDegrees) {
-        this.armSubsystem    = armSubsystem;
-        this.toNinetyDegrees = toNinetyDegrees;
+    public SetWristPositionCommand(ArmSubsystem armSubsystem, double wristSetpoint) {
+        this.armSubsystem  = armSubsystem;
+        this.wristSetpoint = wristSetpoint;
 
         addRequirements(armSubsystem);
     }
 
     @Override
     public void initialize() {
-        armSubsystem.moveWrist(false);
+
     }
 
     @Override
     public void execute() {
-        armSubsystem.moveWrist(toNinetyDegrees);
+        armSubsystem.moveWristToSetpoint(wristSetpoint);
     }
 
 }

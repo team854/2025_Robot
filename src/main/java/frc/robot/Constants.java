@@ -82,20 +82,28 @@ public final class Constants {
     }
 
     public static class ArmConstants {
+
+        // Arm Motor IDS
         public static final int    SHOULDER_MOTOR_ID                  = 0;
         public static final int    WRIST_MOTOR_ID                     = 1;
         public static final int    INTAKE_MOTOR_ID                    = 2;
-        public static final int    WRIST_LIMIT_SWITCH_PORT            = 0;
 
+        // Arm Scoring Angles
         public static final double ARM_L1_ANGLE                       = 20;
         public static final double ARM_L2_ANGLE                       = -10;
         public static final double ARM_L3_ANGLE                       = 20;
         public static final double ARM_L4_ANGLE                       = 45;
 
+        // Wrist Rotation Angles
+        public static final double WRIST_VERTICAL_DEGREES             = 90.0;
+        public static final double WRIST_HORIZONTAL_DEGREES           = 0.0;
+
+        // Arm Intake Angles
         public static final double ARM_SOURCE_ANGLE                   = 45;
         public static final double ARM_GROUND_ANGLE                   = -45;
         public static final double ARM_DEFAULT_ANGLE                  = 0;
 
+        // Intake Speeds
         public static final double INTAKE_GROUND_SPEED                = 1.0;
         public static final double INTAKE_SOURCE_SPEED                = 0.9;
         public static final double BRANCH_SCORE_SPEED                 = 0.5;
@@ -109,6 +117,16 @@ public final class Constants {
         // Shoulder Closed Loop Config
         public static final double SHOULDER_MAX_OUTPUT                = 1.0;
         public static final double SHOULDER_MIN_OUTPUT                = -1.0;
+
+        // Wrist PID Values
+        public static final double kWristP                            = 0.0;
+        public static final double kWristI                            = 0.0;
+        public static final double kWristD                            = 0.0;
+
+        // Wrist Closed Loop Config
+        public static final double WRIST_MAX_OUTPUT                   = 1.0;
+        public static final double WRIST_MIN_OUTPUT                   = -1.0;
+        public static final double WRIST_GEAR_RATIO                   = 6.0;
 
         // Shoulder MAXMotion Config
         public static final double SHOULDER_MAX_VELOCITY              = 1.0;
@@ -152,5 +170,6 @@ public final class Constants {
     }
 
     public static final double NEO_MOTOR_Kv_VALUE = 473.0;
+    public static final double NEO_550_Kv_VALUE   = 917.0;
     public static final double INCHES_TO_FEET     = 1.0 / 12.0;
 }

@@ -113,33 +113,34 @@ public class RobotContainer {
         // Trough Setpoint
         s_operatorController.a().onTrue(new SequentialCommandGroup(
             new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L1_SETPOINT, false),
-            new SetWristPositionCommand(armSubsystem, false)));
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES)));
 
         // L2 Setpoint
         s_operatorController.x().onTrue(new SequentialCommandGroup(
             new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L2_SETPOINT, true),
-            new SetWristPositionCommand(armSubsystem, true)));
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
 
         // L3 Setpoint
         s_operatorController.y().onTrue(new SequentialCommandGroup(
             new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L3_SETPOINT, true),
-            new SetWristPositionCommand(armSubsystem, true)));
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
 
         // L4 Setpoint
         s_operatorController.b().onTrue(new SequentialCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L4_SETPOINT, true)));
-        new SetWristPositionCommand(armSubsystem, true);
-
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L4_SETPOINT, true),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
 
         // Intake From Source
         s_operatorController.leftBumper().onTrue(new ParallelCommandGroup(
             new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_GROUND_SETPOINT, false),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_SOURCE_ANGLE),
             new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_SOURCE_SPEED)));
 
         // Intake From Ground
         s_operatorController.leftTrigger().onTrue(new ParallelCommandGroup(
             new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_GROUND_SETPOINT, false),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
             new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED)));
 
