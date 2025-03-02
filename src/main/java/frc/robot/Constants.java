@@ -145,7 +145,7 @@ public final class Constants {
         // Wrist Closed Loop Config
         public static final double WRIST_MAX_OUTPUT                   = 1.0;
         public static final double WRIST_MIN_OUTPUT                   = -1.0;
-        public static final double WRIST_GEAR_RATIO                   = 32.0;
+        public static final double WRIST_GEAR_RATIO                   = 100.0;
 
         // Shoulder MAXMotion Config
         public static final double SHOULDER_MAX_VELOCITY              = 1.0;
