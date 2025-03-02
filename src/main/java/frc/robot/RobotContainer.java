@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -13,6 +15,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.autos.AutoModeChooser;
 import frc.robot.commands.Arm.IntakeCommand;
 import frc.robot.commands.Arm.SetArmAngleCommand;
 import frc.robot.commands.Arm.SetWristPositionCommand;
@@ -39,6 +42,8 @@ public class RobotContainer {
     private final ArmSubsystem          armSubsystem         = new ArmSubsystem();
     private final ClimbSubsystem        climbSubsystem       = new ClimbSubsystem();
 
+    private final AutoModeChooser       autoModeChooser;
+
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController   = new CommandXboxController(
         OperatorConstants.kDriverControllerPort);
@@ -47,12 +52,49 @@ public class RobotContainer {
 
     // The container for the robot. Contains subsystems, OI devices, and commands.
     public RobotContainer() {
+
+        autoModeChooser = new AutoModeChooser();
+
+        // Register Named Commands
+        configureNamedCommands();
+
         // Configure the trigger bindings
         configureBindings();
 
         // ----------Set default drive command here----------\\
         drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
+    }
+
+    public void configureNamedCommands() {
+        NamedCommands.registerCommand("GroundIntake",
+            new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED));
+        NamedCommands.registerCommand("SourceIntake", new ParallelCommandGroup(
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_GROUND_SETPOINT, false),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_SOURCE_ANGLE),
+            new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_SOURCE_SPEED)));
+        NamedCommands.registerCommand("ScoreCoral", new ParallelCommandGroup(
+            new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED),
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_DEFAULT_ANGLE),
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_DEFAULT_SETPOINT, false)));
+        NamedCommands.registerCommand("ProcessorScore", new ParallelCommandGroup(
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_GROUND_SETPOINT, false),
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
+            new IntakeCommand(armSubsystem, true, ArmConstants.PROCESSOR_SCORE_SPEED)));
+        NamedCommands.registerCommand("Setpoint: Trough", new SequentialCommandGroup(
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L1_SETPOINT, false),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES)));
+        NamedCommands.registerCommand("Setpoint: L2", new SequentialCommandGroup(
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L2_SETPOINT, true),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+        NamedCommands.registerCommand("Setpoint: L3", new SequentialCommandGroup(
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L3_SETPOINT, true),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+        NamedCommands.registerCommand("Setpoint: L4", new SequentialCommandGroup(
+            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.ELEVATOR_L4_SETPOINT, true),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+        NamedCommands.registerCommand("Climb", new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_SPEED).withTimeout(3));
     }
 
     // -------------------------Swerve Drive Code-------------------------\\
@@ -149,10 +191,6 @@ public class RobotContainer {
 
     }
 
-    public void configureNamedCommands() {
-
-    }
-
     /*
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
@@ -160,6 +198,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return drivebase.getAutonomousCommand("4x L4 Coral Auto");
+        return autoModeChooser.getSelectedAutoCommand();
     }
 }

@@ -103,11 +103,12 @@ public final class Constants {
         public static final double ARM_GROUND_ANGLE                   = -45;
         public static final double ARM_DEFAULT_ANGLE                  = 0;
 
-        // Intake Speeds
+        // End Effector
         public static final double INTAKE_GROUND_SPEED                = 1.0;
         public static final double INTAKE_SOURCE_SPEED                = 0.9;
         public static final double BRANCH_SCORE_SPEED                 = 0.5;
         public static final double TROUGH_SCORE_SPEED                 = 0.3;
+        public static final double PROCESSOR_SCORE_SPEED              = 1.0;
 
         // Shoulder PID Values
         public static final double kShoulderP                         = 0.0;
@@ -126,7 +127,7 @@ public final class Constants {
         // Wrist Closed Loop Config
         public static final double WRIST_MAX_OUTPUT                   = 1.0;
         public static final double WRIST_MIN_OUTPUT                   = -1.0;
-        public static final double WRIST_GEAR_RATIO                   = 6.0;
+        public static final double WRIST_GEAR_RATIO                   = 32.0;
 
         // Shoulder MAXMotion Config
         public static final double SHOULDER_MAX_VELOCITY              = 1.0;
