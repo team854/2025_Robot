@@ -224,85 +224,85 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "SetArmState",
+      "name": "",
       "waypointRelativePos": 0.2639138240574508,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "ReleaseCoral",
+      "name": "",
       "waypointRelativePos": 0.9802513464991027,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "SetArmState",
+      "name": "",
       "waypointRelativePos": 1.2692998204667876,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "IntakeCoral",
+      "name": "",
       "waypointRelativePos": 1.6714542190305215,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "SetArmState",
+      "name": "",
       "waypointRelativePos": 2.438061041292638,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "ReleaseCoral",
+      "name": "",
       "waypointRelativePos": 3.0287253141831236,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "SetArmState",
+      "name": "",
       "waypointRelativePos": 3.405745062836626,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "IntakeCoral",
+      "name": "",
       "waypointRelativePos": 3.719928186714541,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "SetArmState",
+      "name": "",
       "waypointRelativePos": 4.561938958707353,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "ReleaseCoral",
+      "name": "",
       "waypointRelativePos": 5.0143626570915485,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "SetArmState",
+      "name": "",
       "waypointRelativePos": 5.617594254937163,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "Intake",
+      "name": "",
       "waypointRelativePos": 5.868940754039491,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "SetArmState",
+      "name": "",
       "waypointRelativePos": 6.384201077199258,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "ReleaseCoral",
+      "name": "",
       "waypointRelativePos": 6.9622980251346345,
       "endWaypointRelativePos": null,
       "command": null
