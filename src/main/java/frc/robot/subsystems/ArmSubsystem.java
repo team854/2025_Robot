@@ -4,6 +4,8 @@ import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -59,6 +61,9 @@ public class ArmSubsystem extends SubsystemBase {
             .maxAcceleration(ArmConstants.SHOULDER_MAX_ACCELERATION)
             .allowedClosedLoopError(ArmConstants.SHOULDER_ALLOWED_CLOSED_LOOP_ERROR);
 
+        // Burn the config to the SparkMax
+        shoulderMotor.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
         // Configure wrist motor
         SparkMaxConfig wristConfig = new SparkMaxConfig();
         wristConfig.closedLoop
@@ -67,6 +72,9 @@ public class ArmSubsystem extends SubsystemBase {
             .d(ArmConstants.kWristD)
             .velocityFF(1 / Constants.NEO_550_Kv_VALUE)
             .outputRange(ArmConstants.WRIST_MIN_OUTPUT, ArmConstants.WRIST_MAX_OUTPUT);
+
+        // Burn the config to the SparkMax
+        wristMotor.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Initialize setpoints
         shoulderSetpoint = shoulderEncoder.getPosition();
