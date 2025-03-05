@@ -2,9 +2,12 @@ package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,6 +46,11 @@ public class ElevatorSubsystem extends SubsystemBase {
             .d(ElevatorConstants.kLowerStageD)
             .outputRange(ElevatorConstants.LOWER_STAGE_MIN_OUTPUT, ElevatorConstants.LOWER_STAGE_MAX_OUTPUT);
 
+        lowerStageConfig.idleMode(IdleMode.kBrake);
+
+        // Burn the config to the SparkMax
+        lowerStageMotor.configure(lowerStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
         // Configure upper stage motor (motion control)
         SparkMaxConfig upperStageConfig = new SparkMaxConfig();
         upperStageConfig.closedLoop
@@ -55,7 +63,13 @@ public class ElevatorSubsystem extends SubsystemBase {
             .maxAcceleration(ElevatorConstants.UPPER_STAGE_MAX_ACCELERATION)
             .allowedClosedLoopError(ElevatorConstants.UPPER_STAGE_ALLOWED_CLOSED_LOOP_ERROR);
 
+        upperStageConfig.idleMode(IdleMode.kBrake);
+
+        // Burn the config to the SparkMax
+        upperStageMotor.configure(upperStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
         upperStageSetpoint = upperStageEncoder.getPosition();
+
     }
 
     public void moveLowerStageUp() {
