@@ -26,7 +26,7 @@ public class SetElevatorHeightCommand extends Command {
     public void initialize() {
         // Convert feet to encoder rotations
         targetRotations           = elevatorSubsystem.upperfeetToRotations(targetHeightFeet);
-        lowerStageTargetRotations = elevatorSubsystem.lowerfeetToRotations(targetHeightFeet);
+        lowerStageTargetRotations = elevatorSubsystem.lowerfeetToRotations(lowerStageTargetHeightFeet);
 
         // Move the upper stage directly to the target height
         elevatorSubsystem.setUpperStage(targetRotations);

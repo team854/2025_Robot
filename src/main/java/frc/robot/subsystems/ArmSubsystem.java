@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -24,6 +25,9 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Controller for the intake wheels
     private final VictorSPX                 intakeMotor;
+
+    // Intake Sensor
+    private final DigitalInput              intakeSensor;
 
     // Closed-loop controllers and encoders
     private final SparkClosedLoopController shoulderClosedLoop;
@@ -46,6 +50,8 @@ public class ArmSubsystem extends SubsystemBase {
         shoulderEncoder    = shoulderMotor.getEncoder();
         wristClosedLoop    = wristMotor.getClosedLoopController();
         wristEncoder       = wristMotor.getEncoder();
+
+        intakeSensor       = new DigitalInput(ArmConstants.INTAKE_SENSOR_PORT);
 
         // Configure shoulder motor
         SparkMaxConfig shoulderConfig = new SparkMaxConfig();
@@ -91,8 +97,17 @@ public class ArmSubsystem extends SubsystemBase {
         wristClosedLoop.setReference(wristSetpoint, ControlType.kPosition);
     }
 
+    public boolean hasGamePiece() {
+        return !intakeSensor.get(); // Assuming active-low signal (true when object detected)
+    }
+
     public void setIntakeSpeed(double intakeSpeed, boolean isReversed) {
-        intakeMotor.set(VictorSPXControlMode.Velocity, isReversed ? -intakeSpeed : intakeSpeed);
+        if (!hasGamePiece()) {
+            intakeMotor.set(VictorSPXControlMode.PercentOutput, isReversed ? -intakeSpeed : intakeSpeed);
+        }
+        else {
+            intakeMotor.set(VictorSPXControlMode.PercentOutput, 0); // Stop intake if a piece is detected
+        }
     }
 
     public void stopWrist() {
@@ -114,6 +129,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putBoolean("Intake/Game Piece Detected", hasGamePiece());
         SmartDashboard.putNumber("Arm/Shoulder Position", shoulderEncoder.getPosition());
         SmartDashboard.putNumber("Arm/Shoulder Setpoint", shoulderSetpoint);
         SmartDashboard.putNumber("Arm/Wrist Position", wristEncoder.getPosition());

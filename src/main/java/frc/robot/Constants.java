@@ -174,6 +174,7 @@ public final class Constants {
         // Wrist speeds
         public static final double WRIST_UP_SPEED                     = 0.1;
         public static final double WRIST_DOWN_SPEED                   = 0.1;
+        public static final int    INTAKE_SENSOR_PORT                 = 0;
 
     }
 

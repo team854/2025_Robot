@@ -5,10 +5,10 @@ import frc.robot.subsystems.ArmSubsystem;
 
 public class IntakeCommand extends Command {
     private final ArmSubsystem armSubsystem;
-    public boolean             isReversed;
-    public double              intakeSpeed;
+    private final boolean      isReversed;
+    private final double       intakeSpeed;
 
-    public IntakeCommand(ArmSubsystem armSubsystem, Boolean isReversed, Double intakeSpeed) {
+    public IntakeCommand(ArmSubsystem armSubsystem, boolean isReversed, double intakeSpeed) {
         this.armSubsystem = armSubsystem;
         this.intakeSpeed  = intakeSpeed;
         this.isReversed   = isReversed;
@@ -17,20 +17,17 @@ public class IntakeCommand extends Command {
     }
 
     @Override
-    public void initialize() {
-        isReversed = false;
-    }
-
-    @Override
     public void execute() {
-
-        // Reversed direction rotates wheels inwards
-        isReversed = true;
-        armSubsystem.setIntakeSpeed(intakeSpeed, isReversed);
+        if (!armSubsystem.hasGamePiece()) {
+            armSubsystem.setIntakeSpeed(intakeSpeed, isReversed);
+        }
+        else {
+            armSubsystem.setIntakeSpeed(0, false); // Stop intake if a game piece is detected
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
-        armSubsystem.setIntakeSpeed(intakeSpeed, isReversed);
+        armSubsystem.setIntakeSpeed(0, false);
     }
 }
