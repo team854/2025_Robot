@@ -26,6 +26,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final SparkClosedLoopController upperStageClosedLoop;
 
     private double                          upperStageSetpoint;
+    private double                          lowerStageSetpoint;
 
     public ElevatorSubsystem() {
         // Initialize motors
@@ -69,28 +70,29 @@ public class ElevatorSubsystem extends SubsystemBase {
         upperStageMotor.configure(upperStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         upperStageSetpoint = upperStageEncoder.getPosition();
+        lowerStageSetpoint = lowerStageEncoder.getPosition();
 
     }
 
-    public void moveLowerStageUp() {
-        lowerStageClosedLoop.setReference(ElevatorConstants.LOWER_STAGE_MAX_HEIGHT, ControlType.kPosition);
-    }
-
-    public void moveLowerStageDown() {
-        lowerStageClosedLoop.setReference(ElevatorConstants.LOWER_STAGE_MIN_HEIGHT, ControlType.kPosition);
+    public void setLowerStage(double heightRotations) {
+        lowerStageClosedLoop.setReference(heightRotations, ControlType.kMAXMotionPositionControl);
     }
 
     public void stopLowerStage() {
         lowerStageMotor.stopMotor();
     }
 
-    public void setUpperStageHeight(double heightRotations) {
+    public void setUpperStage(double heightRotations) {
         upperStageSetpoint = heightRotations;
         upperStageClosedLoop.setReference(heightRotations, ControlType.kMAXMotionPositionControl);
     }
 
-    public double feetToRotations(double heightFeet) {
-        return heightFeet * ElevatorConstants.ROTATIONS_TO_FEET;
+    public double upperfeetToRotations(double heightFeet) {
+        return heightFeet * ElevatorConstants.ROTATIONS_TO_FEET_UPPER;
+    }
+
+    public double lowerfeetToRotations(double heightFeet) {
+        return heightFeet * ElevatorConstants.ROTATIONS_TO_FEET_LOWER;
     }
 
     public void setUpperStagePosition(int setpointIndex) {

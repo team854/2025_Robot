@@ -6,15 +6,17 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public class SetElevatorHeightCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
-    private final double            targetHeightFeet; // Given in feet
-    private final boolean           moveLowerUp;
+    private final double            targetHeightFeet;          // Given in feet
+    private final double            lowerStageTargetHeightFeet;
 
-    private double                  targetRotations;  // Converted to encoder units
+    private double                  targetRotations;           // Converted to encoder units
+    private double                  lowerStageTargetRotations;
 
-    public SetElevatorHeightCommand(ElevatorSubsystem elevatorSubsystem, double targetHeightFeet, boolean moveLowerUp) {
-        this.elevatorSubsystem = elevatorSubsystem;
-        this.targetHeightFeet  = targetHeightFeet;
-        this.moveLowerUp       = moveLowerUp;
+    public SetElevatorHeightCommand(ElevatorSubsystem elevatorSubsystem, double targetHeightFeet,
+        double lowerStageTargetHeightFeet) {
+        this.elevatorSubsystem          = elevatorSubsystem;
+        this.targetHeightFeet           = targetHeightFeet;
+        this.lowerStageTargetHeightFeet = lowerStageTargetHeightFeet;
 
         // Declare subsystem dependencies
         addRequirements(elevatorSubsystem);
@@ -23,24 +25,20 @@ public class SetElevatorHeightCommand extends Command {
     @Override
     public void initialize() {
         // Convert feet to encoder rotations
-        targetRotations = elevatorSubsystem.feetToRotations(targetHeightFeet);
+        targetRotations           = elevatorSubsystem.upperfeetToRotations(targetHeightFeet);
+        lowerStageTargetRotations = elevatorSubsystem.lowerfeetToRotations(targetHeightFeet);
 
         // Move the upper stage directly to the target height
-        elevatorSubsystem.setUpperStageHeight(targetRotations);
+        elevatorSubsystem.setUpperStage(targetRotations);
+        elevatorSubsystem.setLowerStage(lowerStageTargetRotations);
 
-        // Move the lower stage
-        if (moveLowerUp) {
-            elevatorSubsystem.moveLowerStageUp();
-        }
-        else {
-            elevatorSubsystem.moveLowerStageDown();
-        }
     }
 
     @Override
     public void execute() {
         // Continuously ensure the elevator moves towards the setpoint
-        elevatorSubsystem.setUpperStageHeight(targetRotations);
+        elevatorSubsystem.setUpperStage(targetRotations);
+        elevatorSubsystem.setLowerStage(lowerStageTargetRotations);
     }
 
     @Override

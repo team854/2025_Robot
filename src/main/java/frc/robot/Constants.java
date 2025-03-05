@@ -69,29 +69,47 @@ public final class Constants {
         public static final double   LOWER_STAGE_MAX_HEIGHT                = 3.0;
 
         // Elevator ratios
-        public static final double   ELEVATOR_GEAR_RATIO                   = 10.0;
-        public static final double   ELEVATOR_DRUM_DIAMETER_INCHES         = 2.25;
-        public static final double   ROTATIONS_TO_FEET                     = (Math.PI * ELEVATOR_DRUM_DIAMETER_INCHES / 12.0)
-            / ELEVATOR_GEAR_RATIO;
+        public static final double   ELEVATOR_LOWER_GEAR_RATIO             = 10.0;
+        public static final double   ELEVATOR_UPPER_GEAR_RATIO             = 10.0;
+        public static final double   ELEVATOR_LOWER_DRUM_DIAMETER_INCHES   = 2.25;
+        public static final double   ROTATIONS_TO_FEET_LOWER               = (Math.PI * ELEVATOR_LOWER_DRUM_DIAMETER_INCHES
+            / 12.0)
+            / ELEVATOR_LOWER_GEAR_RATIO;
+
+        public static final double   ELEVATOR_UPPER_DRUM_DIAMETER_INCHES   = 2.25;
+        public static final double   ROTATIONS_TO_FEET_UPPER               = (Math.PI * ELEVATOR_UPPER_DRUM_DIAMETER_INCHES / 12
+            / ELEVATOR_UPPER_GEAR_RATIO);
 
         // Elevator setpoints
-        public static final double   ELEVATOR_DEFAULT_SETPOINT             = 0.0;
-        public static final double   ELEVATOR_GROUND_SETPOINT              = 0.0;
-        public static final double   ELEVATOR_L1_SETPOINT                  = 1.0;
-        public static final double   ELEVATOR_L2_SETPOINT                  = 2.0;
-        public static final double   ELEVATOR_L3_SETPOINT                  = 3.0;
-        public static final double   ELEVATOR_L4_SETPOINT                  = 4.0;
-        public static final double   ELEVATOR_NET_SETPOINT                 = 5.0;
-        public static final double   ELEVATOR_PROCESSOR_SETPOINT           = 1.5;
+        public static final double   LOWER_ELEVATOR_DEFAULT_SETPOINT       = 0.0;
+        public static final double   LOWER_ELEVATOR_GROUND_SETPOINT        = 0.0;
+        public static final double   LOWER_ELEVATOR_L1_SETPOINT            = 1.0;
+        public static final double   LOWER_ELEVATOR_L2_SETPOINT            = 2.0;
+        public static final double   LOWER_ELEVATOR_L3_SETPOINT            = 3.0;
+        public static final double   LOWER_ELEVATOR_L4_SETPOINT            = 4.0;
+        public static final double   LOWER_ELEVATOR_NET_SETPOINT           = 5.0;
+        public static final double   LOWER_ELEVATOR_PROCESSOR_SETPOINT     = 1.5;
+
+        // Elevator setpoints
+        public static final double   UPPER_ELEVATOR_DEFAULT_SETPOINT       = 0.0;
+        public static final double   UPPER_ELEVATOR_GROUND_SETPOINT        = 0.0;
+        public static final double   UPPER_ELEVATOR_L1_SETPOINT            = 1.0;
+        public static final double   UPPER_ELEVATOR_L2_SETPOINT            = 2.0;
+        public static final double   UPPER_ELEVATOR_L3_SETPOINT            = 3.0;
+        public static final double   UPPER_ELEVATOR_L4_SETPOINT            = 4.0;
+        public static final double   UPPER_ELEVATOR_NET_SETPOINT           = 5.0;
+        public static final double   UPPER_ELEVATOR_PROCESSOR_SETPOINT     = 1.5;
 
         // All setpoints for elevator
         public static final double[] ELEVATOR_UPPER_STAGE_SETPOINTS        = {
-                ELEVATOR_L1_SETPOINT,
-                ELEVATOR_L2_SETPOINT,
-                ELEVATOR_L3_SETPOINT,
-                ELEVATOR_L4_SETPOINT,
-                ELEVATOR_NET_SETPOINT,
-                ELEVATOR_PROCESSOR_SETPOINT };
+                LOWER_ELEVATOR_L1_SETPOINT,
+                LOWER_ELEVATOR_L2_SETPOINT,
+                LOWER_ELEVATOR_L3_SETPOINT,
+                LOWER_ELEVATOR_L4_SETPOINT,
+                LOWER_ELEVATOR_NET_SETPOINT,
+                LOWER_ELEVATOR_PROCESSOR_SETPOINT };
+        public static final double   LOWER_ELEVATOR_SOURCE_SETPOINT        = 0;
+        public static final double   UPPER_ELEVATOR_SOURCE_SETPOINT        = 0;
     }
 
     public static class ClimbConstants {
