@@ -89,6 +89,7 @@ public final class Constants {
         public static final double   LOWER_ELEVATOR_L4_SETPOINT            = 4.0;
         public static final double   LOWER_ELEVATOR_NET_SETPOINT           = 5.0;
         public static final double   LOWER_ELEVATOR_PROCESSOR_SETPOINT     = 1.5;
+        public static final double   LOWER_ELEVATOR_SOURCE_SETPOINT        = 0;
 
         // Elevator setpoints
         public static final double   UPPER_ELEVATOR_DEFAULT_SETPOINT       = 0.0;
@@ -99,6 +100,7 @@ public final class Constants {
         public static final double   UPPER_ELEVATOR_L4_SETPOINT            = 4.0;
         public static final double   UPPER_ELEVATOR_NET_SETPOINT           = 5.0;
         public static final double   UPPER_ELEVATOR_PROCESSOR_SETPOINT     = 1.5;
+        public static final double   UPPER_ELEVATOR_SOURCE_SETPOINT        = 0;
 
         // All setpoints for elevator
         public static final double[] ELEVATOR_UPPER_STAGE_SETPOINTS        = {
@@ -108,8 +110,6 @@ public final class Constants {
                 LOWER_ELEVATOR_L4_SETPOINT,
                 LOWER_ELEVATOR_NET_SETPOINT,
                 LOWER_ELEVATOR_PROCESSOR_SETPOINT };
-        public static final double   LOWER_ELEVATOR_SOURCE_SETPOINT        = 0;
-        public static final double   UPPER_ELEVATOR_SOURCE_SETPOINT        = 0;
     }
 
     public static class ClimbConstants {
@@ -154,7 +154,7 @@ public final class Constants {
         // Shoulder Closed Loop Config
         public static final double SHOULDER_MAX_OUTPUT                = 1.0;
         public static final double SHOULDER_MIN_OUTPUT                = -1.0;
-        public static final double SHOULDER_GEAR_RATIO                = 5.25;
+        public static final double SHOULDER_GEAR_RATIO                = 6;
 
         // Wrist PID Values
         public static final double kWristP                            = 0.0;
