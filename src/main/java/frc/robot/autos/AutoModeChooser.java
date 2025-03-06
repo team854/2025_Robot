@@ -17,8 +17,9 @@ public class AutoModeChooser {
         autoChooser.setDefaultOption("1x Trough", swerveSubsystem.getAutonomousCommand("1x Trough Auto"));
 
         // Add PathPlanner auto options
-        autoChooser.addOption("1x Trough", swerveSubsystem.getAutonomousCommand("1x Trough Auto"));
-        autoChooser.addOption("", swerveSubsystem.getAutonomousCommand("4x L4 Coral Auto"));
+        autoChooser.addOption("1x Trough Auto", swerveSubsystem.getAutonomousCommand("1x Trough Auto"));
+        autoChooser.addOption("4x L4 Auto", swerveSubsystem.getAutonomousCommand("4x L4 Coral Auto"));
+        autoChooser.addOption("2x L4 Auto", swerveSubsystem.getAutonomousCommand("2x L4 Auto"));
 
         // Add the chooser to Shuffleboard
         Shuffleboard.getTab("Autonomous").add("Auto Mode", autoChooser)
