@@ -37,12 +37,13 @@ import swervelib.SwerveInputStream;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final SwerveSubsystem       drivebase            = new SwerveSubsystem();
+    private final SwerveSubsystem       swerveSubsystem      = new SwerveSubsystem();
     private final VisionSubsystem       visionSubsystem      = new VisionSubsystem();
     private final ElevatorSubsystem     elevatorSubsystem    = new ElevatorSubsystem();
     private final ArmSubsystem          armSubsystem         = new ArmSubsystem();
     private final ClimbSubsystem        climbSubsystem       = new ClimbSubsystem();
 
-    private final AutoModeChooser       autoModeChooser;
+    private final AutoModeChooser       autoModeChooser      = new AutoModeChooser(swerveSubsystem);
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController   = new CommandXboxController(
@@ -52,8 +53,6 @@ public class RobotContainer {
 
     // The container for the robot. Contains subsystems, OI devices, and commands.
     public RobotContainer() {
-
-        autoModeChooser = new AutoModeChooser();
 
         // Register Named Commands
         configureNamedCommands();
