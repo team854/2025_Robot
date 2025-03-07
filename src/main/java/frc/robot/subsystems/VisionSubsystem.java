@@ -22,7 +22,7 @@ public class VisionSubsystem extends SubsystemBase {
     Limelight              limelight;
     LimelightPoseEstimator poseEstimator;
     AHRS                   navx;
-    SwerveSubsystem        swerveSubsystem;
+    SwerveSubsystem        drivebase;
 
 
     Pose3d                 cameraOffset = new Pose3d(
@@ -69,7 +69,7 @@ public class VisionSubsystem extends SubsystemBase {
             if (poseEstimate.avgTagDist < VisionConstants.AVG_TAG_DIST_FILTER
                 && poseEstimate.tagCount > VisionConstants.MIN_TAGS_VISIBLE_FILTER
                 && poseEstimate.getMinTagAmbiguity() < 0.3) {
-                swerveSubsystem.swerveDrivePoseEstimator.addVisionMeasurement(
+                drivebase.swerveDrivePoseEstimator.addVisionMeasurement(
                     poseEstimate.pose.toPose2d(),
                     poseEstimate.timestampSeconds);
             }
