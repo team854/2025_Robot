@@ -20,11 +20,11 @@ public final class Constants {
     public static class OperatorConstants {
         public static final int    kDriverControllerPort    = 0;
         public static final int    kOperatorControllerPort  = 1;
-        public static final double DEADBAND                 = 0.05;
-        public static final double OPERATOR_DEADBAND        = 0.05;
+        public static final double DEADBAND                 = 0.03;
+        public static final double OPERATOR_DEADBAND        = 0.03;
         public static final double SWERVE_TRANSLATION_SCALE = 1;
-        public static final double SWERVE_ROTATION_SCALE    = 1.2;                    // Negative values invert right stick
-        public static final double MAX_SPEED                = Units.feetToMeters(100);
+        public static final double SWERVE_ROTATION_SCALE    = 1.2;                     // Negative values invert right stick
+        public static final double MAX_SPEED                = Units.feetToMeters(6.25);
     }
 
     public class Tolerances {
@@ -175,7 +175,7 @@ public final class Constants {
         // Wrist speeds
         public static final double WRIST_UP_SPEED                     = 0.1;
         public static final double WRIST_DOWN_SPEED                   = 0.1;
-        public static final int    INTAKE_SENSOR_PORT                 = 0;
+        public static final int    INTAKE_SENSOR_PORT                 = 1;
 
     }
 

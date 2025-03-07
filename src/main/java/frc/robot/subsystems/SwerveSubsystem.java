@@ -39,7 +39,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
     File                     directory       = new File(Filesystem.getDeployDirectory(), "swerve");
-    // VisionSubsystem visionSubsystem;
+    VisionSubsystem          visionSubsystem;
 
     SwerveDrive              swerveDrive;
     SwerveDrivePoseEstimator swerveDrivePoseEstimator;
@@ -100,7 +100,7 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         swerveDrive.updateOdometry();
-        // visionSubsystem.updatePoseEstimation();
+        visionSubsystem.updatePoseEstimation();
 
     }
 
