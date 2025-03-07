@@ -16,11 +16,11 @@ public class ClimbCommand extends Command {
 
     @Override
     public void initialize() {
-        climbSubsystem.setClimbSpeed(setSpeed);
     }
 
     @Override
     public void execute() {
         climbSubsystem.setClimbSpeed(setSpeed);
+        System.out.println("Climbing");
     }
 }
