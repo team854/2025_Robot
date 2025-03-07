@@ -26,7 +26,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.util.Elastic;
 import swervelib.SwerveDrive;
@@ -69,6 +71,8 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveDrive.setAngularVelocityCompensation(true, true, 0.1);
         setupPathPlanner();
 
+        RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyro));
+
     }
 
     /**
@@ -100,6 +104,10 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveDrive.updateOdometry();
         // visionSubsystem.updatePoseEstimation();
 
+    }
+
+    public void zeroGyro() {
+        swerveDrive.zeroGyro();
     }
 
     @Override
