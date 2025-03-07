@@ -4,28 +4,17 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ClimbConstants;
-import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.autos.AutoModeChooser;
-import frc.robot.commands.Arm.IntakeCommand;
-import frc.robot.commands.Arm.SetArmAngleCommand;
-import frc.robot.commands.Arm.SetWristPositionCommand;
-import frc.robot.commands.Climb.ClimbCommand;
-import frc.robot.commands.Elevator.SetElevatorHeightCommand;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ClimbSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
+// import frc.robot.subsystems.ClimbSubsystem;
+// import frc.robot.subsystems.ArmSubsystem;
+// import frc.robot.subsystems.ClimbSubsystem;
+// import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+// import frc.robot.subsystems.VisionSubsystem;
 import swervelib.SwerveInputStream;
 
 /**
@@ -37,10 +26,10 @@ import swervelib.SwerveInputStream;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final SwerveSubsystem       drivebase            = new SwerveSubsystem();
-    private final VisionSubsystem       visionSubsystem      = new VisionSubsystem();
-    private final ElevatorSubsystem     elevatorSubsystem    = new ElevatorSubsystem();
-    private final ArmSubsystem          armSubsystem         = new ArmSubsystem();
-    private final ClimbSubsystem        climbSubsystem       = new ClimbSubsystem();
+    // private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+    // private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+    // private final ArmSubsystem armSubsystem = new ArmSubsystem();
+    // private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
 
     private final AutoModeChooser       autoModeChooser      = new AutoModeChooser(drivebase);
 
@@ -54,7 +43,7 @@ public class RobotContainer {
     public RobotContainer() {
 
         // Register Named Commands
-        configureNamedCommands();
+        // configureNamedCommands();
 
         // Configure the trigger bindings
         configureBindings();
@@ -64,52 +53,52 @@ public class RobotContainer {
 
     }
 
-    public void configureNamedCommands() {
+    // public void configureNamedCommands() {
 
-        NamedCommands.registerCommand("GroundIntake",
-            new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED));
+    // NamedCommands.registerCommand("GroundIntake",
+    // new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED));
 
-        NamedCommands.registerCommand("SourceIntake", new ParallelCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_SOURCE_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_SOURCE_SETPOINT),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
-            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_SOURCE_ANGLE),
-            new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_SOURCE_SPEED)));
+    // NamedCommands.registerCommand("SourceIntake", new ParallelCommandGroup(
+    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_SOURCE_SETPOINT,
+    // ElevatorConstants.UPPER_ELEVATOR_SOURCE_SETPOINT),
+    // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
+    // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_SOURCE_ANGLE),
+    // new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_SOURCE_SPEED)));
 
-        NamedCommands.registerCommand("ScoreCoral", new ParallelCommandGroup(
-            new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED),
-            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_DEFAULT_ANGLE),
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_DEFAULT_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_DEFAULT_SETPOINT)));
+    // NamedCommands.registerCommand("ScoreCoral", new ParallelCommandGroup(
+    // new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED),
+    // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_DEFAULT_ANGLE),
+    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_DEFAULT_SETPOINT,
+    // ElevatorConstants.UPPER_ELEVATOR_DEFAULT_SETPOINT)));
 
-        NamedCommands.registerCommand("ProcessorScore", new ParallelCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_GROUND_SETPOINT),
-            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
-            new IntakeCommand(armSubsystem, true, ArmConstants.PROCESSOR_SCORE_SPEED)));
+    // NamedCommands.registerCommand("ProcessorScore", new ParallelCommandGroup(
+    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT,
+    // ElevatorConstants.UPPER_ELEVATOR_GROUND_SETPOINT),
+    // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
+    // new IntakeCommand(armSubsystem, true, ArmConstants.PROCESSOR_SCORE_SPEED)));
 
-        NamedCommands.registerCommand("Setpoint: Trough", new SequentialCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L1_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_L1_SETPOINT),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES)));
+    // NamedCommands.registerCommand("Setpoint: Trough", new SequentialCommandGroup(
+    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L1_SETPOINT,
+    // ElevatorConstants.UPPER_ELEVATOR_L1_SETPOINT),
+    // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES)));
 
-        NamedCommands.registerCommand("Setpoint: L2", new SequentialCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L2_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_L2_SETPOINT),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+    // NamedCommands.registerCommand("Setpoint: L2", new SequentialCommandGroup(
+    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L2_SETPOINT,
+    // ElevatorConstants.UPPER_ELEVATOR_L2_SETPOINT),
+    // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
 
-        NamedCommands.registerCommand("Setpoint: L3", new SequentialCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L3_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_L3_SETPOINT),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+    // NamedCommands.registerCommand("Setpoint: L3", new SequentialCommandGroup(
+    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L3_SETPOINT,
+    // ElevatorConstants.UPPER_ELEVATOR_L3_SETPOINT),
+    // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
 
-        NamedCommands.registerCommand("Setpoint: L4", new SequentialCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L4_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_L4_SETPOINT),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+    // NamedCommands.registerCommand("Setpoint: L4", new SequentialCommandGroup(
+    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L4_SETPOINT,
+    // ElevatorConstants.UPPER_ELEVATOR_L4_SETPOINT),
+    // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
 
-        NamedCommands.registerCommand("Climb", new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_UP_SPEED).withTimeout(3));
-    }
+    // NamedCommands.registerCommand("Climb", new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_UP_SPEED).withTimeout(3));
+    // }
 
     // -------------------------Swerve Drive Code-------------------------\\
 
@@ -152,65 +141,65 @@ public class RobotContainer {
          */
 
         // Score coral
-        m_driverController.rightTrigger().onTrue(new ParallelCommandGroup(
-            new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED),
-            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_DEFAULT_ANGLE),
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_DEFAULT_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_DEFAULT_SETPOINT)));
+        // m_driverController.rightTrigger().onTrue(new ParallelCommandGroup(
+        // new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED),
+        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_DEFAULT_ANGLE),
+        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_DEFAULT_SETPOINT,
+        // ElevatorConstants.UPPER_ELEVATOR_DEFAULT_SETPOINT)));
 
-        // Score In Processor
-        m_driverController.leftTrigger().onTrue(new ParallelCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_GROUND_SETPOINT),
-            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
-            new IntakeCommand(armSubsystem, true, 1.0)));
-        /*
-         * Operator Controller Commands
-         */
+        // // Score In Processor
+        // m_driverController.leftTrigger().onTrue(new ParallelCommandGroup(
+        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT,
+        // ElevatorConstants.UPPER_ELEVATOR_GROUND_SETPOINT),
+        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
+        // new IntakeCommand(armSubsystem, true, 1.0)));
+        // /*
+        // * Operator Controller Commands
+        // */
 
-        // Trough Setpoint
-        s_operatorController.a().onTrue(new SequentialCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L1_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_L1_SETPOINT),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES)));
+        // // Trough Setpoint
+        // s_operatorController.a().onTrue(new SequentialCommandGroup(
+        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L1_SETPOINT,
+        // ElevatorConstants.UPPER_ELEVATOR_L1_SETPOINT),
+        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES)));
 
-        // L2 Setpoint
-        s_operatorController.x().onTrue(new SequentialCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L2_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_L2_SETPOINT),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+        // // L2 Setpoint
+        // s_operatorController.x().onTrue(new SequentialCommandGroup(
+        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L2_SETPOINT,
+        // ElevatorConstants.UPPER_ELEVATOR_L2_SETPOINT),
+        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
 
-        // L3 Setpoint
-        s_operatorController.y().onTrue(new SequentialCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L3_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_L3_SETPOINT),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+        // // L3 Setpoint
+        // s_operatorController.y().onTrue(new SequentialCommandGroup(
+        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L3_SETPOINT,
+        // ElevatorConstants.UPPER_ELEVATOR_L3_SETPOINT),
+        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
 
-        // L4 Setpoint
-        s_operatorController.b().onTrue(new SequentialCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L4_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_L4_SETPOINT),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+        // // L4 Setpoint
+        // s_operatorController.b().onTrue(new SequentialCommandGroup(
+        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L4_SETPOINT,
+        // ElevatorConstants.UPPER_ELEVATOR_L4_SETPOINT),
+        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
 
-        // Intake From Source
-        s_operatorController.leftBumper().onTrue(new ParallelCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_GROUND_SETPOINT),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
-            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_SOURCE_ANGLE),
-            new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_SOURCE_SPEED)));
+        // // Intake From Source
+        // s_operatorController.leftBumper().onTrue(new ParallelCommandGroup(
+        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT,
+        // ElevatorConstants.UPPER_ELEVATOR_GROUND_SETPOINT),
+        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
+        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_SOURCE_ANGLE),
+        // new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_SOURCE_SPEED)));
 
-        // Intake From Ground
-        s_operatorController.leftTrigger().onTrue(new ParallelCommandGroup(
-            new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT,
-                ElevatorConstants.UPPER_ELEVATOR_GROUND_SETPOINT),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
-            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
-            new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED)));
+        // // Intake From Ground
+        // s_operatorController.leftTrigger().onTrue(new ParallelCommandGroup(
+        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT,
+        // ElevatorConstants.UPPER_ELEVATOR_GROUND_SETPOINT),
+        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
+        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
+        // new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED)));
 
         // Climb up
-        s_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_DOWN_SPEED));
-        s_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_UP_SPEED));
+        // s_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_DOWN_SPEED));
+        // s_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_UP_SPEED));
 
     }
 
