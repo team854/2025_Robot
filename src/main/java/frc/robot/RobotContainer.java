@@ -7,8 +7,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.autos.AutoModeChooser;
+import frc.robot.commands.Climb.ClimbCommand;
+import frc.robot.subsystems.ClimbSubsystem;
+// import frc.robot.subsystems.ClimbSubsystem;
 // import frc.robot.subsystems.ClimbSubsystem;
 // import frc.robot.subsystems.ArmSubsystem;
 // import frc.robot.subsystems.ClimbSubsystem;
@@ -29,7 +33,7 @@ public class RobotContainer {
     // private final VisionSubsystem visionSubsystem = new VisionSubsystem();
     // private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
     // private final ArmSubsystem armSubsystem = new ArmSubsystem();
-    // private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
+    private final ClimbSubsystem        climbSubsystem       = new ClimbSubsystem();
 
     private final AutoModeChooser       autoModeChooser      = new AutoModeChooser(drivebase);
 
@@ -198,8 +202,8 @@ public class RobotContainer {
         // new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED)));
 
         // Climb up
-        // s_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_DOWN_SPEED));
-        // s_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_UP_SPEED));
+        s_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_DOWN_SPEED));
+        s_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_UP_SPEED));
 
     }
 
