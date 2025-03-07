@@ -224,49 +224,54 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "",
+      "name": "Setpoint: L4",
       "waypointRelativePos": 0.2639138240574508,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "",
+      "name": "ScoreCoral",
       "waypointRelativePos": 0.9802513464991027,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "",
+      "name": "GroundIntake",
       "waypointRelativePos": 1.2692998204667876,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "GroundIntake"
+        }
+      }
     },
     {
-      "name": "",
+      "name": "Setpoint: L4",
       "waypointRelativePos": 1.6714542190305215,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "",
+      "name": "ScoreCoral",
       "waypointRelativePos": 2.438061041292638,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "",
+      "name": "GroundIntake",
       "waypointRelativePos": 3.0287253141831236,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "",
+      "name": "Setpoint: L4",
       "waypointRelativePos": 3.405745062836626,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "",
+      "name": "ScoreCoral",
       "waypointRelativePos": 3.719928186714541,
       "endWaypointRelativePos": null,
       "command": null
@@ -278,31 +283,31 @@
       "command": null
     },
     {
-      "name": "",
+      "name": "GroundIntake",
       "waypointRelativePos": 5.0143626570915485,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "",
+      "name": "Setpoint: L4",
       "waypointRelativePos": 5.617594254937163,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "",
+      "name": "GroundIntake",
       "waypointRelativePos": 5.868940754039491,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "",
+      "name": "Setpoint: L4",
       "waypointRelativePos": 6.384201077199258,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "",
+      "name": "ScoreCoral",
       "waypointRelativePos": 6.9622980251346345,
       "endWaypointRelativePos": null,
       "command": null
