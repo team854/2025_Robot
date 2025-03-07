@@ -113,8 +113,9 @@ public final class Constants {
     }
 
     public static class ClimbConstants {
-        public static final int    CLIMB_MOTOR_ID = 0;
-        public static final double CLIMB_SPEED    = 0.1;
+        public static final int    CLIMB_MOTOR_ID   = 0;
+        public static final double CLIMB_UP_SPEED   = -0.1;
+        public static final double CLIMB_DOWN_SPEED = 0.1;
     }
 
     public static class ArmConstants {

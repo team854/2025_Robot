@@ -109,7 +109,7 @@ public class RobotContainer {
                 ElevatorConstants.UPPER_ELEVATOR_L4_SETPOINT),
             new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
 
-        NamedCommands.registerCommand("Climb", new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_SPEED).withTimeout(3));
+        NamedCommands.registerCommand("Climb", new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_UP_SPEED).withTimeout(3));
     }
 
     // -------------------------Swerve Drive Code-------------------------\\
@@ -209,8 +209,9 @@ public class RobotContainer {
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
             new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED)));
 
-        // Climb
-        s_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_SPEED).withTimeout(3));
+        // Climb up
+        s_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_DOWN_SPEED));
+        s_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_UP_SPEED));
 
     }
 
