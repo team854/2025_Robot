@@ -23,8 +23,8 @@ public final class Constants {
         public static final double DEADBAND                 = 0.05;
         public static final double OPERATOR_DEADBAND        = 0.05;
         public static final double SWERVE_TRANSLATION_SCALE = 1;
-        public static final double SWERVE_ROTATION_SCALE    = 1.2;                  // Negative values invert right stick
-        public static final double MAX_SPEED                = Units.feetToMeters(6);
+        public static final double SWERVE_ROTATION_SCALE    = 1.2;                   // Negative values invert right stick
+        public static final double MAX_SPEED                = Units.feetToMeters(15);
     }
 
     public class Tolerances {
@@ -113,7 +113,7 @@ public final class Constants {
     }
 
     public static class ClimbConstants {
-        public static final int    CLIMB_MOTOR_ID   = 0;
+        public static final int    CLIMB_MOTOR_ID   = 7;
         public static final double CLIMB_UP_SPEED   = -0.1;
         public static final double CLIMB_DOWN_SPEED = 0.1;
     }
@@ -121,9 +121,9 @@ public final class Constants {
     public static class ArmConstants {
 
         // Arm Motor IDS
-        public static final int    SHOULDER_MOTOR_ID                  = 0;
-        public static final int    WRIST_MOTOR_ID                     = 1;
-        public static final int    INTAKE_MOTOR_ID                    = 2;
+        public static final int    SHOULDER_MOTOR_ID                  = 4;
+        public static final int    WRIST_MOTOR_ID                     = 5;
+        public static final int    INTAKE_MOTOR_ID                    = 6;
 
         // Arm Scoring Angles
         public static final double ARM_L1_ANGLE                       = 20;
