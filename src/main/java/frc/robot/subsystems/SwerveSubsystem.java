@@ -108,6 +108,10 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveDrive.zeroGyro();
     }
 
+    public void slowSpeed(double slowSpeed, double slowRotation) {
+        swerveDrive.setMaximumAttainableSpeeds(slowSpeed, slowRotation);
+    }
+
     @Override
     public void simulationPeriodic() {
         // This method will be called once per scheduler run during simulation
