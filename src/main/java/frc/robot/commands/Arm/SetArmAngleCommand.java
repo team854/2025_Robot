@@ -14,6 +14,7 @@ public class SetArmAngleCommand extends Command {
 
         // Declare subsystem dependencies
         addRequirements(armSubsystem);
+        System.out.println("Setting arm angle");
     }
 
     @Override
@@ -30,5 +31,10 @@ public class SetArmAngleCommand extends Command {
     public boolean isFinished() {
         return armSubsystem.getShoulderEncoderPosition() >= targetAngle - Tolerances.SHOULDER_LOWER_TOLERANCE &&
             armSubsystem.getShoulderEncoderPosition() < targetAngle + Tolerances.SHOULDER_UPPER_TOLERANCE;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        armSubsystem.stop();
     }
 }

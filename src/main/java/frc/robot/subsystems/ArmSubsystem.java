@@ -104,6 +104,7 @@ public class ArmSubsystem extends SubsystemBase {
     public void setIntakeSpeed(double intakeSpeed, boolean isReversed) {
         if (!hasGamePiece()) {
             intakeMotor.set(VictorSPXControlMode.PercentOutput, isReversed ? -intakeSpeed : intakeSpeed);
+            System.out.println("Intaking subsystem");
         }
         else {
             intakeMotor.set(VictorSPXControlMode.PercentOutput, 0); // Stop intake if a piece is detected

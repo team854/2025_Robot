@@ -141,7 +141,7 @@ public final class Constants {
         public static final double ARM_DEFAULT_ANGLE                  = 0;
 
         // End Effector
-        public static final double INTAKE_GROUND_SPEED                = 1.0;
+        public static final double INTAKE_GROUND_SPEED                = 0.7;
         public static final double INTAKE_SOURCE_SPEED                = 0.9;
         public static final double BRANCH_SCORE_SPEED                 = 0.5;
         public static final double TROUGH_SCORE_SPEED                 = 0.3;
@@ -168,8 +168,8 @@ public final class Constants {
         public static final double WRIST_GEAR_RATIO                   = 100.0;
 
         // Shoulder MAXMotion Config
-        public static final double SHOULDER_MAX_VELOCITY              = 1.0;
-        public static final double SHOULDER_MAX_ACCELERATION          = 1.0;
+        public static final double SHOULDER_MAX_VELOCITY              = 100;
+        public static final double SHOULDER_MAX_ACCELERATION          = 100;
         public static final double SHOULDER_ALLOWED_CLOSED_LOOP_ERROR = 1.0;
 
         // Wrist speeds

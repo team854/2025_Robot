@@ -7,9 +7,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.autos.AutoModeChooser;
+import frc.robot.commands.Arm.IntakeCommand;
+import frc.robot.commands.Arm.SetArmAngleCommand;
 import frc.robot.commands.Climb.ClimbCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -148,6 +151,8 @@ public class RobotContainer {
         // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_DEFAULT_SETPOINT,
         // ElevatorConstants.UPPER_ELEVATOR_DEFAULT_SETPOINT)));
 
+        m_driverController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED));
+
         // // Score In Processor
         // m_driverController.leftTrigger().onTrue(new ParallelCommandGroup(
         // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT,
@@ -163,6 +168,8 @@ public class RobotContainer {
         // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L1_SETPOINT,
         // ElevatorConstants.UPPER_ELEVATOR_L1_SETPOINT),
         // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES)));
+
+        s_operatorController.a().onTrue(new SetArmAngleCommand(armSubsystem, 90));
 
         // // L2 Setpoint
         // s_operatorController.x().onTrue(new SequentialCommandGroup(
@@ -197,6 +204,8 @@ public class RobotContainer {
         // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
         // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
         // new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED)));
+
+        s_operatorController.leftTrigger().whileTrue(new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED));
 
         // Climb up
         s_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_DOWN_SPEED));
