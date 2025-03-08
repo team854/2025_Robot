@@ -23,4 +23,9 @@ public class ClimbCommand extends Command {
         climbSubsystem.setClimbSpeed(setSpeed);
         System.out.println("Climbing");
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        climbSubsystem.setClimbSpeed(0);
+    }
 }

@@ -14,6 +14,6 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public void setClimbSpeed(double setSpeed) {
-        climbMotor.set(VictorSPXControlMode.Velocity, setSpeed);
+        climbMotor.set(VictorSPXControlMode.PercentOutput, setSpeed);
     }
 }
