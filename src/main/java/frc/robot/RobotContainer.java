@@ -13,6 +13,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.autos.AutoModeChooser;
 import frc.robot.commands.Arm.IntakeCommand;
 import frc.robot.commands.Arm.SetArmAngleCommand;
+import frc.robot.commands.Arm.SetWristPositionCommand;
 import frc.robot.commands.Climb.ClimbCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -169,7 +170,9 @@ public class RobotContainer {
         // ElevatorConstants.UPPER_ELEVATOR_L1_SETPOINT),
         // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES)));
 
-        s_operatorController.a().onTrue(new SetArmAngleCommand(armSubsystem, 90));
+        s_operatorController.a().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_SOURCE_ANGLE));
+
+        s_operatorController.b().onTrue(new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES));
 
         // // L2 Setpoint
         // s_operatorController.x().onTrue(new SequentialCommandGroup(

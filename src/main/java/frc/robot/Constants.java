@@ -136,8 +136,8 @@ public final class Constants {
         public static final double WRIST_HORIZONTAL_DEGREES           = 0.0;
 
         // Arm Intake Angles
-        public static final double ARM_SOURCE_ANGLE                   = 45;
-        public static final double ARM_GROUND_ANGLE                   = -45;
+        public static final double ARM_SOURCE_ANGLE                   = 90;
+        public static final double ARM_GROUND_ANGLE                   = 45;
         public static final double ARM_DEFAULT_ANGLE                  = 0;
 
         // End Effector
@@ -148,9 +148,9 @@ public final class Constants {
         public static final double PROCESSOR_SCORE_SPEED              = 1.0;
 
         // Shoulder PID Values
-        public static final double kShoulderP                         = 0.0;
+        public static final double kShoulderP                         = 0.5;
         public static final double kShoulderI                         = 0.0;
-        public static final double kShoulderD                         = 0.0;
+        public static final double kShoulderD                         = 0.2;
 
         // Shoulder Closed Loop Config
         public static final double SHOULDER_MAX_OUTPUT                = 1.0;
@@ -158,9 +158,9 @@ public final class Constants {
         public static final double SHOULDER_GEAR_RATIO                = 6;
 
         // Wrist PID Values
-        public static final double kWristP                            = 0.0;
+        public static final double kWristP                            = 0.5;
         public static final double kWristI                            = 0.0;
-        public static final double kWristD                            = 0.0;
+        public static final double kWristD                            = 0.2;
 
         // Wrist Closed Loop Config
         public static final double WRIST_MAX_OUTPUT                   = 1.0;

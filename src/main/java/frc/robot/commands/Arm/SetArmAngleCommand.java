@@ -14,17 +14,17 @@ public class SetArmAngleCommand extends Command {
 
         // Declare subsystem dependencies
         addRequirements(armSubsystem);
-        System.out.println("Setting arm angle");
     }
 
     @Override
     public void initialize() {
-        armSubsystem.moveShoulderToSetpoint(targetAngle);
     }
 
     @Override
     public void execute() {
         armSubsystem.moveShoulderToSetpoint(targetAngle);
+        System.out.println("Setting arm angle");
+
     }
 
     @Override
