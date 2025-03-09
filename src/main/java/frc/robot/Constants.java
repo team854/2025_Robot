@@ -106,6 +106,16 @@ public final class Constants {
         public static final double UPPER_ELEVATOR_NET_SETPOINT         = 5.0;
         public static final double UPPER_ELEVATOR_PROCESSOR_SETPOINT   = 1.5;
         public static final double UPPER_ELEVATOR_SOURCE_SETPOINT      = 0;
+
+        public static final double LOWER_ELEVATOR_DEFAULT_SETPOINT     = 0.0;
+        public static final double LOWER_ELEVATOR_GROUND_SETPOINT      = 0.0;
+        public static final double LOWER_ELEVATOR_L1_SETPOINT          = 1.0;
+        public static final double LOWER_ELEVATOR_L2_SETPOINT          = 2.0;
+        public static final double LOWER_ELEVATOR_L3_SETPOINT          = 3.0;
+        public static final double LOWER_ELEVATOR_L4_SETPOINT          = 4.0;
+        public static final double LOWER_ELEVATOR_NET_SETPOINT         = 5.0;
+        public static final double LOWER_ELEVATOR_PROCESSOR_SETPOINT   = 1.5;
+        public static final double LOWER_ELEVATOR_SOURCE_SETPOINT      = 0;
     }
 
     public static class ClimbConstants {
@@ -169,8 +179,8 @@ public final class Constants {
         public static final double kShoulderI                         = 0.0;
         public static final double kShoulderD                         = 0.2;
         public static final double SHOULDER_GEAR_RATIO                = 6;
-        public static final double SHOULDER_MAX_VELOCITY              = 100;
-        public static final double SHOULDER_MAX_ACCELERATION          = 100;
+        public static final double SHOULDER_MAX_VELOCITY              = 10;
+        public static final double SHOULDER_MAX_ACCELERATION          = 10;
         public static final double SHOULDER_ALLOWED_CLOSED_LOOP_ERROR = 1.0;
 
         /*
@@ -180,8 +190,8 @@ public final class Constants {
         public static final double kWristI                            = 0.0;
         public static final double kWristD                            = 0.2;
         public static final double WRIST_GEAR_RATIO                   = 100.0;
-        public static final double WRIST_MAX_VELOCITY                 = 0;
-        public static final double WRIST_MAX_ACCELERATION             = 0;
+        public static final double WRIST_MAX_VELOCITY                 = 10;
+        public static final double WRIST_MAX_ACCELERATION             = 10;
 
     }
 

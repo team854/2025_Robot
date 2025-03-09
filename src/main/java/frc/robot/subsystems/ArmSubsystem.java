@@ -112,8 +112,14 @@ public class ArmSubsystem extends SubsystemBase {
         return !intakeSensor.get();
     }
 
+    /*
+     * Set intake to desired speed
+     * if isReversed, wheels will intake coral
+     * if !isReversed, wheels will release coral
+     * The intake will stop once a game piece has been aquired
+     */
     public void setIntakeSpeed(double intakeSpeed, boolean isReversed) {
-        if (!hasGamePiece()) {
+        if (!hasGamePiece() && isReversed) {
             intakeMotor.set(VictorSPXControlMode.PercentOutput, isReversed ? -intakeSpeed : intakeSpeed);
             System.out.println("Intaking...");
         }
@@ -122,19 +128,33 @@ public class ArmSubsystem extends SubsystemBase {
         }
     }
 
+    /*
+     * Stop the wrist motor
+     */
     public void stopWrist() {
         wristMotor.stopMotor();
     }
 
+    /*
+     * Stop all motors
+     */
     public void stop() {
         shoulderMotor.stopMotor();
         stopWrist();
     }
 
+    /*
+     * Returns shoulder encoder position
+     * If multiple rotations have occured, values will be added to total
+     */
     public double getShoulderEncoderPosition() {
         return shoulderEncoder.getPosition();
     }
 
+    /*
+     * Returns wrist encoder position
+     * If multiple rotations have occured, values will be added to total
+     */
     public double getWristEncoderPosition() {
         return wristEncoder.getPosition();
     }
