@@ -71,7 +71,7 @@ public final class Constants {
         public static final double   LOWER_STAGE_MAX_HEIGHT                = 3.0;
 
         // Elevator ratios
-        public static final double   ELEVATOR_LOWER_GEAR_RATIO             = 10.0;
+        public static final double   ELEVATOR_LOWER_GEAR_RATIO             = 20.0;
         public static final double   ELEVATOR_UPPER_GEAR_RATIO             = 10.0;
         public static final double   ELEVATOR_LOWER_DRUM_DIAMETER_INCHES   = 2.25;
         public static final double   ROTATIONS_TO_FEET_LOWER               = (Math.PI * ELEVATOR_LOWER_DRUM_DIAMETER_INCHES
@@ -112,6 +112,8 @@ public final class Constants {
                 LOWER_ELEVATOR_L4_SETPOINT,
                 LOWER_ELEVATOR_NET_SETPOINT,
                 LOWER_ELEVATOR_PROCESSOR_SETPOINT };
+        public static final double   LOWER_STAGE_MAX_VELOCITY              = 0;
+        public static final double   LOWER_STAGE_MAX_ACCELERATION          = 0;
     }
 
     public static class ClimbConstants {

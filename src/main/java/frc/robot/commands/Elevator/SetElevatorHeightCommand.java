@@ -6,16 +6,14 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public class SetElevatorHeightCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
-    private final double            targetHeightFeet;          // Given in feet
+    private final double            upperStageTargetHeightFeet; // Given in feet
     private final double            lowerStageTargetHeightFeet;
 
-    private double                  targetRotations;           // Converted to encoder units
-    private double                  lowerStageTargetRotations;
 
-    public SetElevatorHeightCommand(ElevatorSubsystem elevatorSubsystem, double targetHeightFeet,
+    public SetElevatorHeightCommand(ElevatorSubsystem elevatorSubsystem, double upperStageTargetHeightFeet,
         double lowerStageTargetHeightFeet) {
         this.elevatorSubsystem          = elevatorSubsystem;
-        this.targetHeightFeet           = targetHeightFeet;
+        this.upperStageTargetHeightFeet = upperStageTargetHeightFeet;
         this.lowerStageTargetHeightFeet = lowerStageTargetHeightFeet;
 
         // Declare subsystem dependencies
@@ -24,21 +22,14 @@ public class SetElevatorHeightCommand extends Command {
 
     @Override
     public void initialize() {
-        // Convert feet to encoder rotations
-        targetRotations           = elevatorSubsystem.upperfeetToRotations(targetHeightFeet);
-        lowerStageTargetRotations = elevatorSubsystem.lowerfeetToRotations(lowerStageTargetHeightFeet);
-
-        // Move the upper stage directly to the target height
-        elevatorSubsystem.setUpperStage(targetRotations);
-        elevatorSubsystem.setLowerStage(lowerStageTargetRotations);
 
     }
 
     @Override
     public void execute() {
         // Continuously ensure the elevator moves towards the setpoint
-        elevatorSubsystem.setUpperStage(targetRotations);
-        elevatorSubsystem.setLowerStage(lowerStageTargetRotations);
+        elevatorSubsystem.setUpperStage(upperStageTargetHeightFeet);
+        elevatorSubsystem.setLowerStage(lowerStageTargetHeightFeet);
     }
 
     @Override
@@ -51,9 +42,15 @@ public class SetElevatorHeightCommand extends Command {
     @Override
     public boolean isFinished() {
         // Get the current encoder position
-        double currentPosition = elevatorSubsystem.getUpperStageEncoderPosition();
+        double currentUpperStageHeight = elevatorSubsystem.getUpperStageHeight();
+        double currentLowerStageHeight = elevatorSubsystem.getLowerStageHeight();
 
-        // Check if the elevator is within the acceptable range
-        return Math.abs(currentPosition - targetRotations) <= Tolerances.ELEVATOR_UPPER_TOLERANCE;
+        if (Math.abs(currentUpperStageHeight - upperStageTargetHeightFeet) <= Tolerances.ELEVATOR_UPPER_TOLERANCE
+            && (Math.abs(currentLowerStageHeight - lowerStageTargetHeightFeet) <= Tolerances.ELEVATOR_UPPER_TOLERANCE)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

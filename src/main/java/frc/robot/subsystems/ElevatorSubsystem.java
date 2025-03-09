@@ -1,125 +1,179 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    private final SparkMax                  lowerStageMotor;
-    private final SparkMax                  upperStageMotor;
+    private final SparkMax              lowerStageMotor;
+    private final SparkMax              upperStageMotor;
 
-    private final RelativeEncoder           lowerStageEncoder;
-    private final RelativeEncoder           upperStageEncoder;
+    private final RelativeEncoder       lowerStageEncoder;
+    private final RelativeEncoder       upperStageEncoder;
 
-    private final SparkClosedLoopController lowerStageClosedLoop;
-    private final SparkClosedLoopController upperStageClosedLoop;
-
-    private double                          upperStageSetpoint;
-    private double                          lowerStageSetpoint;
+    private final ProfiledPIDController lowerStageController;
+    private final ProfiledPIDController upperStageController;
 
     public ElevatorSubsystem() {
         // Initialize motors
-        lowerStageMotor      = new SparkMax(ElevatorConstants.LOWER_STAGE_MOTOR_CANID, MotorType.kBrushless);
-        upperStageMotor      = new SparkMax(ElevatorConstants.UPPER_STAGE_MOTOR_CANID, MotorType.kBrushless);
+        lowerStageMotor   = new SparkMax(ElevatorConstants.LOWER_STAGE_MOTOR_CANID, MotorType.kBrushless);
+        upperStageMotor   = new SparkMax(ElevatorConstants.UPPER_STAGE_MOTOR_CANID, MotorType.kBrushless);
 
-        // Retrieve controllers and encoders
-        lowerStageClosedLoop = lowerStageMotor.getClosedLoopController();
-        lowerStageEncoder    = lowerStageMotor.getEncoder();
-        upperStageClosedLoop = upperStageMotor.getClosedLoopController();
-        upperStageEncoder    = upperStageMotor.getEncoder();
+        // Retrieve encoders
+        lowerStageEncoder = lowerStageMotor.getEncoder();
+        upperStageEncoder = upperStageMotor.getEncoder();
 
-        // Configure lower stage motor (position-based control)
-        SparkMaxConfig lowerStageConfig = new SparkMaxConfig();
-        lowerStageConfig.closedLoop
-            .p(ElevatorConstants.kLowerStageP)
-            .i(ElevatorConstants.kLowerStageI)
-            .d(ElevatorConstants.kLowerStageD)
-            .outputRange(ElevatorConstants.LOWER_STAGE_MIN_OUTPUT, ElevatorConstants.LOWER_STAGE_MAX_OUTPUT);
+        // Define trapezoidal motion profile constraints
+        TrapezoidProfile.Constraints lowerStageConstraints = new TrapezoidProfile.Constraints(
+            ElevatorConstants.LOWER_STAGE_MAX_VELOCITY,
+            ElevatorConstants.LOWER_STAGE_MAX_ACCELERATION);
 
+        TrapezoidProfile.Constraints upperStageConstraints = new TrapezoidProfile.Constraints(
+            ElevatorConstants.UPPER_STAGE_MAX_VELOCITY,
+            ElevatorConstants.UPPER_STAGE_MAX_ACCELERATION);
+
+        /*
+         * Create SparkMAX configs and burn them to the motors
+         * Both motors should be set to brake to minimize how fast the elevator slides when disabled
+         */
+        SparkMaxConfig               lowerStageConfig      = new SparkMaxConfig();
         lowerStageConfig.idleMode(IdleMode.kBrake);
-
-        // Burn the config to the SparkMax
         lowerStageMotor.configure(lowerStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        // Configure upper stage motor (motion control)
         SparkMaxConfig upperStageConfig = new SparkMaxConfig();
-        upperStageConfig.closedLoop
-            .p(ElevatorConstants.kUpperStageP)
-            .i(ElevatorConstants.kUpperStageI)
-            .d(ElevatorConstants.kUpperStageD)
-            .outputRange(ElevatorConstants.UPPER_STAGE_MIN_OUTPUT, ElevatorConstants.UPPER_STAGE_MAX_OUTPUT);
-        upperStageConfig.closedLoop.maxMotion
-            .maxVelocity(ElevatorConstants.UPPER_STAGE_MAX_VELOCITY)
-            .maxAcceleration(ElevatorConstants.UPPER_STAGE_MAX_ACCELERATION)
-            .allowedClosedLoopError(ElevatorConstants.UPPER_STAGE_ALLOWED_CLOSED_LOOP_ERROR);
-
         upperStageConfig.idleMode(IdleMode.kBrake);
-
-        // Burn the config to the SparkMax
         upperStageMotor.configure(upperStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        upperStageSetpoint = upperStageEncoder.getPosition();
-        lowerStageSetpoint = lowerStageEncoder.getPosition();
+
+        // Initialize profiled PID controllers
+        lowerStageController = new ProfiledPIDController(
+            ElevatorConstants.kLowerStageP,
+            ElevatorConstants.kLowerStageI,
+            ElevatorConstants.kLowerStageD,
+            lowerStageConstraints);
+
+        upperStageController = new ProfiledPIDController(
+            ElevatorConstants.kUpperStageP,
+            ElevatorConstants.kUpperStageI,
+            ElevatorConstants.kUpperStageD,
+            upperStageConstraints);
 
     }
 
-    public void setLowerStage(double heightRotations) {
-        lowerStageClosedLoop.setReference(heightRotations, ControlType.kMAXMotionPositionControl);
+    /*
+     * Takes in a target height in feet, converts to rotations
+     * Sets the elevator height using a trapezoid profile
+     * Setting Lower Stage
+     */
+    public void setLowerStage(double heightFeet) {
+        lowerStageController.setGoal(lowerFeetToRotations(heightFeet));
+        System.out.println("Setting lower stage to: " + heightFeet);
+
     }
 
+    // Stops lower stage
     public void stopLowerStage() {
         lowerStageMotor.stopMotor();
+        System.out.println("Stopping lower stage");
     }
 
-    public void setUpperStage(double heightRotations) {
-        upperStageSetpoint = heightRotations;
-        upperStageClosedLoop.setReference(heightRotations, ControlType.kMAXMotionPositionControl);
+    /*
+     * Takes in a target height in feet, converts to rotations
+     * Sets the elevator height using a trapezoid profile
+     * Setting Upper Stage
+     */
+    public void setUpperStage(double heightFeet) {
+        upperStageController.setGoal(upperFeetToRotations(heightFeet));
+        System.out.println("Setting upper stage to: " + heightFeet);
     }
 
-    public double upperfeetToRotations(double heightFeet) {
-        return heightFeet * ElevatorConstants.ROTATIONS_TO_FEET_UPPER;
-    }
-
-    public double lowerfeetToRotations(double heightFeet) {
-        return heightFeet * ElevatorConstants.ROTATIONS_TO_FEET_LOWER;
-    }
-
-    public void setUpperStagePosition(int setpointIndex) {
-        if (setpointIndex < 0 || setpointIndex >= ElevatorConstants.ELEVATOR_UPPER_STAGE_SETPOINTS.length) {
-            SmartDashboard.putString("Elevator Error", "Invalid setpoint index: " + setpointIndex);
-            return;
-        }
-        upperStageSetpoint = ElevatorConstants.ELEVATOR_UPPER_STAGE_SETPOINTS[setpointIndex];
-        upperStageClosedLoop.setReference(upperStageSetpoint, ControlType.kMAXMotionPositionControl);
-    }
-
+    // Stops upper stage
     public void stopUpperStage() {
         upperStageMotor.stopMotor();
+        System.out.println("Stopping upper stage");
     }
 
+    /*
+     * Conversion factor which converts a height in feet into expected encoder rotations
+     */
+    public double upperFeetToRotations(double heightFeet) {
+        return heightFeet / ElevatorConstants.ROTATIONS_TO_FEET_UPPER;
+    }
+
+    public double lowerFeetToRotations(double heightFeet) {
+        return heightFeet / ElevatorConstants.ROTATIONS_TO_FEET_LOWER;
+    }
+
+    /*
+     * Zeros the upper stage encoder position
+     */
     public void resetUpperStageEncoder() {
         upperStageEncoder.setPosition(0.0);
     }
 
+    /*
+     * Zeros the lower stage encoder position
+     */
+    public void resetLowerStageEncoder() {
+        lowerStageEncoder.setPosition(0.0);
+    }
+
+    /*
+     * Returns the value of the upper stage encoder in degrees
+     */
     public double getUpperStageEncoderPosition() {
         return upperStageEncoder.getPosition();
     }
 
+    /*
+     * Returns the height of the upper stage in feet
+     */
+    public double getUpperStageHeight() {
+        return getUpperStageEncoderPosition() * ElevatorConstants.ROTATIONS_TO_FEET_UPPER;
+    }
+
+    /*
+     * Returns the value of the lower stage encoder in degrees
+     */
+    public double getLowerStageEncoderPosition() {
+        return lowerStageEncoder.getPosition();
+    }
+
+    /*
+     * Returns the height of the lower stage in feet
+     */
+    public double getLowerStageHeight() {
+        return getLowerStageEncoderPosition() * ElevatorConstants.ROTATIONS_TO_FEET_LOWER;
+    }
+
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Elevator/Lower Stage Position", lowerStageEncoder.getPosition());
-        SmartDashboard.putNumber("Elevator/Upper Stage Position", upperStageEncoder.getPosition());
-        SmartDashboard.putNumber("Elevator/Upper Stage Setpoint", upperStageSetpoint);
+        // Lower stage control
+        double lowerStageMeasurement = lowerStageEncoder.getPosition();
+        double lowerStageOutput      = lowerStageController.calculate(lowerStageMeasurement);
+        lowerStageMotor.setVoltage(lowerStageOutput);
+
+        // Upper stage control
+        double upperStageMeasurement = upperStageEncoder.getPosition();
+        double upperStageOutput      = upperStageController.calculate(upperStageMeasurement);
+        upperStageMotor.setVoltage(upperStageOutput);
+
+        // Update SmartDashboard
+        SmartDashboard.putNumber("Elevator/Lower Stage Position", lowerStageMeasurement);
+        SmartDashboard.putNumber("Elevator/Upper Stage Position", upperStageMeasurement);
+        SmartDashboard.putNumber("Elevator/Lower Stage Setpoint", lowerStageController.getSetpoint().position);
+        SmartDashboard.putNumber("Elevator/Upper Stage Setpoint", upperStageController.getSetpoint().position);
+
     }
 }
