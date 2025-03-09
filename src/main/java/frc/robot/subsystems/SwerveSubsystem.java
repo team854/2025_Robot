@@ -100,8 +100,6 @@ public class SwerveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         swerveDrive.updateOdometry();
-        // visionSubsystem.updatePoseEstimation();
-
     }
 
     public void zeroGyro() {
@@ -110,6 +108,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void slowSpeed(double slowSpeed, double slowRotation) {
         swerveDrive.setMaximumAttainableSpeeds(slowSpeed, slowRotation);
+    }
+
+    public SwerveDrivePoseEstimator getPoseEstimator() {
+        return swerveDrivePoseEstimator;
     }
 
     @Override

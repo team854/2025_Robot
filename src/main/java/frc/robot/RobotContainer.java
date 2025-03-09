@@ -15,7 +15,6 @@ import frc.robot.commands.Arm.IntakeCommand;
 import frc.robot.commands.Arm.SetArmAngleCommand;
 import frc.robot.commands.Arm.SetWristPositionCommand;
 import frc.robot.commands.Climb.ClimbCommand;
-import frc.robot.commands.Swerve.PrecisionSwerveCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -156,10 +155,10 @@ public class RobotContainer {
         m_driverController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED));
 
         // Slow down swerve
-        m_driverController.leftBumper().whileTrue(new PrecisionSwerveCommand(
-            drivebase,
-            OperatorConstants.FINE_SPEED_REDUCTION,
-            OperatorConstants.FINE_ROTATION_REDUCTION));
+        // m_driverController.leftBumper().whileTrue(new PrecisionSwerveCommand(
+        // drivebase,
+        // OperatorConstants.FINE_SPEED_REDUCTION,
+        // OperatorConstants.FINE_ROTATION_REDUCTION));
 
         // // Score In Processor
         // m_driverController.leftTrigger().onTrue(new ParallelCommandGroup(

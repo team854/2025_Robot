@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -184,21 +183,20 @@ public final class Constants {
 
     public static class VisionConstants {
 
-        public static final String     LIMELIGHT_NAME1           = "Limelight 4";
-        public static final String     LIMELIGHT_NAME2           = "Limelight 3G";
-        public static final String     LIMELIGHT_NAME3           = "Limelight 3";
+        public static final String LIMELIGHT_NAME1          = "Limelight 4";
+        public static final String LIMELIGHT_NAME2          = "Limelight 3G";
+        public static final String LIMELIGHT_NAME3          = "Limelight 3";
 
         // In Meters
-        public static final double     LIMELIGHT_OFFSET_X        = 0.0;
-        public static final double     LIMELIGHT_OFFSET_Y        = 0.0;
-        public static final double     LIMELIGHT_OFFSET_Z        = 0.0;
+        public static final double LIMELIGHT_OFFSET_FORWARD = 0.0;
+        public static final double LIMELIGHT_OFFSET_LEFT    = 0.0;
+        public static final double LIMELIGHT_OFFSET_HEIGHT  = 0.0;
 
         // Degrees
-        public static final double     LIMELIGHT_ROTATION_X      = 0.0;
-        public static final double     LIMELIGHT_ROTATION_Y      = 0.0;
-        public static final double     LIMELIGHT_ROTATION_Z      = 0.0;
-        public static final Rotation3d LIMELIGHT_OFFSET_ROTATION = new Rotation3d(LIMELIGHT_ROTATION_X, LIMELIGHT_OFFSET_Y,
-            LIMELIGHT_ROTATION_Z);
+        public static final double LIMELIGHT_ROLL           = 0.0;
+        public static final double LIMELIGHT_PITCH          = 0.0;
+        public static final double LIMELIGHT_YAW            = 0.0;
+
 
         /* Conditions to check if vision measurement should be added */
 
