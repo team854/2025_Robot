@@ -60,8 +60,8 @@ public final class Constants {
         public static final double kLowerStageP                          = 0.1;
         public static final double kLowerStageI                          = 0.0;
         public static final double kLowerStageD                          = 0.01;
-        public static final double LOWER_STAGE_MIN_OUTPUT                = -1.0;
-        public static final double LOWER_STAGE_MAX_OUTPUT                = 1.0;
+        public static final double LOWER_STAGE_MAX_VELOCITY              = 0;
+        public static final double LOWER_STAGE_MAX_ACCELERATION          = 0;
 
         /*
          * Max and Min Height (feet) for lower stage
@@ -100,13 +100,18 @@ public final class Constants {
         public static final double UPPER_ELEVATOR_NET_SETPOINT         = 5.0;
         public static final double UPPER_ELEVATOR_PROCESSOR_SETPOINT   = 1.5;
         public static final double UPPER_ELEVATOR_SOURCE_SETPOINT      = 0;
-
-        public static final double LOWER_STAGE_MAX_VELOCITY            = 0;
-        public static final double LOWER_STAGE_MAX_ACCELERATION        = 0;
     }
 
     public static class ClimbConstants {
+
+        /*
+         * VictorSPX CAN ID
+         */
         public static final int    CLIMB_MOTOR_ID   = 7;
+
+        /*
+         * Climb speeds (should be full speed)
+         */
         public static final double CLIMB_UP_SPEED   = -1;
         public static final double CLIMB_DOWN_SPEED = 1;
     }
