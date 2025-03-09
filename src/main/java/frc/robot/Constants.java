@@ -30,90 +30,79 @@ public final class Constants {
     }
 
     public class Tolerances {
-        // Commands
         public static final double SHOULDER_LOWER_TOLERANCE = 1.0;
         public static final double SHOULDER_UPPER_TOLERANCE = 1.0;
         public static final double ELEVATOR_LOWER_TOLERANCE = 1.0;
         public static final double ELEVATOR_UPPER_TOLERANCE = 1.0;
-
-        // Subsystems
-        public static final double ELEVATOR_PID_TOLERANCE   = 0.05;
     }
 
     public static class ElevatorConstants {
 
-        public static final int      LOWER_STAGE_MOTOR_CANID               = 2;
-        public static final int      UPPER_STAGE_MOTOR_CANID               = 3;
+        /*
+         * Elevator CAN IDs
+         */
+        public static final int    LOWER_STAGE_MOTOR_CANID               = 2;
+        public static final int    UPPER_STAGE_MOTOR_CANID               = 3;
 
-        // Bottom stage speeds set without a PID Controller
-        public static final double   ELEVATOR_BOTTOM_STAGE_RISE_SPEED      = 0.8;
-        public static final double   ELEVATOR_BOTTOM_STAGE_FALL_SPEED      = -0.4;
+        /*
+         * Elevator top stage PID
+         */
+        public static final double kUpperStageP                          = 0.1;
+        public static final double kUpperStageI                          = 0.0;
+        public static final double kUpperStageD                          = 0.01;
+        public static final double UPPER_STAGE_MAX_VELOCITY              = 60.0;
+        public static final double UPPER_STAGE_MAX_ACCELERATION          = 120.0;
+        public static final double UPPER_STAGE_ALLOWED_CLOSED_LOOP_ERROR = 0.1;
 
-        // Elevator top stage PID
-        public static final double   kUpperStageP                          = 0.1;
-        public static final double   kUpperStageI                          = 0.0;
-        public static final double   kUpperStageD                          = 0.01;
-        public static final double   UPPER_STAGE_MAX_OUTPUT                = 1.0;
-        public static final double   UPPER_STAGE_MIN_OUTPUT                = -1.0;
-        public static final double   UPPER_STAGE_MAX_VELOCITY              = 60.0;
-        public static final double   UPPER_STAGE_MAX_ACCELERATION          = 120.0;
-        public static final double   UPPER_STAGE_ALLOWED_CLOSED_LOOP_ERROR = 0.1;
+        /*
+         * Elevator bottom stage PID
+         */
+        public static final double kLowerStageP                          = 0.1;
+        public static final double kLowerStageI                          = 0.0;
+        public static final double kLowerStageD                          = 0.01;
+        public static final double LOWER_STAGE_MIN_OUTPUT                = -1.0;
+        public static final double LOWER_STAGE_MAX_OUTPUT                = 1.0;
 
-        // Elevator bottom stage PID
-        public static final double   kLowerStageP                          = 0.1;
-        public static final double   kLowerStageI                          = 0.0;
-        public static final double   kLowerStageD                          = 0.01;
-        public static final double   LOWER_STAGE_MIN_OUTPUT                = -1.0;
-        public static final double   LOWER_STAGE_MAX_OUTPUT                = 1.0;
+        /*
+         * Max and Min Height (feet) for lower stage
+         */
+        public static final double LOWER_STAGE_MIN_HEIGHT                = 0.0;
+        public static final double LOWER_STAGE_MAX_HEIGHT                = 3.0;
 
-        // Max and Min Height (feet) for lower stage
-        public static final double   LOWER_STAGE_MIN_HEIGHT                = 0.0;
-        public static final double   LOWER_STAGE_MAX_HEIGHT                = 3.0;
+        /*
+         * Elevator Ratios
+         */
 
-        // Elevator ratios
-        public static final double   ELEVATOR_LOWER_GEAR_RATIO             = 20.0;
-        public static final double   ELEVATOR_UPPER_GEAR_RATIO             = 10.0;
-        public static final double   ELEVATOR_LOWER_DRUM_DIAMETER_INCHES   = 2.25;
-        public static final double   ROTATIONS_TO_FEET_LOWER               = (Math.PI * ELEVATOR_LOWER_DRUM_DIAMETER_INCHES
+        // Gear ratios
+        public static final double ELEVATOR_LOWER_GEAR_RATIO           = 20.0;
+        public static final double ELEVATOR_UPPER_GEAR_RATIO           = 10.0;
+
+        // Rotations to feet for the lower stage
+        public static final double ELEVATOR_LOWER_DRUM_DIAMETER_INCHES = 2.25;
+        public static final double ROTATIONS_TO_FEET_LOWER             = (Math.PI * ELEVATOR_LOWER_DRUM_DIAMETER_INCHES
             / 12.0)
             / ELEVATOR_LOWER_GEAR_RATIO;
 
-        public static final double   ELEVATOR_UPPER_DRUM_DIAMETER_INCHES   = 2.25;
-        public static final double   ROTATIONS_TO_FEET_UPPER               = (Math.PI * ELEVATOR_UPPER_DRUM_DIAMETER_INCHES / 12
+        // Rotations to feet for the upper stage
+        public static final double ELEVATOR_UPPER_DRUM_DIAMETER_INCHES = 2.25;
+        public static final double ROTATIONS_TO_FEET_UPPER             = (Math.PI * ELEVATOR_UPPER_DRUM_DIAMETER_INCHES / 12
             / ELEVATOR_UPPER_GEAR_RATIO);
 
-        // Elevator setpoints
-        public static final double   LOWER_ELEVATOR_DEFAULT_SETPOINT       = 0.0;
-        public static final double   LOWER_ELEVATOR_GROUND_SETPOINT        = 0.0;
-        public static final double   LOWER_ELEVATOR_L1_SETPOINT            = 1.0;
-        public static final double   LOWER_ELEVATOR_L2_SETPOINT            = 2.0;
-        public static final double   LOWER_ELEVATOR_L3_SETPOINT            = 3.0;
-        public static final double   LOWER_ELEVATOR_L4_SETPOINT            = 4.0;
-        public static final double   LOWER_ELEVATOR_NET_SETPOINT           = 5.0;
-        public static final double   LOWER_ELEVATOR_PROCESSOR_SETPOINT     = 1.5;
-        public static final double   LOWER_ELEVATOR_SOURCE_SETPOINT        = 0;
+        /*
+         * Elevator setpoints
+         */
+        public static final double UPPER_ELEVATOR_DEFAULT_SETPOINT     = 0.0;
+        public static final double UPPER_ELEVATOR_GROUND_SETPOINT      = 0.0;
+        public static final double UPPER_ELEVATOR_L1_SETPOINT          = 1.0;
+        public static final double UPPER_ELEVATOR_L2_SETPOINT          = 2.0;
+        public static final double UPPER_ELEVATOR_L3_SETPOINT          = 3.0;
+        public static final double UPPER_ELEVATOR_L4_SETPOINT          = 4.0;
+        public static final double UPPER_ELEVATOR_NET_SETPOINT         = 5.0;
+        public static final double UPPER_ELEVATOR_PROCESSOR_SETPOINT   = 1.5;
+        public static final double UPPER_ELEVATOR_SOURCE_SETPOINT      = 0;
 
-        // Elevator setpoints
-        public static final double   UPPER_ELEVATOR_DEFAULT_SETPOINT       = 0.0;
-        public static final double   UPPER_ELEVATOR_GROUND_SETPOINT        = 0.0;
-        public static final double   UPPER_ELEVATOR_L1_SETPOINT            = 1.0;
-        public static final double   UPPER_ELEVATOR_L2_SETPOINT            = 2.0;
-        public static final double   UPPER_ELEVATOR_L3_SETPOINT            = 3.0;
-        public static final double   UPPER_ELEVATOR_L4_SETPOINT            = 4.0;
-        public static final double   UPPER_ELEVATOR_NET_SETPOINT           = 5.0;
-        public static final double   UPPER_ELEVATOR_PROCESSOR_SETPOINT     = 1.5;
-        public static final double   UPPER_ELEVATOR_SOURCE_SETPOINT        = 0;
-
-        // All setpoints for elevator
-        public static final double[] ELEVATOR_UPPER_STAGE_SETPOINTS        = {
-                LOWER_ELEVATOR_L1_SETPOINT,
-                LOWER_ELEVATOR_L2_SETPOINT,
-                LOWER_ELEVATOR_L3_SETPOINT,
-                LOWER_ELEVATOR_L4_SETPOINT,
-                LOWER_ELEVATOR_NET_SETPOINT,
-                LOWER_ELEVATOR_PROCESSOR_SETPOINT };
-        public static final double   LOWER_STAGE_MAX_VELOCITY              = 0;
-        public static final double   LOWER_STAGE_MAX_ACCELERATION          = 0;
+        public static final double LOWER_STAGE_MAX_VELOCITY            = 0;
+        public static final double LOWER_STAGE_MAX_ACCELERATION        = 0;
     }
 
     public static class ClimbConstants {
@@ -124,77 +113,88 @@ public final class Constants {
 
     public static class ArmConstants {
 
-        // Arm Motor IDS
+        /*
+         * IDs and ports
+         */
         public static final int    SHOULDER_MOTOR_ID                  = 4;
         public static final int    WRIST_MOTOR_ID                     = 5;
         public static final int    INTAKE_MOTOR_ID                    = 6;
+        public static final int    INTAKE_SENSOR_PORT                 = 0;
 
-        // Arm Scoring Angles
+        /*
+         * Wrist rotation angles
+         */
+        public static final double WRIST_VERTICAL_DEGREES             = 90.0;
+        public static final double WRIST_HORIZONTAL_DEGREES           = 0.0;
+
+        /*
+         * Arm scoring angles
+         */
         public static final double ARM_L1_ANGLE                       = 20;
         public static final double ARM_L2_ANGLE                       = -10;
         public static final double ARM_L3_ANGLE                       = 20;
         public static final double ARM_L4_ANGLE                       = 45;
 
-        // Wrist Rotation Angles
-        public static final double WRIST_VERTICAL_DEGREES             = 90.0;
-        public static final double WRIST_HORIZONTAL_DEGREES           = 0.0;
-
-        // Arm Intake Angles
+        /*
+         * Arm intake angles
+         */
         public static final double ARM_SOURCE_ANGLE                   = 90;
         public static final double ARM_GROUND_ANGLE                   = 45;
         public static final double ARM_DEFAULT_ANGLE                  = 0;
 
-        // End Effector
+        /*
+         * End Effector
+         */
         public static final double INTAKE_GROUND_SPEED                = 0.7;
         public static final double INTAKE_SOURCE_SPEED                = 0.9;
         public static final double BRANCH_SCORE_SPEED                 = 0.5;
         public static final double TROUGH_SCORE_SPEED                 = 0.3;
         public static final double PROCESSOR_SCORE_SPEED              = 1.0;
 
-        // Shoulder PID Values
+        /*
+         * Values for shoulder
+         */
         public static final double kShoulderP                         = 0.5;
         public static final double kShoulderI                         = 0.0;
         public static final double kShoulderD                         = 0.2;
-
-        // Shoulder Closed Loop Config
-        public static final double SHOULDER_MAX_OUTPUT                = 1.0;
-        public static final double SHOULDER_MIN_OUTPUT                = -1.0;
         public static final double SHOULDER_GEAR_RATIO                = 6;
-
-        // Wrist PID Values
-        public static final double kWristP                            = 0.5;
-        public static final double kWristI                            = 0.0;
-        public static final double kWristD                            = 0.2;
-
-        // Wrist Closed Loop Config
-        public static final double WRIST_MAX_OUTPUT                   = 1.0;
-        public static final double WRIST_MIN_OUTPUT                   = -1.0;
-        public static final double WRIST_GEAR_RATIO                   = 100.0;
-
-        // Shoulder MAXMotion Config
         public static final double SHOULDER_MAX_VELOCITY              = 100;
         public static final double SHOULDER_MAX_ACCELERATION          = 100;
         public static final double SHOULDER_ALLOWED_CLOSED_LOOP_ERROR = 1.0;
 
-        // Wrist speeds
-        public static final double WRIST_UP_SPEED                     = 0.1;
-        public static final double WRIST_DOWN_SPEED                   = 0.1;
-        public static final int    INTAKE_SENSOR_PORT                 = 1;
+        /*
+         * Values for wrist
+         */
+        public static final double kWristP                            = 0.5;
+        public static final double kWristI                            = 0.0;
+        public static final double kWristD                            = 0.2;
+        public static final double WRIST_GEAR_RATIO                   = 100.0;
+        public static final double WRIST_MAX_VELOCITY                 = 0;
+        public static final double WRIST_MAX_ACCELERATION             = 0;
 
     }
 
     public static class VisionConstants {
 
+        /*
+         * Different limelight names
+         */
         public static final String LIMELIGHT_NAME1          = "Limelight 4";
         public static final String LIMELIGHT_NAME2          = "Limelight 3G";
         public static final String LIMELIGHT_NAME3          = "Limelight 3";
 
-        // In Meters
+        /*
+         * Limelight distance offsets (meters)
+         * Based on robot centre point
+         */
         public static final double LIMELIGHT_OFFSET_FORWARD = 0.0;
         public static final double LIMELIGHT_OFFSET_LEFT    = 0.0;
         public static final double LIMELIGHT_OFFSET_HEIGHT  = 0.0;
 
-        // Degrees
+        /*
+         * Limelight rotation offsets (degrees)
+         * Based on robot forward orientation
+         */
         public static final double LIMELIGHT_ROLL           = 0.0;
         public static final double LIMELIGHT_PITCH          = 0.0;
         public static final double LIMELIGHT_YAW            = 0.0;
@@ -212,6 +212,9 @@ public final class Constants {
         public static final double  TAG_AMBIGUITY_FILTER    = 0.3;
     }
 
+    /*
+     * Absolute constant values (will not need to be changed)
+     */
     public static final double NEO_MOTOR_Kv_VALUE = 473.0;
     public static final double NEO_550_Kv_VALUE   = 917.0;
     public static final double INCHES_TO_FEET     = 1.0 / 12.0;

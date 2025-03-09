@@ -3,111 +3,122 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase {
 
-    // Spark MAX controllers for each joint
-    private final SparkMax                  shoulderMotor;
-    private final SparkMax                  wristMotor;
+    // Motor controllers for shoulder and wrist
+    private final SparkMax              shoulderMotor;
+    private final SparkMax              wristMotor;
 
     // Controller for the intake wheels
-    private final VictorSPX                 intakeMotor;
+    private final VictorSPX             intakeMotor;
 
     // Intake Sensor
-    private final DigitalInput              intakeSensor;
+    private final DigitalInput          intakeSensor;
 
-    // Closed-loop controllers and encoders
-    private final SparkClosedLoopController shoulderClosedLoop;
-    private final RelativeEncoder           shoulderEncoder;
-    private final RelativeEncoder           wristEncoder;
-    private final SparkClosedLoopController wristClosedLoop;
+    // Encoders
+    private final RelativeEncoder       shoulderEncoder;
+    private final RelativeEncoder       wristEncoder;
 
-    // Setpoints
-    private double                          shoulderSetpoint;
-    private double                          wristSetpoint;
+    // WPILib Profiled PID controllers with trapezoidal constraints
+    private final ProfiledPIDController shoulderController;
+    private final ProfiledPIDController wristController;
+
+    // Desired setpoints (in motor rotations)
+    private double                      shoulderSetpoint;
+    private double                      wristSetpoint;
 
     public ArmSubsystem() {
         // Initialize motors
-        shoulderMotor      = new SparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
-        wristMotor         = new SparkMax(ArmConstants.WRIST_MOTOR_ID, MotorType.kBrushless);
-        intakeMotor        = new VictorSPX(ArmConstants.INTAKE_MOTOR_ID);
+        shoulderMotor   = new SparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
+        wristMotor      = new SparkMax(ArmConstants.WRIST_MOTOR_ID, MotorType.kBrushless);
+        intakeMotor     = new VictorSPX(ArmConstants.INTAKE_MOTOR_ID);
 
-        // Retrieve controllers and encoders
-        shoulderClosedLoop = shoulderMotor.getClosedLoopController();
-        shoulderEncoder    = shoulderMotor.getEncoder();
-        wristClosedLoop    = wristMotor.getClosedLoopController();
-        wristEncoder       = wristMotor.getEncoder();
+        // Retrieve encoders
+        shoulderEncoder = shoulderMotor.getEncoder();
+        wristEncoder    = wristMotor.getEncoder();
 
-        intakeSensor       = new DigitalInput(ArmConstants.INTAKE_SENSOR_PORT);
+        // Initialize intake sensor
+        intakeSensor    = new DigitalInput(ArmConstants.INTAKE_SENSOR_PORT);
 
-        // Configure shoulder motor
+        // Configure SparkMax controllers (basic configuration)
         SparkMaxConfig shoulderConfig = new SparkMaxConfig();
-        shoulderConfig.closedLoop
-            .p(ArmConstants.kShoulderP)
-            .i(ArmConstants.kShoulderI)
-            .d(ArmConstants.kShoulderD)
-            .velocityFF(1 / Constants.NEO_MOTOR_Kv_VALUE)
-            .outputRange(ArmConstants.SHOULDER_MIN_OUTPUT, ArmConstants.SHOULDER_MAX_OUTPUT);
-
-        shoulderConfig.closedLoop.maxMotion
-            .maxVelocity(ArmConstants.SHOULDER_MAX_VELOCITY)
-            .maxAcceleration(ArmConstants.SHOULDER_MAX_ACCELERATION)
-            .allowedClosedLoopError(ArmConstants.SHOULDER_ALLOWED_CLOSED_LOOP_ERROR);
-
-        // Burn the config to the SparkMax
+        // Optionally, set additional configuration options such as idle mode here.
         shoulderMotor.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        // Configure wrist motor
         SparkMaxConfig wristConfig = new SparkMaxConfig();
-        wristConfig.closedLoop
-            .p(ArmConstants.kWristP)
-            .i(ArmConstants.kWristI)
-            .d(ArmConstants.kWristD)
-            .velocityFF(1 / Constants.NEO_550_Kv_VALUE)
-            .outputRange(ArmConstants.WRIST_MIN_OUTPUT, ArmConstants.WRIST_MAX_OUTPUT);
-
-        // Burn the config to the SparkMax
         wristMotor.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        // Initialize setpoints
-        shoulderSetpoint = shoulderEncoder.getPosition();
-        wristSetpoint    = wristEncoder.getPosition();
+        // Define trapezoidal motion profile constraints for shoulder and wrist.
+        TrapezoidProfile.Constraints shoulderConstraints = new TrapezoidProfile.Constraints(
+            ArmConstants.SHOULDER_MAX_VELOCITY,
+            ArmConstants.SHOULDER_MAX_ACCELERATION);
+        TrapezoidProfile.Constraints wristConstraints    = new TrapezoidProfile.Constraints(
+            ArmConstants.WRIST_MAX_VELOCITY,
+            ArmConstants.WRIST_MAX_ACCELERATION);
+
+        // Initialize the ProfiledPIDControllers using your PID gains and constraints.
+        shoulderController = new ProfiledPIDController(
+            ArmConstants.kShoulderP,
+            ArmConstants.kShoulderI,
+            ArmConstants.kShoulderD,
+            shoulderConstraints);
+        wristController    = new ProfiledPIDController(
+            ArmConstants.kWristP,
+            ArmConstants.kWristI,
+            ArmConstants.kWristD,
+            wristConstraints);
+
+        // Initialize setpoints to the current positions.
+        shoulderSetpoint   = shoulderEncoder.getPosition();
+        wristSetpoint      = wristEncoder.getPosition();
+        shoulderController.setGoal(shoulderSetpoint);
+        wristController.setGoal(wristSetpoint);
     }
 
-    public void moveShoulderToSetpoint(double setpoint) {
-        shoulderSetpoint = setpoint / (360 * ArmConstants.SHOULDER_GEAR_RATIO);
-        shoulderClosedLoop.setReference(shoulderSetpoint, ControlType.kMAXMotionPositionControl);
+    /**
+     * Moves the shoulder to the desired angle (in degrees).
+     * Conversion: rotations = degrees / (360 * gear ratio)
+     */
+    public void moveShoulderToSetpoint(double degrees) {
+        shoulderSetpoint = degrees / (360 * ArmConstants.SHOULDER_GEAR_RATIO);
+        shoulderController.setGoal(shoulderSetpoint);
+        System.out.println("Setting shoulder to: " + degrees + " degrees (" + shoulderSetpoint + " rotations)");
     }
 
+    /**
+     * Moves the wrist to the desired angle (in degrees).
+     */
     public void moveWristToSetpoint(double degrees) {
         wristSetpoint = degrees / (360 * ArmConstants.WRIST_GEAR_RATIO);
-        wristClosedLoop.setReference(wristSetpoint, ControlType.kPosition);
+        wristController.setGoal(wristSetpoint);
+        System.out.println("Setting wrist to: " + degrees + " degrees (" + wristSetpoint + " rotations)");
     }
 
     public boolean hasGamePiece() {
-        return !intakeSensor.get(); // Assuming active-low signal (true when object detected)
+        // Assuming active-low signal (true when object is detected)
+        return !intakeSensor.get();
     }
 
     public void setIntakeSpeed(double intakeSpeed, boolean isReversed) {
         if (!hasGamePiece()) {
             intakeMotor.set(VictorSPXControlMode.PercentOutput, isReversed ? -intakeSpeed : intakeSpeed);
-            System.out.println("Intaking subsystem");
+            System.out.println("Intaking...");
         }
         else {
-            intakeMotor.set(VictorSPXControlMode.PercentOutput, 0); // Stop intake if a piece is detected
+            intakeMotor.set(VictorSPXControlMode.PercentOutput, 0); // Stop intake if a coral is detected
         }
     }
 
@@ -130,10 +141,21 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // Shoulder control: calculate output voltage from the ProfiledPIDController
+        double shoulderMeasurement = shoulderEncoder.getPosition();
+        double shoulderOutput      = shoulderController.calculate(shoulderMeasurement);
+        shoulderMotor.setVoltage(shoulderOutput);
+
+        // Wrist control: calculate output voltage from the ProfiledPIDController
+        double wristMeasurement = wristEncoder.getPosition();
+        double wristOutput      = wristController.calculate(wristMeasurement);
+        wristMotor.setVoltage(wristOutput);
+
+        // Update SmartDashboard
         SmartDashboard.putBoolean("Intake/Game Piece Detected", hasGamePiece());
-        SmartDashboard.putNumber("Arm/Shoulder Position", shoulderEncoder.getPosition());
+        SmartDashboard.putNumber("Arm/Shoulder Position", shoulderMeasurement);
         SmartDashboard.putNumber("Arm/Shoulder Setpoint", shoulderSetpoint);
-        SmartDashboard.putNumber("Arm/Wrist Position", wristEncoder.getPosition());
+        SmartDashboard.putNumber("Arm/Wrist Position", wristMeasurement);
         SmartDashboard.putNumber("Arm/Wrist Setpoint", wristSetpoint);
     }
 }
