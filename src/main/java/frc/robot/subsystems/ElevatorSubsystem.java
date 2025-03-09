@@ -131,6 +131,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     /*
      * Returns the value of the upper stage encoder in degrees
+     * If the motor completes multiple rotations, the value of all rotations will be added into this value
      */
     public double getUpperStageEncoderPosition() {
         return upperStageEncoder.getPosition();
@@ -145,6 +146,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     /*
      * Returns the value of the lower stage encoder in degrees
+     * If the motor completes multiple rotations, the value of all rotations will be added into this value
      */
     public double getLowerStageEncoderPosition() {
         return lowerStageEncoder.getPosition();
