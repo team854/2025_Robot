@@ -5,17 +5,13 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.commands.Arm.IntakeCommand;
 import frc.robot.commands.Arm.SetArmAngleCommand;
-import frc.robot.commands.Arm.SetWristPositionCommand;
 import frc.robot.commands.Elevator.SetElevatorHeightCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class ScoreCoral extends ParallelCommandGroup {
 
-    public ScoreCoral(ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem,
-        SetElevatorHeightCommand setElevatorHeightCommand,
-        SetArmAngleCommand setArmAngleCommand,
-        SetWristPositionCommand setWristPositionCommand, IntakeCommand intakeCommand) {
+    public ScoreCoral(ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem) {
 
         addCommands(
 

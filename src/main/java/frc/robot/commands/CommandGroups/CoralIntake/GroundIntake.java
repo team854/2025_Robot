@@ -12,10 +12,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public class GroundIntake extends ParallelCommandGroup {
 
-    public GroundIntake(ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem,
-        SetElevatorHeightCommand setElevatorHeightCommand,
-        SetArmAngleCommand setArmAngleCommand,
-        SetWristPositionCommand setWristPositionCommand, IntakeCommand intakeCommand) {
+    public GroundIntake(ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem) {
 
         addCommands(
 

@@ -11,10 +11,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public class SetL2 extends ParallelCommandGroup {
 
-    public SetL2(ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem,
-        SetElevatorHeightCommand setElevatorHeightCommand,
-        SetArmAngleCommand setArmAngleCommand,
-        SetWristPositionCommand setWristPositionCommand) {
+    public SetL2(ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem) {
 
         addCommands(
 

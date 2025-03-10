@@ -7,14 +7,17 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.autos.AutoModeChooser;
-import frc.robot.commands.Arm.IntakeCommand;
-import frc.robot.commands.Arm.SetArmAngleCommand;
-import frc.robot.commands.Arm.SetWristPositionCommand;
 import frc.robot.commands.Climb.ClimbCommand;
+import frc.robot.commands.CommandGroups.CoralIntake.GroundIntake;
+import frc.robot.commands.CommandGroups.CoralIntake.SourceIntake;
+import frc.robot.commands.CommandGroups.CoralScoring.ScoreCoral;
+import frc.robot.commands.CommandGroups.CoralScoring.SetL1;
+import frc.robot.commands.CommandGroups.CoralScoring.SetL2;
+import frc.robot.commands.CommandGroups.CoralScoring.SetL3;
+import frc.robot.commands.CommandGroups.CoralScoring.SetL4;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -38,14 +41,39 @@ public class RobotContainer {
 
     private final AutoModeChooser       autoModeChooser      = new AutoModeChooser(drivebase);
 
+    /*
+     * Command Groups
+     */
+    private final ScoreCoral            scoreCoralCommand;
+    private final SetL1                 setL1Command;
+    private final SetL2                 setL2Command;
+    private final SetL3                 setL3Command;
+    private final SetL4                 setL4Command;
+    private final GroundIntake          groundIntakeCommand;
+    private final SourceIntake          sourceIntakeCommand;
+
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController   = new CommandXboxController(
         OperatorConstants.kDriverControllerPort);
-    private final CommandXboxController s_operatorController = new CommandXboxController(
+    private final CommandXboxController m_operatorController = new CommandXboxController(
         OperatorConstants.kOperatorControllerPort);
 
     // The container for the robot. Contains subsystems, OI devices, and commands.
     public RobotContainer() {
+
+        /*
+         * All commands
+         */
+        // Command groups
+        scoreCoralCommand   = new ScoreCoral(elevatorSubsystem, armSubsystem);
+        setL1Command        = new SetL1(elevatorSubsystem, armSubsystem);
+        setL2Command        = new SetL2(elevatorSubsystem, armSubsystem);
+        setL3Command        = new SetL3(elevatorSubsystem, armSubsystem);
+        setL4Command        = new SetL4(elevatorSubsystem, armSubsystem);
+        groundIntakeCommand = new GroundIntake(elevatorSubsystem, armSubsystem);
+        sourceIntakeCommand = new SourceIntake(elevatorSubsystem, armSubsystem);
+
+        // Base commands
 
         // Register Named Commands
         // configureNamedCommands();
@@ -57,53 +85,6 @@ public class RobotContainer {
         drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
     }
-
-    // public void configureNamedCommands() {
-
-    // NamedCommands.registerCommand("GroundIntake",
-    // new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED));
-
-    // NamedCommands.registerCommand("SourceIntake", new ParallelCommandGroup(
-    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_SOURCE_SETPOINT,
-    // ElevatorConstants.UPPER_ELEVATOR_SOURCE_SETPOINT),
-    // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
-    // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_SOURCE_ANGLE),
-    // new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_SOURCE_SPEED)));
-
-    // NamedCommands.registerCommand("ScoreCoral", new ParallelCommandGroup(
-    // new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED),
-    // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_DEFAULT_ANGLE),
-    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_DEFAULT_SETPOINT,
-    // ElevatorConstants.UPPER_ELEVATOR_DEFAULT_SETPOINT)));
-
-    // NamedCommands.registerCommand("ProcessorScore", new ParallelCommandGroup(
-    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT,
-    // ElevatorConstants.UPPER_ELEVATOR_GROUND_SETPOINT),
-    // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
-    // new IntakeCommand(armSubsystem, true, ArmConstants.PROCESSOR_SCORE_SPEED)));
-
-    // NamedCommands.registerCommand("Setpoint: Trough", new SequentialCommandGroup(
-    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L1_SETPOINT,
-    // ElevatorConstants.UPPER_ELEVATOR_L1_SETPOINT),
-    // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES)));
-
-    // NamedCommands.registerCommand("Setpoint: L2", new SequentialCommandGroup(
-    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L2_SETPOINT,
-    // ElevatorConstants.UPPER_ELEVATOR_L2_SETPOINT),
-    // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
-
-    // NamedCommands.registerCommand("Setpoint: L3", new SequentialCommandGroup(
-    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L3_SETPOINT,
-    // ElevatorConstants.UPPER_ELEVATOR_L3_SETPOINT),
-    // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
-
-    // NamedCommands.registerCommand("Setpoint: L4", new SequentialCommandGroup(
-    // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L4_SETPOINT,
-    // ElevatorConstants.UPPER_ELEVATOR_L4_SETPOINT),
-    // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
-
-    // NamedCommands.registerCommand("Climb", new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_UP_SPEED).withTimeout(3));
-    // }
 
     // -------------------------Swerve Drive Code-------------------------\\
 
@@ -141,84 +122,43 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        /*
-         * Driver Controller Commands
-         */
 
-        // Score coral
-        // m_driverController.rightTrigger().onTrue(new ParallelCommandGroup(
-        // new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED),
-        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_DEFAULT_ANGLE),
-        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_DEFAULT_SETPOINT,
-        // ElevatorConstants.UPPER_ELEVATOR_DEFAULT_SETPOINT)));
+        // --------------------------------------------------------
+        // Driver Controller Commands
+        // --------------------------------------------------------
 
-        m_driverController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED));
+        // Score coral and lower arm and elevator (RT)
+        m_driverController.rightTrigger().onTrue(scoreCoralCommand);
 
-        // Slow down swerve
-        // m_driverController.leftBumper().whileTrue(new PrecisionSwerveCommand(
-        // drivebase,
-        // OperatorConstants.FINE_SPEED_REDUCTION,
-        // OperatorConstants.FINE_ROTATION_REDUCTION));
 
-        // // Score In Processor
-        // m_driverController.leftTrigger().onTrue(new ParallelCommandGroup(
-        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT,
-        // ElevatorConstants.UPPER_ELEVATOR_GROUND_SETPOINT),
-        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
-        // new IntakeCommand(armSubsystem, true, 1.0)));
-        // /*
-        // * Operator Controller Commands
-        // */
 
-        // // Trough Setpoint
-        // s_operatorController.a().onTrue(new SequentialCommandGroup(
-        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L1_SETPOINT,
-        // ElevatorConstants.UPPER_ELEVATOR_L1_SETPOINT),
-        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES)));
+        // --------------------------------------------------------
+        // Operator Controller Commands
+        // --------------------------------------------------------
 
-        s_operatorController.a().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_SOURCE_ANGLE));
+        // Set elevator and arm to L1 setpoints (a)
+        m_operatorController.a().onTrue(setL1Command);
 
-        s_operatorController.b().onTrue(new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES));
+        // Set elevator and arm to L2 setpoints (x)
+        m_operatorController.x().onTrue(setL2Command);
 
-        // // L2 Setpoint
-        // s_operatorController.x().onTrue(new SequentialCommandGroup(
-        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L2_SETPOINT,
-        // ElevatorConstants.UPPER_ELEVATOR_L2_SETPOINT),
-        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+        // Set elevator and arm to L3 setpoints (y)
+        m_operatorController.y().onTrue(setL3Command);
 
-        // // L3 Setpoint
-        // s_operatorController.y().onTrue(new SequentialCommandGroup(
-        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L3_SETPOINT,
-        // ElevatorConstants.UPPER_ELEVATOR_L3_SETPOINT),
-        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+        // Set elevator and arm to L4 setpoints (b)
+        m_operatorController.b().onTrue(setL4Command);
 
-        // // L4 Setpoint
-        // s_operatorController.b().onTrue(new SequentialCommandGroup(
-        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_L4_SETPOINT,
-        // ElevatorConstants.UPPER_ELEVATOR_L4_SETPOINT),
-        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES)));
+        // Set elevator and arm to source intake setpoints, begin intaking (LB)
+        m_operatorController.leftBumper().onTrue(sourceIntakeCommand);
 
-        // // Intake From Source
-        // s_operatorController.leftBumper().onTrue(new ParallelCommandGroup(
-        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT,
-        // ElevatorConstants.UPPER_ELEVATOR_GROUND_SETPOINT),
-        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
-        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_SOURCE_ANGLE),
-        // new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_SOURCE_SPEED)));
+        // Set elevator and arm to ground intake setpoints, begin intaking (LT)
+        m_operatorController.leftTrigger().onTrue(groundIntakeCommand);
 
-        // // Intake From Ground
-        // s_operatorController.leftTrigger().onTrue(new ParallelCommandGroup(
-        // new SetElevatorHeightCommand(elevatorSubsystem, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT,
-        // ElevatorConstants.UPPER_ELEVATOR_GROUND_SETPOINT),
-        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
-        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
-        // new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED)));
+        // Winch climb / raise robot (dpad up)
+        m_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_UP_SPEED));
 
-        s_operatorController.leftTrigger().whileTrue(new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED));
-
-        // Climb up
-        s_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_DOWN_SPEED));
-        s_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_UP_SPEED));
+        // Unwinch climb / lower robot (dpad down)
+        m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_DOWN_SPEED));
 
     }
 
