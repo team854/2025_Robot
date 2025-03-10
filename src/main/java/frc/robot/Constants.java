@@ -167,7 +167,7 @@ public final class Constants {
          * End Effector
          */
         public static final double INTAKE_GROUND_SPEED                = 0.7;
-        public static final double INTAKE_SOURCE_SPEED                = 0.9;
+        public static final double INTAKE_SOURCE_SPEED                = 1.0;
         public static final double BRANCH_SCORE_SPEED                 = 0.5;
         public static final double TROUGH_SCORE_SPEED                 = 0.3;
         public static final double PROCESSOR_SCORE_SPEED              = 1.0;
