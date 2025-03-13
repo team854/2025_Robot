@@ -11,7 +11,7 @@ public class SetWristPositionCommand extends Command {
         this.armSubsystem  = armSubsystem;
         this.wristSetpoint = wristSetpoint;
 
-        addRequirements(armSubsystem);
+        // addRequirements(armSubsystem);
     }
 
     @Override

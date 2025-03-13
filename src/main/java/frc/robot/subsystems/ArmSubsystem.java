@@ -92,19 +92,17 @@ public class ArmSubsystem extends SubsystemBase {
      * Moves the shoulder to the desired angle (in degrees).
      * Conversion: rotations = degrees / (360 * gear ratio)
      */
-    public void moveShoulderToSetpoint(double degrees) {
-        shoulderSetpoint = degrees / (360 * ArmConstants.SHOULDER_GEAR_RATIO);
-        shoulderController.setGoal(shoulderSetpoint);
-        System.out.println("Setting shoulder to: " + degrees + " degrees (" + shoulderSetpoint + " rotations)");
+    public void moveShoulderToSetpoint(double setpoint) {
+        shoulderController.setGoal(setpoint);
+        System.out.println("Setting shoulder to: " + setpoint + " degrees (" + shoulderSetpoint + " rotations)");
     }
 
     /**
      * Moves the wrist to the desired angle (in degrees).
      */
-    public void moveWristToSetpoint(double degrees) {
-        wristSetpoint = degrees / (360 * ArmConstants.WRIST_GEAR_RATIO);
-        wristController.setGoal(wristSetpoint);
-        System.out.println("Setting wrist to: " + degrees + " degrees (" + wristSetpoint + " rotations)");
+    public void moveWristToSetpoint(double setpoint) {
+        wristController.setGoal(setpoint);
+        System.out.println("Setting wrist to: " + setpoint + " degrees (" + wristSetpoint + " rotations)");
     }
 
     public boolean hasGamePiece() {

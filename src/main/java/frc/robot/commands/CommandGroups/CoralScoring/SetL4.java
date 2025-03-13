@@ -1,6 +1,6 @@
 package frc.robot.commands.CommandGroups.CoralScoring;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.commands.Arm.SetArmAngleCommand;
@@ -9,7 +9,7 @@ import frc.robot.commands.Elevator.SetElevatorHeightCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-public class SetL4 extends SequentialCommandGroup {
+public class SetL4 extends ParallelCommandGroup {
 
     public SetL4(ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem) {
 

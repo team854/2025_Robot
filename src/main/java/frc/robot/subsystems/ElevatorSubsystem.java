@@ -76,9 +76,9 @@ public class ElevatorSubsystem extends SubsystemBase {
      * Sets the elevator height using a trapezoid profile
      * Setting Lower Stage
      */
-    public void setLowerStage(double heightFeet) {
-        lowerStageController.setGoal(lowerFeetToRotations(heightFeet));
-        System.out.println("Setting lower stage to: " + heightFeet);
+    public void setLowerStage(double height) {
+        lowerStageController.setGoal(height);
+        System.out.println("Setting lower stage to: " + height);
 
     }
 
@@ -93,9 +93,9 @@ public class ElevatorSubsystem extends SubsystemBase {
      * Sets the elevator height using a trapezoid profile
      * Setting Upper Stage
      */
-    public void setUpperStage(double heightFeet) {
-        upperStageController.setGoal(upperFeetToRotations(heightFeet));
-        System.out.println("Setting upper stage to: " + heightFeet);
+    public void setUpperStage(double height) {
+        upperStageController.setGoal(height);
+        System.out.println("Setting upper stage to: " + height);
     }
 
     // Stops upper stage

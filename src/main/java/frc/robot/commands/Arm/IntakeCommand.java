@@ -13,7 +13,7 @@ public class IntakeCommand extends Command {
         this.intakeSpeed  = intakeSpeed;
         this.isReversed   = isReversed;
 
-        addRequirements(armSubsystem);
+        // addRequirements(armSubsystem);
     }
 
     @Override
