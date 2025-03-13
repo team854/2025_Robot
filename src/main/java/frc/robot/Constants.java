@@ -53,9 +53,9 @@ public final class Constants {
         /*
          * Elevator top stage PID
          */
-        public static final double kUpperStageP                          = 0.1;
+        public static final double kUpperStageP                          = 0.5;
         public static final double kUpperStageI                          = 0.0;
-        public static final double kUpperStageD                          = 0.01;
+        public static final double kUpperStageD                          = 0.1;
         public static final double UPPER_STAGE_MAX_VELOCITY              = 120.0;
         public static final double UPPER_STAGE_MAX_ACCELERATION          = 120.0;
         public static final double UPPER_STAGE_ALLOWED_CLOSED_LOOP_ERROR = 0.1;
@@ -175,7 +175,7 @@ public final class Constants {
         /*
          * Values for shoulder
          */
-        public static final double kShoulderP                         = 0.5;
+        public static final double kShoulderP                         = 1;
         public static final double kShoulderI                         = 0.0;
         public static final double kShoulderD                         = 0.2;
         public static final double SHOULDER_GEAR_RATIO                = 6;
@@ -186,12 +186,12 @@ public final class Constants {
         /*
          * Values for wrist
          */
-        public static final double kWristP                            = 0.5;
+        public static final double kWristP                            = 0.05;
         public static final double kWristI                            = 0.0;
-        public static final double kWristD                            = 0.2;
+        public static final double kWristD                            = 0.05;
         public static final double WRIST_GEAR_RATIO                   = 100.0;
-        public static final double WRIST_MAX_VELOCITY                 = 120;
-        public static final double WRIST_MAX_ACCELERATION             = 120;
+        public static final double WRIST_MAX_VELOCITY                 = 50;
+        public static final double WRIST_MAX_ACCELERATION             = 50;
 
     }
 

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.autos.AutoModeChooser;
+import frc.robot.commands.Arm.SetShoulderSpeed;
 import frc.robot.commands.Climb.ClimbCommand;
 import frc.robot.commands.CommandGroups.CoralIntake.GroundIntake;
 import frc.robot.commands.CommandGroups.CoralIntake.SourceIntake;
@@ -137,7 +138,7 @@ public class RobotContainer {
         // --------------------------------------------------------
 
         // Set elevator and arm to L1 setpoints (a)
-        m_operatorController.a().onTrue(setL1Command);
+        m_operatorController.a().onTrue(new SetShoulderSpeed(armSubsystem, -0.7));
 
         // Set elevator and arm to L2 setpoints (x)
         m_operatorController.x().onTrue(setL2Command);

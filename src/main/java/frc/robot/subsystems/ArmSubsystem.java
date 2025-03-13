@@ -97,6 +97,10 @@ public class ArmSubsystem extends SubsystemBase {
         System.out.println("Setting shoulder to: " + setpoint + " degrees (" + shoulderSetpoint + " rotations)");
     }
 
+    public void setShoulderSpeed(double speed) {
+        shoulderMotor.set(speed);
+    }
+
     /**
      * Moves the wrist to the desired angle (in degrees).
      */
