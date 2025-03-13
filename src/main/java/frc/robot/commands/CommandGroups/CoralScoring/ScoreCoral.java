@@ -1,6 +1,6 @@
 package frc.robot.commands.CommandGroups.CoralScoring;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.commands.Arm.IntakeCommand;
@@ -9,7 +9,7 @@ import frc.robot.commands.Elevator.SetElevatorHeightCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-public class ScoreCoral extends ParallelCommandGroup {
+public class ScoreCoral extends SequentialCommandGroup {
 
     public ScoreCoral(ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem) {
 

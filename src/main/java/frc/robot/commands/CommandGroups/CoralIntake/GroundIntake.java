@@ -1,6 +1,6 @@
 package frc.robot.commands.CommandGroups.CoralIntake;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.commands.Arm.IntakeCommand;
@@ -10,7 +10,7 @@ import frc.robot.commands.Elevator.SetElevatorHeightCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-public class GroundIntake extends ParallelCommandGroup {
+public class GroundIntake extends SequentialCommandGroup {
 
     public GroundIntake(ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem) {
 
