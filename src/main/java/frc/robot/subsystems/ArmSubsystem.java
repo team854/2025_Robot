@@ -20,7 +20,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Motor controllers for shoulder and wrist
     private final SparkMax              shoulderMotor;
-    private final SparkMax              shoulderFollower;
+    // private final SparkMax shoulderFollower;
     private final SparkMax              wristMotor;
 
     // Controller for the intake wheels
@@ -43,26 +43,26 @@ public class ArmSubsystem extends SubsystemBase {
 
     public ArmSubsystem() {
         // Initialize motors
-        shoulderMotor    = new SparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
-        shoulderFollower = new SparkMax(ArmConstants.SHOULDER_FOLLOWER_ID, MotorType.kBrushless);
-        wristMotor       = new SparkMax(ArmConstants.WRIST_MOTOR_ID, MotorType.kBrushless);
-        intakeMotor      = new VictorSPX(ArmConstants.INTAKE_MOTOR_ID);
+        shoulderMotor   = new SparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
+        // shoulderFollower = new SparkMax(ArmConstants.SHOULDER_FOLLOWER_ID, MotorType.kBrushless);
+        wristMotor      = new SparkMax(ArmConstants.WRIST_MOTOR_ID, MotorType.kBrushless);
+        intakeMotor     = new VictorSPX(ArmConstants.INTAKE_MOTOR_ID);
 
         // Retrieve encoders
-        shoulderEncoder  = shoulderMotor.getEncoder();
-        wristEncoder     = wristMotor.getEncoder();
+        shoulderEncoder = shoulderMotor.getEncoder();
+        wristEncoder    = wristMotor.getEncoder();
 
         // Initialize intake sensor
-        intakeSensor     = new DigitalInput(ArmConstants.INTAKE_SENSOR_PORT);
+        intakeSensor    = new DigitalInput(ArmConstants.INTAKE_SENSOR_PORT);
 
         // Configure SparkMax controllers (basic configuration)
         SparkMaxConfig shoulderConfig = new SparkMaxConfig();
         // Optionally, set additional configuration options such as idle mode here.
         shoulderMotor.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        SparkMaxConfig followerConfig = new SparkMaxConfig();
-        followerConfig.follow(shoulderMotor);
-        shoulderFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // SparkMaxConfig followerConfig = new SparkMaxConfig();
+        // followerConfig.follow(shoulderMotor);
+        // shoulderFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         SparkMaxConfig wristConfig = new SparkMaxConfig();
         wristMotor.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -105,6 +105,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setShoulderSpeed(double speed) {
         shoulderMotor.set(speed);
+        // shoulderFollower.set(speed);
     }
 
     /**
@@ -141,6 +142,10 @@ public class ArmSubsystem extends SubsystemBase {
      */
     public void stopWrist() {
         wristMotor.stopMotor();
+    }
+
+    public void setWristSpeed(double speed) {
+        wristMotor.set(speed);
     }
 
     /*

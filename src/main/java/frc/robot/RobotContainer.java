@@ -7,9 +7,13 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.autos.AutoModeChooser;
+import frc.robot.commands.Arm.IntakeCommand;
+import frc.robot.commands.Arm.SetShoulderSpeed;
+import frc.robot.commands.Arm.SetWristSpeed;
 import frc.robot.commands.Climb.ClimbCommand;
 import frc.robot.commands.CommandGroups.CoralIntake.GroundIntake;
 import frc.robot.commands.CommandGroups.CoralIntake.SourceIntake;
@@ -131,6 +135,9 @@ public class RobotContainer {
 
         // // Score coral and lower arm and elevator (RT)
         // m_driverController.rightTrigger().onTrue(scoreCoralCommand);
+        m_driverController.leftTrigger().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.INTAKE_GROUND_SPEED));
+        m_driverController.leftBumper().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.INTAKE_SOURCE_SPEED));
+        m_driverController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem, true, ArmConstants.BRANCH_SCORE_SPEED));
 
 
 
@@ -167,6 +174,13 @@ public class RobotContainer {
 
         m_operatorController.rightBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem, 1));
         m_operatorController.leftBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem, -1));
+
+        m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));
+        m_operatorController.x().whileTrue(new SetWristSpeed(armSubsystem, 0.2));
+
+        m_operatorController.y().whileTrue(new SetShoulderSpeed(armSubsystem, 1));
+        m_operatorController.a().whileTrue(new SetShoulderSpeed(armSubsystem, -1));
+
 
     }
 

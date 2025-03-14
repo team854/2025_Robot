@@ -3,16 +3,15 @@ package frc.robot.commands.Arm;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class SetShoulderSpeed extends Command {
+public class SetWristSpeed extends Command {
     private final ArmSubsystem armSubsystem;
-    private final double       speed;
+    private final double       speed;       // Given in feet
 
-    public SetShoulderSpeed(ArmSubsystem armSubsystem, double speed) {
+
+    public SetWristSpeed(ArmSubsystem armSubsystem, double speed) {
         this.armSubsystem = armSubsystem;
         this.speed        = speed;
 
-        // Declare subsystem dependencies
-        // addRequirements(armSubsystem);
     }
 
     @Override
@@ -21,12 +20,13 @@ public class SetShoulderSpeed extends Command {
 
     @Override
     public void execute() {
-        armSubsystem.setShoulderSpeed(speed);
-
+        armSubsystem.setWristSpeed(speed);
     }
 
     @Override
     public void end(boolean interrupted) {
-        armSubsystem.stop();
+        // Stop both stages when the command ends
+        armSubsystem.stopWrist();
     }
+
 }
