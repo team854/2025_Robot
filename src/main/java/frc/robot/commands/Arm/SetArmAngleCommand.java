@@ -18,13 +18,14 @@ public class SetArmAngleCommand extends Command {
 
     @Override
     public void initialize() {
+        System.out.println("Setting arm angle to " + targetAngle);
+        armSubsystem.moveShoulderToSetpoint(targetAngle);
+
+
     }
 
     @Override
     public void execute() {
-        armSubsystem.moveShoulderToSetpoint(targetAngle);
-        System.out.println("Setting arm angle");
-
     }
 
     @Override

@@ -6,15 +6,15 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public class SetElevatorHeightCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
-    private final double            upperStageTargetHeightFeet; // Given in feet
-    private final double            lowerStageTargetHeightFeet;
+    private final double            upperStageTargetHeight; // Given in feet
+    private final double            lowerStageTargetHeight;
 
 
-    public SetElevatorHeightCommand(ElevatorSubsystem elevatorSubsystem, double upperStageTargetHeightFeet,
-        double lowerStageTargetHeightFeet) {
-        this.elevatorSubsystem          = elevatorSubsystem;
-        this.upperStageTargetHeightFeet = upperStageTargetHeightFeet;
-        this.lowerStageTargetHeightFeet = lowerStageTargetHeightFeet;
+    public SetElevatorHeightCommand(ElevatorSubsystem elevatorSubsystem, double upperStageTargetHeight,
+        double lowerStageTargetHeight) {
+        this.elevatorSubsystem      = elevatorSubsystem;
+        this.upperStageTargetHeight = upperStageTargetHeight;
+        this.lowerStageTargetHeight = lowerStageTargetHeight;
 
         // Declare subsystem dependencies
         addRequirements(elevatorSubsystem);
@@ -22,14 +22,15 @@ public class SetElevatorHeightCommand extends Command {
 
     @Override
     public void initialize() {
+        elevatorSubsystem.setUpperStage(upperStageTargetHeight);
+        System.out.println("Setting upper stage to: " + upperStageTargetHeight);
+        elevatorSubsystem.setLowerStage(lowerStageTargetHeight);
+        System.out.println("Setting lower stage to: " + lowerStageTargetHeight);
 
     }
 
     @Override
     public void execute() {
-        // Continuously ensure the elevator moves towards the setpoint
-        elevatorSubsystem.setUpperStage(upperStageTargetHeightFeet);
-        elevatorSubsystem.setLowerStage(lowerStageTargetHeightFeet);
     }
 
     @Override
@@ -45,8 +46,8 @@ public class SetElevatorHeightCommand extends Command {
         double currentUpperStageHeight = elevatorSubsystem.getUpperStageHeight();
         double currentLowerStageHeight = elevatorSubsystem.getLowerStageHeight();
 
-        if (Math.abs(currentUpperStageHeight - upperStageTargetHeightFeet) <= Tolerances.ELEVATOR_UPPER_TOLERANCE
-            && (Math.abs(currentLowerStageHeight - lowerStageTargetHeightFeet) <= Tolerances.ELEVATOR_UPPER_TOLERANCE)) {
+        if (Math.abs(currentUpperStageHeight - upperStageTargetHeight) <= Tolerances.ELEVATOR_UPPER_TOLERANCE
+            && (Math.abs(currentLowerStageHeight - lowerStageTargetHeight) <= Tolerances.ELEVATOR_UPPER_TOLERANCE)) {
             return true;
         }
         else {

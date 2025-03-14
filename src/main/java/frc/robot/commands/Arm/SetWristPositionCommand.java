@@ -16,12 +16,13 @@ public class SetWristPositionCommand extends Command {
 
     @Override
     public void initialize() {
+        armSubsystem.moveWristToSetpoint(wristSetpoint);
+        System.out.println("Moving wrist to: " + wristSetpoint);
 
     }
 
     @Override
     public void execute() {
-        armSubsystem.moveWristToSetpoint(wristSetpoint);
     }
 
 }
