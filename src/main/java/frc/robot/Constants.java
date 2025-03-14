@@ -138,6 +138,7 @@ public final class Constants {
          * IDs and ports
          */
         public static final int    SHOULDER_MOTOR_ID                  = 4;
+        public static final int SHOULDER_FOLLOWER_ID = 7;
         public static final int    WRIST_MOTOR_ID                     = 5;
         public static final int    INTAKE_MOTOR_ID                    = 6;
         public static final int    INTAKE_SENSOR_PORT                 = 0;
