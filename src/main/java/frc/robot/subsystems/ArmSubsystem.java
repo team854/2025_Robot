@@ -62,7 +62,7 @@ public class ArmSubsystem extends SubsystemBase {
 
         SparkMaxConfig followerConfig = new SparkMaxConfig();
         followerConfig.follow(shoulderMotor);
-        shoulderFollower.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        shoulderFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         SparkMaxConfig wristConfig = new SparkMaxConfig();
         wristMotor.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -88,10 +88,10 @@ public class ArmSubsystem extends SubsystemBase {
             wristConstraints);
 
         // Initialize setpoints to the current positions.
-        shoulderSetpoint   = shoulderEncoder.getPosition();
-        wristSetpoint      = wristEncoder.getPosition();
-        shoulderController.setGoal(shoulderSetpoint);
-        wristController.setGoal(wristSetpoint);
+        // shoulderSetpoint = shoulderEncoder.getPosition();
+        // wristSetpoint = wristEncoder.getPosition();
+        // shoulderController.setGoal(shoulderSetpoint);
+        // wristController.setGoal(wristSetpoint);
     }
 
     /**
@@ -170,20 +170,23 @@ public class ArmSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Shoulder control: calculate output voltage from the ProfiledPIDController
-        double shoulderMeasurement = shoulderEncoder.getPosition();
-        double shoulderOutput      = shoulderController.calculate(shoulderMeasurement);
-        shoulderMotor.setVoltage(shoulderOutput);
+        // double shoulderMeasurement = shoulderEncoder.getPosition();
+        // double shoulderOutput = shoulderController.calculate(shoulderMeasurement);
+        // double shoulderFollowerOutput = shoulderFollower.getAppliedOutput();
+        // shoulderMotor.setVoltage(shoulderOutput);
 
-        // Wrist control: calculate output voltage from the ProfiledPIDController
-        double wristMeasurement = wristEncoder.getPosition();
-        double wristOutput      = wristController.calculate(wristMeasurement);
-        wristMotor.setVoltage(wristOutput);
+        // // Wrist control: calculate output voltage from the ProfiledPIDController
+        // double wristMeasurement = wristEncoder.getPosition();
+        // double wristOutput = wristController.calculate(wristMeasurement);
+        // wristMotor.setVoltage(wristOutput);
 
         // Update SmartDashboard
         SmartDashboard.putBoolean("Intake/Game Piece Detected", hasGamePiece());
-        SmartDashboard.putNumber("Arm/Shoulder Position", shoulderMeasurement);
+        // SmartDashboard.putNumber("Arm/Shoulder Motor Output", shoulderOutput);
+        // SmartDashboard.putNumber("Arm/Shoulder Follower Output", shoulderFollowerOutput);
+        // SmartDashboard.putNumber("Arm/Shoulder Position", shoulderMeasurement);
         SmartDashboard.putNumber("Arm/Shoulder Setpoint", shoulderSetpoint);
-        SmartDashboard.putNumber("Arm/Wrist Position", wristMeasurement);
+        // SmartDashboard.putNumber("Arm/Wrist Position", wristMeasurement);
         SmartDashboard.putNumber("Arm/Wrist Setpoint", wristSetpoint);
     }
 }

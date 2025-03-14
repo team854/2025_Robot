@@ -26,6 +26,8 @@ public class SetArmAngleCommand extends Command {
 
     @Override
     public void execute() {
+        armSubsystem.moveShoulderToSetpoint(targetAngle);
+
     }
 
     @Override

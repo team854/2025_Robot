@@ -104,6 +104,14 @@ public class ElevatorSubsystem extends SubsystemBase {
         System.out.println("Stopping upper stage");
     }
 
+    public void setTopStageSpeed(double speed) {
+        upperStageMotor.set(speed);
+    }
+
+    public void setBottomStageSpeed(double speed) {
+        lowerStageMotor.set(speed);
+    }
+
     /*
      * Conversion factor which converts a height in feet into expected encoder rotations
      */
@@ -162,18 +170,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Lower stage control
-        double lowerStageMeasurement = lowerStageEncoder.getPosition();
-        double lowerStageOutput      = lowerStageController.calculate(lowerStageMeasurement);
-        lowerStageMotor.setVoltage(lowerStageOutput);
+        // double lowerStageMeasurement = lowerStageEncoder.getPosition();
+        // double lowerStageOutput = lowerStageController.calculate(lowerStageMeasurement);
+        // lowerStageMotor.setVoltage(lowerStageOutput);
 
-        // Upper stage control
-        double upperStageMeasurement = upperStageEncoder.getPosition();
-        double upperStageOutput      = upperStageController.calculate(upperStageMeasurement);
-        upperStageMotor.setVoltage(upperStageOutput);
+        // // Upper stage control
+        // double upperStageMeasurement = upperStageEncoder.getPosition();
+        // double upperStageOutput = upperStageController.calculate(upperStageMeasurement);
+        // upperStageMotor.setVoltage(upperStageOutput);
 
         // Update SmartDashboard
-        SmartDashboard.putNumber("Elevator/Lower Stage Position", lowerStageMeasurement);
-        SmartDashboard.putNumber("Elevator/Upper Stage Position", upperStageMeasurement);
+        // SmartDashboard.putNumber("Elevator/Lower Stage Position", lowerStageMeasurement);
+        // SmartDashboard.putNumber("Elevator/Upper Stage Position", upperStageMeasurement);
         SmartDashboard.putNumber("Elevator/Lower Stage Setpoint", lowerStageController.getSetpoint().position);
         SmartDashboard.putNumber("Elevator/Upper Stage Setpoint", upperStageController.getSetpoint().position);
 

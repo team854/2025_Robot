@@ -169,16 +169,16 @@ public final class Constants {
          */
         public static final double INTAKE_GROUND_SPEED                = 0.7;
         public static final double INTAKE_SOURCE_SPEED                = 1.0;
-        public static final double BRANCH_SCORE_SPEED                 = 0.5;
+        public static final double BRANCH_SCORE_SPEED                 = 1.0;
         public static final double TROUGH_SCORE_SPEED                 = 0.3;
         public static final double PROCESSOR_SCORE_SPEED              = 1.0;
 
         /*
          * Values for shoulder
          */
-        public static final double kShoulderP                         = 1;
+        public static final double kShoulderP                         = 2;
         public static final double kShoulderI                         = 0.0;
-        public static final double kShoulderD                         = 0.2;
+        public static final double kShoulderD                         = 1;
         public static final double SHOULDER_GEAR_RATIO                = 6;
         public static final double SHOULDER_MAX_VELOCITY              = 120;
         public static final double SHOULDER_MAX_ACCELERATION          = 120;
@@ -187,9 +187,9 @@ public final class Constants {
         /*
          * Values for wrist
          */
-        public static final double kWristP                            = 0.05;
+        public static final double kWristP                            = 0.01;
         public static final double kWristI                            = 0.0;
-        public static final double kWristD                            = 0.05;
+        public static final double kWristD                            = 0.005;
         public static final double WRIST_GEAR_RATIO                   = 100.0;
         public static final double WRIST_MAX_VELOCITY                 = 50;
         public static final double WRIST_MAX_ACCELERATION             = 50;

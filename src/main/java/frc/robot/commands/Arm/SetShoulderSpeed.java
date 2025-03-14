@@ -23,6 +23,7 @@ public class SetShoulderSpeed extends Command {
 
     @Override
     public void execute() {
+        armSubsystem.setShoulderSpeed(speed);
 
     }
 
