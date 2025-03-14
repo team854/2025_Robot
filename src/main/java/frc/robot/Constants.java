@@ -138,7 +138,7 @@ public final class Constants {
          * IDs and ports
          */
         public static final int    SHOULDER_MOTOR_ID                  = 4;
-        public static final int SHOULDER_FOLLOWER_ID = 7;
+        public static final int    SHOULDER_FOLLOWER_ID               = 7;
         public static final int    WRIST_MOTOR_ID                     = 5;
         public static final int    INTAKE_MOTOR_ID                    = 6;
         public static final int    INTAKE_SENSOR_PORT                 = 0;
@@ -210,8 +210,8 @@ public final class Constants {
          * Based on robot centre point
          */
         public static final double LIMELIGHT_OFFSET_FORWARD = 0.0;
-        public static final double LIMELIGHT_OFFSET_LEFT    = 0.0;
-        public static final double LIMELIGHT_OFFSET_HEIGHT  = 0.0;
+        public static final double LIMELIGHT_OFFSET_LEFT    = -0.4;
+        public static final double LIMELIGHT_OFFSET_HEIGHT  = 0.9;
 
         /*
          * Limelight rotation offsets (degrees)
@@ -219,7 +219,7 @@ public final class Constants {
          */
         public static final double LIMELIGHT_ROLL           = 0.0;
         public static final double LIMELIGHT_PITCH          = 0.0;
-        public static final double LIMELIGHT_YAW            = 0.0;
+        public static final double LIMELIGHT_YAW            = -20;
 
 
         /* Conditions to check if vision measurement should be added */
@@ -228,10 +228,10 @@ public final class Constants {
         public static final double  AVG_TAG_DIST_FILTER     = 5.0;
 
         // If there are more than this many tags visible
-        public static final Integer MIN_TAGS_VISIBLE_FILTER = 0;
+        public static final Integer MIN_TAGS_VISIBLE_FILTER = 1;
 
         // If average ambiguity between tags is less than this value
-        public static final double  TAG_AMBIGUITY_FILTER    = 0.3;
+        public static final double  TAG_AMBIGUITY_FILTER    = 0.5;
     }
 
     /*
