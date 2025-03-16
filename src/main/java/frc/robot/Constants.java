@@ -137,62 +137,73 @@ public final class Constants {
         /*
          * IDs and ports
          */
-        public static final int    SHOULDER_MOTOR_ID                  = 4;
-        public static final int    SHOULDER_FOLLOWER_ID               = 7;
-        public static final int    WRIST_MOTOR_ID                     = 5;
-        public static final int    INTAKE_MOTOR_ID                    = 6;
-        public static final int    INTAKE_SENSOR_PORT                 = 0;
+        public static final int    SHOULDER_MOTOR_ID                     = 4;
+        public static final int    SHOULDER_FOLLOWER_ID                  = 7;
+        public static final int    WRIST_MOTOR_ID                        = 5;
+        public static final int    INTAKE_MOTOR_ID                       = 6;
+        public static final int    INTAKE_SENSOR_PORT                    = 0;
+
+        /*
+         * Speed Limits
+         */
+        public static final double MAX_SHOULDER_UP_SPEED                 = .7;
+        public static final double MAX_SHOULDER_DOWN_SPEED               = -.3;
+        public static final double MAX_SHOULDER_HOLD_SPEED               = 0;    // should be .5
+
+        public static final double MAX_WRIST_SPEED                       = .3;
 
         /*
          * Wrist rotation angles
          */
-        public static final double WRIST_VERTICAL_DEGREES             = -24.5;
-        public static final double WRIST_HORIZONTAL_DEGREES           = -0.28;
+        public static final double WRIST_VERTICAL_DEGREES                = -24.5;
+        public static final double WRIST_HORIZONTAL_DEGREES              = -0.28;
 
         /*
-         * Arm scoring angles
+         * Arm/shoulder scoring angles
          */
-        public static final double ARM_L1_ANGLE                       = -2.07;
-        public static final double ARM_L2_ANGLE                       = -4.11;
-        public static final double ARM_L3_ANGLE                       = -4.49;
-        public static final double ARM_L4_ANGLE                       = -3.99;
+        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0;
+
+        public static final double ARM_L1_ANGLE                          = -2.07;
+        public static final double ARM_L2_ANGLE                          = -4.11;
+        public static final double ARM_L3_ANGLE                          = -4.49;
+        public static final double ARM_L4_ANGLE                          = -3.99;
 
         /*
          * Arm intake angles
          */
-        public static final double ARM_SOURCE_ANGLE                   = 90;
-        public static final double ARM_GROUND_ANGLE                   = 45;
-        public static final double ARM_DEFAULT_ANGLE                  = 0;
+        public static final double ARM_SOURCE_ANGLE                      = 90;
+        public static final double ARM_GROUND_ANGLE                      = 45;
+        public static final double ARM_DEFAULT_ANGLE                     = 0;
 
         /*
          * End Effector
          */
-        public static final double INTAKE_GROUND_SPEED                = 0.7;
-        public static final double INTAKE_SOURCE_SPEED                = 1.0;
-        public static final double BRANCH_SCORE_SPEED                 = 1.0;
-        public static final double TROUGH_SCORE_SPEED                 = 0.3;
-        public static final double PROCESSOR_SCORE_SPEED              = 1.0;
+        public static final double INTAKE_GROUND_SPEED                   = 0.7;
+        public static final double INTAKE_SOURCE_SPEED                   = 1.0;
+        public static final double BRANCH_SCORE_SPEED                    = 1.0;
+        public static final double TROUGH_SCORE_SPEED                    = 0.3;
+        public static final double PROCESSOR_SCORE_SPEED                 = 1.0;
 
         /*
          * Values for shoulder
          */
-        public static final double kShoulderP                         = 2;
-        public static final double kShoulderI                         = 0.0;
-        public static final double kShoulderD                         = 1;
-        public static final double SHOULDER_GEAR_RATIO                = 6;
-        public static final double SHOULDER_MAX_VELOCITY              = 120;
-        public static final double SHOULDER_MAX_ACCELERATION          = 120;
-        public static final double SHOULDER_ALLOWED_CLOSED_LOOP_ERROR = 1.0;
+        public static final double kShoulderP                            = 2;
+        public static final double kShoulderI                            = 0.0;
+        public static final double kShoulderD                            = 1;
+        public static final double SHOULDER_GEAR_RATIO                   = 6;
+        public static final double SHOULDER_MAX_VELOCITY                 = 120;
+        public static final double SHOULDER_MAX_ACCELERATION             = 120;
+        public static final double SHOULDER_ALLOWED_CLOSED_LOOP_ERROR    = 1.0;
 
         /*
          * Values for wrist
          */
-        public static final double kWristP                            = 0.01;
-        public static final double kWristI                            = 0.0;
-        public static final double kWristD                            = 0.005;
-        public static final double WRIST_GEAR_RATIO                   = 100.0;
-        public static final double WRIST_MAX_VELOCITY                 = 50;
-        public static final double WRIST_MAX_ACCELERATION             = 50;
+        public static final double kWristP                               = 0.01;
+        public static final double kWristI                               = 0.0;
+        public static final double kWristD                               = 0.005;
+        public static final double WRIST_GEAR_RATIO                      = 100.0;
+        public static final double WRIST_MAX_VELOCITY                    = 50;
+        public static final double WRIST_MAX_ACCELERATION                = 50;
 
     }
 

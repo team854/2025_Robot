@@ -11,9 +11,8 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.autos.AutoModeChooser;
+import frc.robot.commands.Arm.DefaultArmCommand;
 import frc.robot.commands.Arm.IntakeCommand;
-import frc.robot.commands.Arm.SetShoulderSpeed;
-import frc.robot.commands.Arm.SetWristSpeed;
 import frc.robot.commands.Climb.ClimbCommand;
 import frc.robot.commands.CommandGroups.CoralIntake.GroundIntake;
 import frc.robot.commands.CommandGroups.CoralIntake.SourceIntake;
@@ -89,6 +88,7 @@ public class RobotContainer {
 
         // ----------Set default drive command here----------\\
         drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+        armSubsystem.setDefaultCommand(new DefaultArmCommand(this, armSubsystem));
 
     }
 
@@ -175,13 +175,31 @@ public class RobotContainer {
         m_operatorController.rightBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem, 1));
         m_operatorController.leftBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem, -1));
 
-        m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));
-        m_operatorController.x().whileTrue(new SetWristSpeed(armSubsystem, 0.2));
+//        m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));
+//        m_operatorController.x().whileTrue(new SetWristSpeed(armSubsystem, 0.2));
+//
+//        m_operatorController.y().whileTrue(new SetShoulderSpeed(armSubsystem, 1));
+//        m_operatorController.a().whileTrue(new SetShoulderSpeed(armSubsystem, -1));
 
-        m_operatorController.y().whileTrue(new SetShoulderSpeed(armSubsystem, 1));
-        m_operatorController.a().whileTrue(new SetShoulderSpeed(armSubsystem, -1));
+    }
 
+    /*
+     * Methods used by arm default commands
+     */
+    public double getShoulderSpeed() {
+        return -deadband(m_operatorController.getLeftY(), 0.2);
+    }
 
+    public double getWristSpeed() {
+        return deadband(m_operatorController.getRightX(), 0.2);
+    }
+
+    public double deadband(double input, double deadband) {
+
+        if (Math.abs(input) > deadband) {
+            return (Math.abs(input) - deadband) / (1 - deadband) * Math.signum(input);
+        }
+        return 0;
     }
 
     /*
