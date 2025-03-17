@@ -25,4 +25,9 @@ public class IntakeCommand extends Command {
     public void end(boolean interrupted) {
         armSubsystem.setIntakeSpeed(0, false);
     }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }

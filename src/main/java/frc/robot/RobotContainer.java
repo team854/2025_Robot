@@ -135,9 +135,8 @@ public class RobotContainer {
 
         // // Score coral and lower arm and elevator (RT)
         // m_driverController.rightTrigger().onTrue(scoreCoralCommand);
-        m_driverController.leftTrigger().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.INTAKE_GROUND_SPEED));
-        m_driverController.leftBumper().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.INTAKE_SOURCE_SPEED));
-        m_driverController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem, true, ArmConstants.BRANCH_SCORE_SPEED));
+        m_driverController.leftTrigger().toggleOnTrue(new IntakeCommand(armSubsystem, false, ArmConstants.INTAKE_GROUND_SPEED));
+        m_driverController.rightTrigger().toggleOnTrue(new IntakeCommand(armSubsystem, true, ArmConstants.BRANCH_SCORE_SPEED));
 
 
 
@@ -175,11 +174,11 @@ public class RobotContainer {
         m_operatorController.rightBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem, 1));
         m_operatorController.leftBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem, -1));
 
-//        m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));
-//        m_operatorController.x().whileTrue(new SetWristSpeed(armSubsystem, 0.2));
-//
-//        m_operatorController.y().whileTrue(new SetShoulderSpeed(armSubsystem, 1));
-//        m_operatorController.a().whileTrue(new SetShoulderSpeed(armSubsystem, -1));
+        // m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));
+        // m_operatorController.x().whileTrue(new SetWristSpeed(armSubsystem, 0.2));
+        //
+        // m_operatorController.y().whileTrue(new SetShoulderSpeed(armSubsystem, 1));
+        // m_operatorController.a().whileTrue(new SetShoulderSpeed(armSubsystem, -1));
 
     }
 
