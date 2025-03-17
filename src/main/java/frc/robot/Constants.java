@@ -146,11 +146,11 @@ public final class Constants {
         /*
          * Speed Limits
          */
-        public static final double MAX_SHOULDER_UP_SPEED                 = .7;
-        public static final double MAX_SHOULDER_DOWN_SPEED               = -.3;
-        public static final double MAX_SHOULDER_HOLD_SPEED               = 0;    // should be .5
+        public static final double MAX_SHOULDER_UP_SPEED                 = 0.7;
+        public static final double MAX_SHOULDER_DOWN_SPEED               = -0.3;
+        public static final double MAX_SHOULDER_HOLD_SPEED               = 0.5;  // should be .5
 
-        public static final double MAX_WRIST_SPEED                       = .3;
+        public static final double MAX_WRIST_SPEED                       = 0.2;
 
         /*
          * Wrist rotation angles
@@ -178,7 +178,7 @@ public final class Constants {
         /*
          * End Effector
          */
-        public static final double INTAKE_GROUND_SPEED                   = 0.7;
+        public static final double INTAKE_GROUND_SPEED                   = 1.0;
         public static final double INTAKE_SOURCE_SPEED                   = 1.0;
         public static final double BRANCH_SCORE_SPEED                    = 1.0;
         public static final double TROUGH_SCORE_SPEED                    = 0.3;

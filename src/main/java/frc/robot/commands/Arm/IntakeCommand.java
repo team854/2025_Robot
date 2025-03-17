@@ -18,14 +18,7 @@ public class IntakeCommand extends Command {
 
     @Override
     public void execute() {
-        if (!armSubsystem.hasGamePiece()) {
-            armSubsystem.setIntakeSpeed(intakeSpeed, isReversed);
-            System.out.println("Intaking");
-        }
-        else {
-            armSubsystem.setIntakeSpeed(0, false); // Stop intake if a game piece is detected
-            System.out.println("Has game piece");
-        }
+        armSubsystem.setIntakeSpeed(intakeSpeed, isReversed);
     }
 
     @Override
