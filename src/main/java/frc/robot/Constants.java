@@ -138,7 +138,7 @@ public final class Constants {
          * IDs and ports
          */
         public static final int    SHOULDER_MOTOR_ID                     = 4;
-        public static final int    SHOULDER_FOLLOWER_ID                  = 7;
+        public static final int    SHOULDER_FOLLOWER_ID                  = 8;
         public static final int    WRIST_MOTOR_ID                        = 5;
         public static final int    INTAKE_MOTOR_ID                       = 6;
         public static final int    INTAKE_SENSOR_PORT                    = 0;
@@ -146,9 +146,9 @@ public final class Constants {
         /*
          * Speed Limits
          */
-        public static final double MAX_SHOULDER_UP_SPEED                 = 0.7;
-        public static final double MAX_SHOULDER_DOWN_SPEED               = -0.3;
-        public static final double MAX_SHOULDER_HOLD_SPEED               = 0.5;  // should be .5
+        public static final double MAX_SHOULDER_UP_SPEED                 = 0.6;
+        public static final double MAX_SHOULDER_DOWN_SPEED               = -0.4;
+        public static final double MAX_SHOULDER_HOLD_SPEED               = 0.3;                     // should be .5
 
         public static final double MAX_WRIST_SPEED                       = 0.2;
 
@@ -161,7 +161,7 @@ public final class Constants {
         /*
          * Arm/shoulder scoring angles
          */
-        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0;
+        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.7130645 - 17.0 / 360.0;
 
         public static final double ARM_L1_ANGLE                          = -2.07;
         public static final double ARM_L2_ANGLE                          = -4.11;

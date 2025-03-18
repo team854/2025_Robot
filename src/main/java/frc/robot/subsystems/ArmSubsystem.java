@@ -66,7 +66,8 @@ public class ArmSubsystem extends SubsystemBase {
         SparkMaxConfig shoulderConfig = new SparkMaxConfig();
 
         // Optionally, set additional configuration options such as idle mode here.
-        shoulderConfig.idleMode(IdleMode.kBrake);
+        shoulderConfig.idleMode(IdleMode.kCoast);
+        shoulderConfig.inverted(true);
         shoulderConfig.absoluteEncoder.zeroOffset(ArmConstants.SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET);
         shoulderConfig.absoluteEncoder.inverted(false); // FIXME
 
@@ -74,6 +75,7 @@ public class ArmSubsystem extends SubsystemBase {
 
         SparkMaxConfig followerConfig = new SparkMaxConfig();
         followerConfig.idleMode(IdleMode.kBrake);
+        followerConfig.inverted(true);
         shoulderFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         /*
@@ -119,7 +121,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void setShoulderSpeed(double speed) {
-        shoulderMotor.set(speed);
+        // shoulderMotor.set(speed);
         shoulderFollower.set(speed);
     }
 
