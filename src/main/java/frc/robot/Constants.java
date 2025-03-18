@@ -178,7 +178,7 @@ public final class Constants {
         /*
          * End Effector
          */
-        public static final double INTAKE_GROUND_SPEED                   = 1.0;
+        public static final double INTAKE_GROUND_SPEED                   = 0.6;
         public static final double INTAKE_SOURCE_SPEED                   = 1.0;
         public static final double BRANCH_SCORE_SPEED                    = 1.0;
         public static final double TROUGH_SCORE_SPEED                    = 0.3;
@@ -187,7 +187,7 @@ public final class Constants {
         /*
          * Values for shoulder
          */
-        public static final double kShoulderP                            = 2;
+        public static final double kShoulderP                            = 0.008;
         public static final double kShoulderI                            = 0.0;
         public static final double kShoulderD                            = 1;
         public static final double SHOULDER_GEAR_RATIO                   = 6;

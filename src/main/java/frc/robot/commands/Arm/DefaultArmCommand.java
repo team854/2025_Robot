@@ -9,6 +9,7 @@ public class DefaultArmCommand extends Command {
 
     private final ArmSubsystem   armSubsystem;
     private final RobotContainer robotContainer;
+    private double               shoulderSetpoint;
 
     public DefaultArmCommand(RobotContainer robotContainer, ArmSubsystem armSubsystem) {
 
@@ -19,10 +20,14 @@ public class DefaultArmCommand extends Command {
     }
 
     @Override
+    public void initialize() {
+        shoulderSetpoint = armSubsystem.getShoulderAngle();
+    }
+
+    @Override
     public void execute() {
 
-        double wristSpeed    = robotContainer.getWristSpeed();
-        double shoulderSpeed = robotContainer.getShoulderSpeed();
+        double wristSpeed = robotContainer.getWristSpeed();
 
         /*
          * Set the wrist speed
@@ -35,21 +40,10 @@ public class DefaultArmCommand extends Command {
          * The shoulder speed has different max up speed and down speed.
          */
 
-        double shoulderMotorSpeed = 0;
+        shoulderSetpoint += ArmConstants.MAX_DEGREES_PER_LOOP * robotContainer.getShoulderSpeed();
 
-        if (shoulderSpeed > 0) {
-            // Always add the hold speed when going up
-            shoulderMotorSpeed += armSubsystem.getShoulderHoldSpeed();
-            shoulderMotorSpeed += ArmConstants.MAX_SHOULDER_UP_SPEED * shoulderSpeed;
-        }
-        else {
-            // Only apply a down or hold current if the arm angle is greater than 45 deg above the resting position.
-            // Below that, let the arm drift down to save the motor from overheating.
-            shoulderMotorSpeed += armSubsystem.getShoulderHoldSpeed();
-            shoulderMotorSpeed += Math.abs(ArmConstants.MAX_SHOULDER_DOWN_SPEED) * shoulderSpeed;
-        }
 
-        armSubsystem.setShoulderSpeed(shoulderMotorSpeed);
+        armSubsystem.moveShoulderToSetpoint(shoulderSetpoint);
     }
 
     @Override

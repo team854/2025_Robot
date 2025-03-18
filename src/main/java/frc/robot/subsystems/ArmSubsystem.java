@@ -116,8 +116,10 @@ public class ArmSubsystem extends SubsystemBase {
      * Conversion: rotations = degrees / (360 * gear ratio)
      */
     public void moveShoulderToSetpoint(double setpoint) {
-        shoulderController.setGoal(setpoint);
-        System.out.println("Setting shoulder to: " + setpoint + " degrees (" + shoulderSetpoint + " rotations)");
+        double error     = setpoint - getShoulderAngle();
+        double PIDoutput = error * ArmConstants.kShoulderP;
+        PIDoutput = Math.min(Math.abs(PIDoutput), ArmConstants.MAX_SHOULDER_UP_SPEED) * Math.signum(PIDoutput);
+        setShoulderSpeed(PIDoutput + getShoulderHoldSpeed());
     }
 
     public void setShoulderSpeed(double speed) {
@@ -145,13 +147,8 @@ public class ArmSubsystem extends SubsystemBase {
      * The intake will stop once a game piece has been aquired
      */
     public void setIntakeSpeed(double intakeSpeed, boolean isReversed) {
-        if (!hasGamePiece() && isReversed) {
-            intakeMotor.set(VictorSPXControlMode.PercentOutput, isReversed ? -intakeSpeed : intakeSpeed);
-            System.out.println("Intaking...");
-        }
-        else {
-            intakeMotor.set(VictorSPXControlMode.PercentOutput, 0); // Stop intake if a coral is detected
-        }
+        intakeMotor.set(VictorSPXControlMode.PercentOutput, isReversed ? -intakeSpeed : intakeSpeed);
+        System.out.println("Intaking...");
     }
 
     /*
@@ -196,7 +193,7 @@ public class ArmSubsystem extends SubsystemBase {
      * @return the percent motor output required to hold the arm in position.
      */
     public double getShoulderHoldSpeed() {
-        if (getShoulderAngle() < ArmConstants.ARM_DEFAULT_ANGLE + 45) {
+        if (getShoulderAngle() < ArmConstants.ARM_DEFAULT_ANGLE + 60) {
             return 0;
         }
 

@@ -135,8 +135,8 @@ public class RobotContainer {
 
         // // Score coral and lower arm and elevator (RT)
         // m_driverController.rightTrigger().onTrue(scoreCoralCommand);
-        m_driverController.leftTrigger().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.INTAKE_GROUND_SPEED));
-        m_driverController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem, true, ArmConstants.BRANCH_SCORE_SPEED));
+        m_driverController.leftTrigger().whileTrue(new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED));
+        m_driverController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED));
 
 
 
@@ -168,10 +168,10 @@ public class RobotContainer {
         // Unwinch climb / lower robot (dpad down)
         m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_DOWN_SPEED));
 
-        m_operatorController.rightTrigger().whileTrue(new SetTopStageSpeed(elevatorSubsystem, -1));
-        m_operatorController.leftTrigger().whileTrue(new SetTopStageSpeed(elevatorSubsystem, 1));
+        m_operatorController.rightTrigger().whileTrue(new SetTopStageSpeed(elevatorSubsystem, 1));
+        m_operatorController.rightBumper().whileTrue(new SetTopStageSpeed(elevatorSubsystem, -1));
 
-        m_operatorController.rightBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem, 1));
+        m_operatorController.leftTrigger().whileTrue(new SetBottomStageSpeed(elevatorSubsystem, 1));
         m_operatorController.leftBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem, -1));
 
         // m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));
