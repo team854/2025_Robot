@@ -146,9 +146,9 @@ public final class Constants {
         /*
          * Speed Limits
          */
-        public static final double MAX_SHOULDER_UP_SPEED                 = 0.6;
-        public static final double MAX_SHOULDER_DOWN_SPEED               = -0.4;
-        public static final double MAX_SHOULDER_HOLD_SPEED               = 0.3;                     // should be .5
+        public static final double MAX_SHOULDER_UP_SPEED                 = 0.3;
+        public static final double MAX_SHOULDER_DOWN_SPEED               = -0.1;
+        public static final double MAX_DEGREES_PER_LOOP                  = 1.0;
 
         public static final double MAX_WRIST_SPEED                       = 0.2;
 

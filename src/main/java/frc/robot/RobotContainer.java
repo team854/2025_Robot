@@ -135,8 +135,8 @@ public class RobotContainer {
 
         // // Score coral and lower arm and elevator (RT)
         // m_driverController.rightTrigger().onTrue(scoreCoralCommand);
-        m_driverController.leftTrigger().toggleOnTrue(new IntakeCommand(armSubsystem, false, ArmConstants.INTAKE_GROUND_SPEED));
-        m_driverController.rightTrigger().toggleOnTrue(new IntakeCommand(armSubsystem, true, ArmConstants.BRANCH_SCORE_SPEED));
+        m_driverController.leftTrigger().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.INTAKE_GROUND_SPEED));
+        m_driverController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem, true, ArmConstants.BRANCH_SCORE_SPEED));
 
 
 

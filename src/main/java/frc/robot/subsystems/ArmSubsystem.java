@@ -66,7 +66,7 @@ public class ArmSubsystem extends SubsystemBase {
         SparkMaxConfig shoulderConfig = new SparkMaxConfig();
 
         // Optionally, set additional configuration options such as idle mode here.
-        shoulderConfig.idleMode(IdleMode.kCoast);
+        shoulderConfig.idleMode(IdleMode.kBrake);
         shoulderConfig.inverted(true);
         shoulderConfig.absoluteEncoder.zeroOffset(ArmConstants.SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET);
         shoulderConfig.absoluteEncoder.inverted(false); // FIXME
@@ -121,7 +121,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void setShoulderSpeed(double speed) {
-        // shoulderMotor.set(speed);
+        shoulderMotor.set(speed);
         shoulderFollower.set(speed);
     }
 
@@ -196,13 +196,17 @@ public class ArmSubsystem extends SubsystemBase {
      * @return the percent motor output required to hold the arm in position.
      */
     public double getShoulderHoldSpeed() {
+        if (getShoulderAngle() < ArmConstants.ARM_DEFAULT_ANGLE + 45) {
+            return 0;
+        }
 
         double angleDegrees = getShoulderAngle();
 
         // Convert the angle to radians
         double angleRadians = Math.toRadians(angleDegrees);
 
-        return ArmConstants.MAX_SHOULDER_HOLD_SPEED * Math.sin(angleRadians);
+        // return ArmConstants.MAX_SHOULDER_HOLD_SPEED * Math.sin(angleRadians);
+        return 0.2 * Math.sin(angleRadians) - ((180 - angleDegrees) * 0.0025 - 0.05);
     }
 
     /*

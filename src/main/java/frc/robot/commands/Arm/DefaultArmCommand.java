@@ -43,16 +43,10 @@ public class DefaultArmCommand extends Command {
             shoulderMotorSpeed += ArmConstants.MAX_SHOULDER_UP_SPEED * shoulderSpeed;
         }
         else {
-            // Only apply a down or hold current if the arm angle is greater than 15 deg above the resting position.
+            // Only apply a down or hold current if the arm angle is greater than 45 deg above the resting position.
             // Below that, let the arm drift down to save the motor from overheating.
-            if (armSubsystem.getShoulderAngle() > ArmConstants.ARM_DEFAULT_ANGLE + 15) {
-                shoulderMotorSpeed += armSubsystem.getShoulderHoldSpeed();
-                shoulderMotorSpeed += Math.abs(ArmConstants.MAX_SHOULDER_DOWN_SPEED) * shoulderSpeed;
-            }
-            else {
-                // let the motors drift down
-                shoulderMotorSpeed = 0;
-            }
+            shoulderMotorSpeed += armSubsystem.getShoulderHoldSpeed();
+            shoulderMotorSpeed += Math.abs(ArmConstants.MAX_SHOULDER_DOWN_SPEED) * shoulderSpeed;
         }
 
         armSubsystem.setShoulderSpeed(shoulderMotorSpeed);
