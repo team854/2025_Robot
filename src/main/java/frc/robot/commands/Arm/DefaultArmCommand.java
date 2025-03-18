@@ -36,11 +36,12 @@ public class DefaultArmCommand extends Command {
 
         /*
          * Set the shoulder speed
-         *
+         * 5
          * The shoulder speed has different max up speed and down speed.
          */
 
-        shoulderSetpoint += ArmConstants.MAX_DEGREES_PER_LOOP * robotContainer.getShoulderSpeed();
+        shoulderSetpoint = Math.min(175,
+            Math.max(17, shoulderSetpoint + ArmConstants.MAX_DEGREES_PER_LOOP * robotContainer.getShoulderSpeed()));
 
 
         armSubsystem.moveShoulderToSetpoint(shoulderSetpoint);
