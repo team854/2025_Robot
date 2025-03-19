@@ -19,11 +19,10 @@ public final class Constants {
     public static class OperatorConstants {
         public static final int    kDriverControllerPort    = 0;
         public static final int    kOperatorControllerPort  = 1;
-        public static final double DEADBAND                 = 0.05;
-        public static final double OPERATOR_DEADBAND        = 0.05;
-        public static final double SWERVE_TRANSLATION_SCALE = 1;
-        public static final double SWERVE_ROTATION_SCALE    = 1.2;                   // Negative values invert right stick
-        public static final double MAX_SPEED                = Units.feetToMeters(15);
+        public static final double DEADBAND                 = 0.1;
+        public static final double SWERVE_TRANSLATION_SCALE = 1.0;
+        public static final double SWERVE_ROTATION_SCALE    = 1.2;                     // Negative values invert right stick
+        public static final double MAX_SPEED                = Units.feetToMeters(14.5);
         public static final double FINE_SPEED_REDUCTION     = Units.feetToMeters(2);
         public static final double FINE_ROTATION_REDUCTION  = 0.8;
 
@@ -146,8 +145,8 @@ public final class Constants {
         /*
          * Speed Limits
          */
-        public static final double MAX_SHOULDER_UP_SPEED                 = 0.3;
-        public static final double MAX_SHOULDER_DOWN_SPEED               = -0.1;
+        public static final double MAX_SHOULDER_UP_SPEED                 = 0.45;
+        public static final double MAX_SHOULDER_DOWN_SPEED               = -0.15;
         public static final double MAX_DEGREES_PER_LOOP                  = 1.0;
 
         public static final double MAX_WRIST_SPEED                       = 0.2;
