@@ -12,8 +12,6 @@ public class SetArmAngleCommand extends Command {
         this.armSubsystem = armSubsystem;
         this.targetAngle  = targetAngle;
 
-        // Declare subsystem dependencies
-        // addRequirements(armSubsystem);
     }
 
     @Override

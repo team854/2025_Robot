@@ -60,6 +60,12 @@ public final class Constants {
         public static final double UPPER_STAGE_ALLOWED_CLOSED_LOOP_ERROR = 0.1;
 
         /*
+         * For manual control of top stage
+         */
+        public static final double ELEVATOR_TOP_STAGE_UP_SPEED           = 1.0;
+        public static final double ELEVATOR_TOP_STAGE_DOWN_SPEED         = 1.0;
+
+        /*
          * Elevator bottom stage PID
          */
         public static final double kLowerStageP                          = 0.5;
@@ -67,6 +73,12 @@ public final class Constants {
         public static final double kLowerStageD                          = 0.2;
         public static final double LOWER_STAGE_MAX_VELOCITY              = 120;
         public static final double LOWER_STAGE_MAX_ACCELERATION          = 120;
+
+        /*
+         * For manual control of bottom stage
+         */
+        public static final double ELEVATOR_BOTTOM_STAGE_UP_SPEED        = 1.0;
+        public static final double ELEVATOR_BOTTOM_STAGE_DOWN_SPEED      = 1.0;
 
         /*
          * Max and Min Height (feet) for lower stage
@@ -115,6 +127,8 @@ public final class Constants {
         public static final double LOWER_ELEVATOR_NET_SETPOINT         = 5.0;
         public static final double LOWER_ELEVATOR_PROCESSOR_SETPOINT   = 1.5;
         public static final double LOWER_ELEVATOR_SOURCE_SETPOINT      = 0;
+
+
     }
 
     public static class ClimbConstants {
