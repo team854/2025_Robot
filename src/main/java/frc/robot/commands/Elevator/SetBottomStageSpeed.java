@@ -12,8 +12,6 @@ public class SetBottomStageSpeed extends Command {
         this.elevatorSubsystem = elevatorSubsystem;
         this.bottomStageSpeed  = bottomStageSpeed;
 
-        // Declare subsystem dependencies
-        addRequirements(elevatorSubsystem);
     }
 
     @Override

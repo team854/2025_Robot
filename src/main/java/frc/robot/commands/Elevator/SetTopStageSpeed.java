@@ -13,7 +13,7 @@ public class SetTopStageSpeed extends Command {
         this.topStageSpeed     = topStageSpeed;
 
         // Declare subsystem dependencies
-        addRequirements(elevatorSubsystem);
+        // addRequirements(elevatorSubsystem);
     }
 
     @Override
@@ -23,6 +23,7 @@ public class SetTopStageSpeed extends Command {
     @Override
     public void execute() {
         elevatorSubsystem.setTopStageSpeed(topStageSpeed);
+        System.out.println("Moving Top Stage");
     }
 
     @Override

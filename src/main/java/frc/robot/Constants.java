@@ -19,11 +19,10 @@ public final class Constants {
     public static class OperatorConstants {
         public static final int    kDriverControllerPort    = 0;
         public static final int    kOperatorControllerPort  = 1;
-        public static final double DEADBAND                 = 0.03;
-        public static final double OPERATOR_DEADBAND        = 0.03;
-        public static final double SWERVE_TRANSLATION_SCALE = 1;
-        public static final double SWERVE_ROTATION_SCALE    = 1.2;                    // Negative values invert right stick
-        public static final double MAX_SPEED                = Units.feetToMeters(100);
+        public static final double DEADBAND                 = 0.1;
+        public static final double SWERVE_TRANSLATION_SCALE = 0.75;
+        public static final double SWERVE_ROTATION_SCALE    = 1.0;                     // Negative values invert right stick
+        public static final double MAX_SPEED                = Units.feetToMeters(14.5);
         public static final double FINE_SPEED_REDUCTION     = Units.feetToMeters(2);
         public static final double FINE_ROTATION_REDUCTION  = 0.8;
 
@@ -61,6 +60,12 @@ public final class Constants {
         public static final double UPPER_STAGE_ALLOWED_CLOSED_LOOP_ERROR = 0.1;
 
         /*
+         * For manual control of top stage
+         */
+        public static final double ELEVATOR_TOP_STAGE_UP_SPEED           = 1.0;
+        public static final double ELEVATOR_TOP_STAGE_DOWN_SPEED         = 1.0;
+
+        /*
          * Elevator bottom stage PID
          */
         public static final double kLowerStageP                          = 0.5;
@@ -68,6 +73,12 @@ public final class Constants {
         public static final double kLowerStageD                          = 0.2;
         public static final double LOWER_STAGE_MAX_VELOCITY              = 120;
         public static final double LOWER_STAGE_MAX_ACCELERATION          = 120;
+
+        /*
+         * For manual control of bottom stage
+         */
+        public static final double ELEVATOR_BOTTOM_STAGE_UP_SPEED        = 1.0;
+        public static final double ELEVATOR_BOTTOM_STAGE_DOWN_SPEED      = 1.0;
 
         /*
          * Max and Min Height (feet) for lower stage
@@ -116,6 +127,8 @@ public final class Constants {
         public static final double LOWER_ELEVATOR_NET_SETPOINT         = 5.0;
         public static final double LOWER_ELEVATOR_PROCESSOR_SETPOINT   = 1.5;
         public static final double LOWER_ELEVATOR_SOURCE_SETPOINT      = 0;
+
+
     }
 
     public static class ClimbConstants {
@@ -137,62 +150,73 @@ public final class Constants {
         /*
          * IDs and ports
          */
-        public static final int    SHOULDER_MOTOR_ID                  = 4;
-        public static final int    SHOULDER_FOLLOWER_ID               = 7;
-        public static final int    WRIST_MOTOR_ID                     = 5;
-        public static final int    INTAKE_MOTOR_ID                    = 6;
-        public static final int    INTAKE_SENSOR_PORT                 = 0;
+        public static final int    SHOULDER_MOTOR_ID                     = 4;
+        public static final int    SHOULDER_FOLLOWER_ID                  = 8;
+        public static final int    WRIST_MOTOR_ID                        = 5;
+        public static final int    INTAKE_MOTOR_ID                       = 6;
+        public static final int    INTAKE_SENSOR_PORT                    = 0;
+
+        /*
+         * Speed Limits
+         */
+        public static final double MAX_SHOULDER_UP_SPEED                 = 0.45;
+        public static final double MAX_SHOULDER_DOWN_SPEED               = -0.15;
+        public static final double MAX_DEGREES_PER_LOOP                  = 1.0;
+
+        public static final double MAX_WRIST_SPEED                       = 0.2;
 
         /*
          * Wrist rotation angles
          */
-        public static final double WRIST_VERTICAL_DEGREES             = -24.5;
-        public static final double WRIST_HORIZONTAL_DEGREES           = -0.28;
+        public static final double WRIST_VERTICAL_DEGREES                = -24.5;
+        public static final double WRIST_HORIZONTAL_DEGREES              = -0.28;
 
         /*
-         * Arm scoring angles
+         * Arm/shoulder scoring angles
          */
-        public static final double ARM_L1_ANGLE                       = -2.07;
-        public static final double ARM_L2_ANGLE                       = -4.11;
-        public static final double ARM_L3_ANGLE                       = -4.49;
-        public static final double ARM_L4_ANGLE                       = -3.99;
+        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.7130645 - 17.0 / 360.0;
+
+        public static final double ARM_L1_ANGLE                          = -2.07;
+        public static final double ARM_L2_ANGLE                          = -4.11;
+        public static final double ARM_L3_ANGLE                          = -4.49;
+        public static final double ARM_L4_ANGLE                          = -3.99;
 
         /*
          * Arm intake angles
          */
-        public static final double ARM_SOURCE_ANGLE                   = 90;
-        public static final double ARM_GROUND_ANGLE                   = 45;
-        public static final double ARM_DEFAULT_ANGLE                  = 0;
+        public static final double ARM_SOURCE_ANGLE                      = 90;
+        public static final double ARM_GROUND_ANGLE                      = 45;
+        public static final double ARM_DEFAULT_ANGLE                     = 0;
 
         /*
          * End Effector
          */
-        public static final double INTAKE_GROUND_SPEED                = 0.7;
-        public static final double INTAKE_SOURCE_SPEED                = 1.0;
-        public static final double BRANCH_SCORE_SPEED                 = 1.0;
-        public static final double TROUGH_SCORE_SPEED                 = 0.3;
-        public static final double PROCESSOR_SCORE_SPEED              = 1.0;
+        public static final double INTAKE_GROUND_SPEED                   = 0.6;
+        public static final double INTAKE_SOURCE_SPEED                   = 1.0;
+        public static final double BRANCH_SCORE_SPEED                    = 1.0;
+        public static final double TROUGH_SCORE_SPEED                    = 0.3;
+        public static final double PROCESSOR_SCORE_SPEED                 = 1.0;
 
         /*
          * Values for shoulder
          */
-        public static final double kShoulderP                         = 2;
-        public static final double kShoulderI                         = 0.0;
-        public static final double kShoulderD                         = 1;
-        public static final double SHOULDER_GEAR_RATIO                = 6;
-        public static final double SHOULDER_MAX_VELOCITY              = 120;
-        public static final double SHOULDER_MAX_ACCELERATION          = 120;
-        public static final double SHOULDER_ALLOWED_CLOSED_LOOP_ERROR = 1.0;
+        public static final double kShoulderP                            = 0.008;
+        public static final double kShoulderI                            = 0.0;
+        public static final double kShoulderD                            = 1;
+        public static final double SHOULDER_GEAR_RATIO                   = 6;
+        public static final double SHOULDER_MAX_VELOCITY                 = 120;
+        public static final double SHOULDER_MAX_ACCELERATION             = 120;
+        public static final double SHOULDER_ALLOWED_CLOSED_LOOP_ERROR    = 1.0;
 
         /*
          * Values for wrist
          */
-        public static final double kWristP                            = 0.01;
-        public static final double kWristI                            = 0.0;
-        public static final double kWristD                            = 0.005;
-        public static final double WRIST_GEAR_RATIO                   = 100.0;
-        public static final double WRIST_MAX_VELOCITY                 = 50;
-        public static final double WRIST_MAX_ACCELERATION             = 50;
+        public static final double kWristP                               = 0.01;
+        public static final double kWristI                               = 0.0;
+        public static final double kWristD                               = 0.005;
+        public static final double WRIST_GEAR_RATIO                      = 100.0;
+        public static final double WRIST_MAX_VELOCITY                    = 50;
+        public static final double WRIST_MAX_ACCELERATION                = 50;
 
     }
 

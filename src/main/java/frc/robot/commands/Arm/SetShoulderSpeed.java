@@ -11,8 +11,6 @@ public class SetShoulderSpeed extends Command {
         this.armSubsystem = armSubsystem;
         this.speed        = speed;
 
-        // Declare subsystem dependencies
-        // addRequirements(armSubsystem);
     }
 
     @Override

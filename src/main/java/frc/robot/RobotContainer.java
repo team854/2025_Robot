@@ -9,11 +9,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ClimbConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.autos.AutoModeChooser;
+import frc.robot.commands.Arm.DefaultArmCommand;
 import frc.robot.commands.Arm.IntakeCommand;
-import frc.robot.commands.Arm.SetShoulderSpeed;
-import frc.robot.commands.Arm.SetWristSpeed;
 import frc.robot.commands.Climb.ClimbCommand;
 import frc.robot.commands.CommandGroups.CoralIntake.GroundIntake;
 import frc.robot.commands.CommandGroups.CoralIntake.SourceIntake;
@@ -89,6 +89,7 @@ public class RobotContainer {
 
         // ----------Set default drive command here----------\\
         drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+        armSubsystem.setDefaultCommand(new DefaultArmCommand(this, armSubsystem));
 
     }
 
@@ -135,9 +136,8 @@ public class RobotContainer {
 
         // // Score coral and lower arm and elevator (RT)
         // m_driverController.rightTrigger().onTrue(scoreCoralCommand);
-        m_driverController.leftTrigger().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.INTAKE_GROUND_SPEED));
-        m_driverController.leftBumper().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.INTAKE_SOURCE_SPEED));
-        m_driverController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem, true, ArmConstants.BRANCH_SCORE_SPEED));
+        m_driverController.leftTrigger().whileTrue(new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED));
+        m_driverController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED));
 
 
 
@@ -169,19 +169,41 @@ public class RobotContainer {
         // Unwinch climb / lower robot (dpad down)
         m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_DOWN_SPEED));
 
-        m_operatorController.rightTrigger().whileTrue(new SetTopStageSpeed(elevatorSubsystem, -1));
-        m_operatorController.leftTrigger().whileTrue(new SetTopStageSpeed(elevatorSubsystem, 1));
+        m_operatorController.rightTrigger().whileTrue(new SetTopStageSpeed(elevatorSubsystem,
+            ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED));
+        m_operatorController.rightBumper().whileTrue(new SetTopStageSpeed(elevatorSubsystem,
+            ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED * -1));
 
-        m_operatorController.rightBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem, 1));
-        m_operatorController.leftBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem, -1));
+        m_operatorController.leftTrigger().whileTrue(new SetBottomStageSpeed(elevatorSubsystem,
+            ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED));
+        m_operatorController.leftBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem,
+            ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED * -1));
 
-        m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));
-        m_operatorController.x().whileTrue(new SetWristSpeed(armSubsystem, 0.2));
+        // m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));
+        // m_operatorController.x().whileTrue(new SetWristSpeed(armSubsystem, 0.2));
+        //
+        // m_operatorController.y().whileTrue(new SetShoulderSpeed(armSubsystem, 1));
+        // m_operatorController.a().whileTrue(new SetShoulderSpeed(armSubsystem, -1));
 
-        m_operatorController.y().whileTrue(new SetShoulderSpeed(armSubsystem, 1));
-        m_operatorController.a().whileTrue(new SetShoulderSpeed(armSubsystem, -1));
+    }
 
+    /*
+     * Methods used by arm default commands
+     */
+    public double getShoulderSpeed() {
+        return -deadband(m_operatorController.getLeftY(), 0.2);
+    }
 
+    public double getWristSpeed() {
+        return deadband(m_operatorController.getRightX(), 0.2);
+    }
+
+    public double deadband(double input, double deadband) {
+
+        if (Math.abs(input) > deadband) {
+            return (Math.abs(input) - deadband) / (1 - deadband) * Math.signum(input);
+        }
+        return 0;
     }
 
     /*

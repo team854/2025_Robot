@@ -2,11 +2,13 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -20,7 +22,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Motor controllers for shoulder and wrist
     private final SparkMax              shoulderMotor;
-    // private final SparkMax shoulderFollower;
+    private final SparkMax              shoulderFollower;
     private final SparkMax              wristMotor;
 
     // Controller for the intake wheels
@@ -32,6 +34,7 @@ public class ArmSubsystem extends SubsystemBase {
     // Encoders
     private final RelativeEncoder       shoulderEncoder;
     private final RelativeEncoder       wristEncoder;
+    private final AbsoluteEncoder       shoulderAbsoluteEncoder;
 
     // WPILib Profiled PID controllers with trapezoidal constraints
     private final ProfiledPIDController shoulderController;
@@ -43,27 +46,41 @@ public class ArmSubsystem extends SubsystemBase {
 
     public ArmSubsystem() {
         // Initialize motors
-        shoulderMotor   = new SparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
-        // shoulderFollower = new SparkMax(ArmConstants.SHOULDER_FOLLOWER_ID, MotorType.kBrushless);
-        wristMotor      = new SparkMax(ArmConstants.WRIST_MOTOR_ID, MotorType.kBrushless);
-        intakeMotor     = new VictorSPX(ArmConstants.INTAKE_MOTOR_ID);
+        shoulderMotor           = new SparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
+        shoulderFollower        = new SparkMax(ArmConstants.SHOULDER_FOLLOWER_ID, MotorType.kBrushless);
+        wristMotor              = new SparkMax(ArmConstants.WRIST_MOTOR_ID, MotorType.kBrushless);
+        intakeMotor             = new VictorSPX(ArmConstants.INTAKE_MOTOR_ID);
 
         // Retrieve encoders
-        shoulderEncoder = shoulderMotor.getEncoder();
-        wristEncoder    = wristMotor.getEncoder();
+        shoulderEncoder         = shoulderMotor.getEncoder();
+        shoulderAbsoluteEncoder = shoulderMotor.getAbsoluteEncoder();
+        wristEncoder            = wristMotor.getEncoder();
 
         // Initialize intake sensor
-        intakeSensor    = new DigitalInput(ArmConstants.INTAKE_SENSOR_PORT);
+        intakeSensor            = new DigitalInput(ArmConstants.INTAKE_SENSOR_PORT);
 
+        /*
+         * Shoulder Config
+         */
         // Configure SparkMax controllers (basic configuration)
         SparkMaxConfig shoulderConfig = new SparkMaxConfig();
+
         // Optionally, set additional configuration options such as idle mode here.
+        shoulderConfig.idleMode(IdleMode.kBrake);
+        shoulderConfig.inverted(true);
+        shoulderConfig.absoluteEncoder.zeroOffset(ArmConstants.SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET);
+        shoulderConfig.absoluteEncoder.inverted(false); // FIXME
+
         shoulderMotor.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        // SparkMaxConfig followerConfig = new SparkMaxConfig();
-        // followerConfig.follow(shoulderMotor);
-        // shoulderFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        SparkMaxConfig followerConfig = new SparkMaxConfig();
+        followerConfig.idleMode(IdleMode.kBrake);
+        followerConfig.inverted(true);
+        shoulderFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+        /*
+         * Wrist Config
+         */
         SparkMaxConfig wristConfig = new SparkMaxConfig();
         wristMotor.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -99,13 +116,15 @@ public class ArmSubsystem extends SubsystemBase {
      * Conversion: rotations = degrees / (360 * gear ratio)
      */
     public void moveShoulderToSetpoint(double setpoint) {
-        shoulderController.setGoal(setpoint);
-        System.out.println("Setting shoulder to: " + setpoint + " degrees (" + shoulderSetpoint + " rotations)");
+        double error     = setpoint - getShoulderAngle();
+        double PIDoutput = error * ArmConstants.kShoulderP;
+        PIDoutput = Math.min(Math.abs(PIDoutput), ArmConstants.MAX_SHOULDER_UP_SPEED) * Math.signum(PIDoutput);
+        setShoulderSpeed(PIDoutput + getShoulderHoldSpeed());
     }
 
     public void setShoulderSpeed(double speed) {
         shoulderMotor.set(speed);
-        // shoulderFollower.set(speed);
+        shoulderFollower.set(speed);
     }
 
     /**
@@ -128,13 +147,8 @@ public class ArmSubsystem extends SubsystemBase {
      * The intake will stop once a game piece has been aquired
      */
     public void setIntakeSpeed(double intakeSpeed, boolean isReversed) {
-        if (!hasGamePiece() && isReversed) {
-            intakeMotor.set(VictorSPXControlMode.PercentOutput, isReversed ? -intakeSpeed : intakeSpeed);
-            System.out.println("Intaking...");
-        }
-        else {
-            intakeMotor.set(VictorSPXControlMode.PercentOutput, 0); // Stop intake if a coral is detected
-        }
+        intakeMotor.set(VictorSPXControlMode.PercentOutput, isReversed ? -intakeSpeed : intakeSpeed);
+        System.out.println("Intaking...");
     }
 
     /*
@@ -164,6 +178,34 @@ public class ArmSubsystem extends SubsystemBase {
         return shoulderEncoder.getPosition();
     }
 
+    public double getShoulderAngle() {
+        // return the position as an angle
+        return shoulderAbsoluteEncoder.getPosition() * 360;
+    }
+
+    /**
+     * Get the shoulder hold speed required to hold the arm in position.
+     * <b>
+     * The hold speed is calculated based on the arm angle. An arm angle of 90 degrees (parallel to the
+     * ground) will require the full hold amount - other angles will require less based on the sine of
+     * the angle (where zero is straight down, and 180 is straight up).
+     *
+     * @return the percent motor output required to hold the arm in position.
+     */
+    public double getShoulderHoldSpeed() {
+        if (getShoulderAngle() < ArmConstants.ARM_DEFAULT_ANGLE + 60) {
+            return 0;
+        }
+
+        double angleDegrees = getShoulderAngle();
+
+        // Convert the angle to radians
+        double angleRadians = Math.toRadians(angleDegrees);
+
+        // return ArmConstants.MAX_SHOULDER_HOLD_SPEED * Math.sin(angleRadians);
+        return 0.2 * Math.sin(angleRadians) - ((180 - angleDegrees) * 0.0025 - 0.05);
+    }
+
     /*
      * Returns wrist encoder position
      * If multiple rotations have occured, values will be added to total
@@ -186,6 +228,7 @@ public class ArmSubsystem extends SubsystemBase {
         // wristMotor.setVoltage(wristOutput);
 
         // Update SmartDashboard
+        SmartDashboard.putNumber("Arm/Shoulder Angle", getShoulderAngle());
         SmartDashboard.putBoolean("Intake/Game Piece Detected", hasGamePiece());
         // SmartDashboard.putNumber("Arm/Shoulder Motor Output", shoulderOutput);
         // SmartDashboard.putNumber("Arm/Shoulder Follower Output", shoulderFollowerOutput);
