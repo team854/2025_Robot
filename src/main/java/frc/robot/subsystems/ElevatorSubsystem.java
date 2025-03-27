@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -62,6 +63,21 @@ public class ElevatorSubsystem extends SubsystemBase {
         upperStageConfig.absoluteEncoder.zeroOffset(ElevatorConstants.ELEVATOR_TOP_STAGE_ENCODER_ZERO_OFFSET);
         upperStageMotor.configure(upperStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+        /*
+         * Initialize soft limits for elevator so that it will not go past a certain point
+         */
+        SoftLimitConfig upperStageSoftLimitConfig = new SoftLimitConfig();
+        SoftLimitConfig lowerStageSoftLimitConfig = new SoftLimitConfig();
+
+        upperStageSoftLimitConfig.forwardSoftLimitEnabled(true);
+        upperStageSoftLimitConfig.forwardSoftLimit(ElevatorConstants.ELEVATOR_LOWER_STAGE_UPPER_LIMIT);
+        upperStageSoftLimitConfig.reverseSoftLimitEnabled(true);
+        upperStageSoftLimitConfig.forwardSoftLimit(ElevatorConstants.ELEVATOR_LOWER_STAGE_LOWER_LIMIT);
+
+        lowerStageSoftLimitConfig.forwardSoftLimitEnabled(true);
+        lowerStageSoftLimitConfig.forwardSoftLimit(ElevatorConstants.ELEVATOR_UPPER_STAGE_UPPER_LIMIT);
+        lowerStageSoftLimitConfig.reverseSoftLimitEnabled(true);
+        lowerStageSoftLimitConfig.forwardSoftLimit(ElevatorConstants.ELEVATOR_UPPER_STAGE_LOWER_LIMIT);
 
         // Initialize profiled PID controllers
         lowerStageController = new ProfiledPIDController(
