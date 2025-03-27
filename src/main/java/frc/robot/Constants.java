@@ -46,45 +46,60 @@ public final class Constants {
         /*
          * Elevator CAN IDs
          */
-        public static final int    LOWER_STAGE_MOTOR_CANID               = 3;
-        public static final int    UPPER_STAGE_MOTOR_CANID               = 2;
+        public static final int    LOWER_STAGE_MOTOR_CANID                = 3;
+        public static final int    UPPER_STAGE_MOTOR_CANID                = 2;
+
+        /*
+         * Elevator encoder offsets
+         */
+        public static final double ELEVATOR_TOP_STAGE_ENCODER_ZERO_OFFSET = 0.0;  // Fix this
+
 
         /*
          * Elevator top stage PID
          */
-        public static final double kUpperStageP                          = 0.5;
-        public static final double kUpperStageI                          = 0.0;
-        public static final double kUpperStageD                          = 0.1;
-        public static final double UPPER_STAGE_MAX_VELOCITY              = 120.0;
-        public static final double UPPER_STAGE_MAX_ACCELERATION          = 120.0;
-        public static final double UPPER_STAGE_ALLOWED_CLOSED_LOOP_ERROR = 0.1;
+        public static final double kUpperStageP                           = 0.5;
+        public static final double kUpperStageI                           = 0.0;
+        public static final double kUpperStageD                           = 0.1;
+        public static final double UPPER_STAGE_MAX_VELOCITY               = 120.0;
+        public static final double UPPER_STAGE_MAX_ACCELERATION           = 120.0;
+        public static final double UPPER_STAGE_ALLOWED_CLOSED_LOOP_ERROR  = 0.1;
 
         /*
          * For manual control of top stage
          */
-        public static final double ELEVATOR_TOP_STAGE_UP_SPEED           = 1.0;
-        public static final double ELEVATOR_TOP_STAGE_DOWN_SPEED         = 1.0;
+        public static final double ELEVATOR_TOP_STAGE_UP_SPEED            = 1.0;
+        public static final double ELEVATOR_TOP_STAGE_DOWN_SPEED          = 1.0;
 
         /*
          * Elevator bottom stage PID
          */
-        public static final double kLowerStageP                          = 0.5;
-        public static final double kLowerStageI                          = 0.0;
-        public static final double kLowerStageD                          = 0.2;
-        public static final double LOWER_STAGE_MAX_VELOCITY              = 120;
-        public static final double LOWER_STAGE_MAX_ACCELERATION          = 120;
+        public static final double kLowerStageP                           = 0.5;
+        public static final double kLowerStageI                           = 0.0;
+        public static final double kLowerStageD                           = 0.2;
+        public static final double LOWER_STAGE_MAX_VELOCITY               = 120;
+        public static final double LOWER_STAGE_MAX_ACCELERATION           = 120;
 
         /*
          * For manual control of bottom stage
          */
-        public static final double ELEVATOR_BOTTOM_STAGE_UP_SPEED        = 1.0;
-        public static final double ELEVATOR_BOTTOM_STAGE_DOWN_SPEED      = 1.0;
+        public static final double ELEVATOR_BOTTOM_STAGE_UP_SPEED         = 1.0;
+        public static final double ELEVATOR_BOTTOM_STAGE_DOWN_SPEED       = 1.0;
+
+        /*
+         * Elevator Limits
+         */
+        public static final double ELEVATOR_UPPER_STAGE_UPPER_LIMIT       = 0.0;
+        public static final double ELEVATOR_UPPER_STAGE_LOWER_LIMIT       = 0.0;
+        public static final double ELEVATOR_LOWER_STAGE_UPPER_LIMIT       = 0.0;
+        public static final double ELEVATOR_LOWER_STAGE_LOWER_LIMIT       = 0.0;
+
 
         /*
          * Max and Min Height (feet) for lower stage
          */
-        public static final double LOWER_STAGE_MIN_HEIGHT                = 0.0;
-        public static final double LOWER_STAGE_MAX_HEIGHT                = 3.0;
+        public static final double LOWER_STAGE_MIN_HEIGHT                 = 0.0;
+        public static final double LOWER_STAGE_MAX_HEIGHT                 = 3.0;
 
         /*
          * Elevator Ratios

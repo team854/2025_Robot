@@ -165,16 +165,17 @@ public class RobotContainer {
         // m_operatorController.leftTrigger().onTrue(groundIntakeCommand);
 
         // Winch climb / raise robot (dpad up)
-        m_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_UP_SPEED));
+        m_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem,
+            ClimbConstants.CLIMB_UP_SPEED));
 
         // Unwinch climb / lower robot (dpad down)
-        m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_DOWN_SPEED));
+        m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem,
+            ClimbConstants.CLIMB_DOWN_SPEED));
 
         m_operatorController.rightTrigger().whileTrue(new SetTopStageSpeed(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED));
         m_operatorController.rightBumper().whileTrue(new SetTopStageSpeed(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED * -1));
-
         m_operatorController.leftTrigger().whileTrue(new SetBottomStageSpeed(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED));
         m_operatorController.leftBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem,

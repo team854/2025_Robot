@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -21,18 +22,20 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private final RelativeEncoder       lowerStageEncoder;
     private final RelativeEncoder       upperStageEncoder;
+    private final AbsoluteEncoder       upperStageAbsoluteEncoder;
 
     private final ProfiledPIDController lowerStageController;
     private final ProfiledPIDController upperStageController;
 
     public ElevatorSubsystem() {
         // Initialize motors
-        lowerStageMotor   = new SparkMax(ElevatorConstants.LOWER_STAGE_MOTOR_CANID, MotorType.kBrushless);
-        upperStageMotor   = new SparkMax(ElevatorConstants.UPPER_STAGE_MOTOR_CANID, MotorType.kBrushless);
+        lowerStageMotor           = new SparkMax(ElevatorConstants.LOWER_STAGE_MOTOR_CANID, MotorType.kBrushless);
+        upperStageMotor           = new SparkMax(ElevatorConstants.UPPER_STAGE_MOTOR_CANID, MotorType.kBrushless);
 
         // Retrieve encoders
-        lowerStageEncoder = lowerStageMotor.getEncoder();
-        upperStageEncoder = upperStageMotor.getEncoder();
+        lowerStageEncoder         = lowerStageMotor.getEncoder();
+        upperStageEncoder         = upperStageMotor.getEncoder();
+        upperStageAbsoluteEncoder = upperStageMotor.getAbsoluteEncoder();
 
         // Define trapezoidal motion profile constraints
         TrapezoidProfile.Constraints lowerStageConstraints = new TrapezoidProfile.Constraints(
@@ -49,10 +52,14 @@ public class ElevatorSubsystem extends SubsystemBase {
          */
         SparkMaxConfig               lowerStageConfig      = new SparkMaxConfig();
         lowerStageConfig.idleMode(IdleMode.kBrake);
+        lowerStageConfig.inverted(false); // FIX ME!!!!
         lowerStageMotor.configure(lowerStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         SparkMaxConfig upperStageConfig = new SparkMaxConfig();
         upperStageConfig.idleMode(IdleMode.kBrake);
+        upperStageConfig.inverted(false); // FIX ME!!!!!!!!
+        upperStageConfig.absoluteEncoder.inverted(false); // FIX ME AS WELL!!!
+        upperStageConfig.absoluteEncoder.zeroOffset(ElevatorConstants.ELEVATOR_TOP_STAGE_ENCODER_ZERO_OFFSET);
         upperStageMotor.configure(upperStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
@@ -69,6 +76,10 @@ public class ElevatorSubsystem extends SubsystemBase {
             ElevatorConstants.kUpperStageD,
             upperStageConstraints);
 
+        /*
+         * Set relative encoder offsets
+         */
+        upperStageEncoder.setPosition(getUpperStageAbsoluteEncoderPosition());
     }
 
     /*
@@ -146,6 +157,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     /*
+     * Returns upper stage absolute encoder position
+     * use for setting initial relative encoder position
+     */
+    public double getUpperStageAbsoluteEncoderPosition() {
+        return upperStageAbsoluteEncoder.getPosition();
+    }
+
+    /*
      * Returns the height of the upper stage in feet
      */
     public double getUpperStageHeight() {
@@ -167,8 +186,46 @@ public class ElevatorSubsystem extends SubsystemBase {
         return getLowerStageEncoderPosition() * ElevatorConstants.ROTATIONS_TO_FEET_LOWER;
     }
 
+    /*
+     * Returns upper stage speed
+     */
+    public double getUpperStageSpeed() {
+        return upperStageMotor.get();
+    }
+
+    /*
+     * Returns lower stage speed
+     */
+    public double getLowerStageSpeed() {
+        return lowerStageMotor.get();
+    }
+
+    /*
+     * Sets motor speeds to zero if limit is exceeded
+     */
+    public void checkElevatorLimits(double upperStageSpeed, double lowerStageSpeed) {
+        if (getUpperStageEncoderPosition() <= ElevatorConstants.ELEVATOR_UPPER_STAGE_LOWER_LIMIT && upperStageSpeed < 0) {
+            upperStageMotor.set(0);
+            System.out.println("Upper stage at lower limit");
+        }
+        if (getUpperStageEncoderPosition() >= ElevatorConstants.ELEVATOR_UPPER_STAGE_UPPER_LIMIT && upperStageSpeed > 0) {
+            upperStageMotor.set(0);
+            System.out.println("Upper stage at upper limit");
+        }
+        if (getLowerStageEncoderPosition() >= ElevatorConstants.ELEVATOR_LOWER_STAGE_LOWER_LIMIT && lowerStageSpeed > 0) {
+            lowerStageMotor.set(0);
+            System.out.println("Lower stage at lower limit");
+        }
+        if (getLowerStageEncoderPosition() >= ElevatorConstants.ELEVATOR_LOWER_STAGE_UPPER_LIMIT && lowerStageSpeed > 0) {
+            lowerStageMotor.set(0);
+            System.out.println("Lower stage at upper limit");
+        }
+    }
+
     @Override
     public void periodic() {
+
+        checkElevatorLimits(getUpperStageSpeed(), getLowerStageSpeed());
         // Lower stage control
         // double lowerStageMeasurement = lowerStageEncoder.getPosition();
         // double lowerStageOutput = lowerStageController.calculate(lowerStageMeasurement);
