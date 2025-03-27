@@ -32,8 +32,8 @@ public final class Constants {
         /*
          * Shoulder
          */
-        public static final double SHOULDER_LOWER_TOLERANCE = 0.1;
-        public static final double SHOULDER_UPPER_TOLERANCE = 0.1;
+        public static final double SHOULDER_LOWER_TOLERANCE = 5;
+        public static final double SHOULDER_UPPER_TOLERANCE = 5;
         /*
          * Elevator
          */
@@ -162,10 +162,10 @@ public final class Constants {
          */
         public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.7130645 - 17.0 / 360.0;
 
-        public static final double ARM_L1_ANGLE                          = -2.07;
-        public static final double ARM_L2_ANGLE                          = -4.11;
-        public static final double ARM_L3_ANGLE                          = -4.49;
-        public static final double ARM_L4_ANGLE                          = -3.99;
+        public static final double ARM_L1_ANGLE                          = 20.0;
+        public static final double ARM_L2_ANGLE                          = 90.0;
+        public static final double ARM_L3_ANGLE                          = 90.0;
+        public static final double ARM_L4_ANGLE                          = 100.0;
 
         /*
          * Arm intake angles
@@ -173,6 +173,12 @@ public final class Constants {
         public static final double ARM_SOURCE_ANGLE                      = 90;
         public static final double ARM_GROUND_ANGLE                      = 45;
         public static final double ARM_DEFAULT_ANGLE                     = 0;
+
+        /*
+         * Other arm angles
+         */
+        public static final double ARM_HORIZONTAL_ANGLE                  = 90.0;
+        public static final double ARM_TOP_ANGLE                         = 175.0;
 
         /*
          * End Effector
