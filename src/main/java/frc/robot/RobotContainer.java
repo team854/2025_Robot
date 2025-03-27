@@ -14,6 +14,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.autos.AutoModeChooser;
 import frc.robot.commands.Arm.DefaultArmCommand;
 import frc.robot.commands.Arm.IntakeCommand;
+import frc.robot.commands.Arm.SetArmAngleCommand;
 import frc.robot.commands.Climb.ClimbCommand;
 import frc.robot.commands.CommandGroups.CoralIntake.GroundIntake;
 import frc.robot.commands.CommandGroups.CoralIntake.SourceIntake;
@@ -145,17 +146,17 @@ public class RobotContainer {
         // // Operator Controller Commands
         // // --------------------------------------------------------
 
-        // // Set elevator and arm to L1 setpoints (a)
-        // m_operatorController.a().onTrue(new SetShoulderSpeed(armSubsystem, -1));
+        // // Set elevator and arm to ground setpoint
+        m_operatorController.a().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE));
 
-        // // Set elevator and arm to L2 setpoints (x)
-        // m_operatorController.x().onTrue(setL2Command);
+        // // Set elevator and arm to horizontal setpoint
+        m_operatorController.x().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_HORIZONTAL_ANGLE));
 
-        // // Set elevator and arm to L3 setpoints (y)
-        // m_operatorController.y().onTrue(setL3Command);
+        // // Set elevator and arm to L4 setpoint
+        m_operatorController.y().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE));
 
-        // // Set elevator and arm to L4 setpoints (b)
-        // m_operatorController.b().onTrue(setL4Command);
+        // // Set elevator and arm to top setpoint
+        m_operatorController.b().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_TOP_ANGLE));
 
         // // Set elevator and arm to source intake setpoints, begin intaking (LB)
         // m_operatorController.leftBumper().onTrue(sourceIntakeCommand);
@@ -164,16 +165,17 @@ public class RobotContainer {
         // m_operatorController.leftTrigger().onTrue(groundIntakeCommand);
 
         // Winch climb / raise robot (dpad up)
-        m_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_UP_SPEED));
+        m_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem,
+            ClimbConstants.CLIMB_UP_SPEED));
 
         // Unwinch climb / lower robot (dpad down)
-        m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem, ClimbConstants.CLIMB_DOWN_SPEED));
+        m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem,
+            ClimbConstants.CLIMB_DOWN_SPEED));
 
         m_operatorController.rightTrigger().whileTrue(new SetTopStageSpeed(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED));
         m_operatorController.rightBumper().whileTrue(new SetTopStageSpeed(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED * -1));
-
         m_operatorController.leftTrigger().whileTrue(new SetBottomStageSpeed(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED));
         m_operatorController.leftBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem,

@@ -1,7 +1,6 @@
 package frc.robot.commands.Arm;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.Tolerances;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class SetArmAngleCommand extends Command {
@@ -11,15 +10,11 @@ public class SetArmAngleCommand extends Command {
     public SetArmAngleCommand(ArmSubsystem armSubsystem, double targetAngle) {
         this.armSubsystem = armSubsystem;
         this.targetAngle  = targetAngle;
-
     }
 
     @Override
     public void initialize() {
         System.out.println("Setting arm angle to " + targetAngle);
-        armSubsystem.moveShoulderToSetpoint(targetAngle);
-
-
     }
 
     @Override
@@ -30,12 +25,6 @@ public class SetArmAngleCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return armSubsystem.getShoulderEncoderPosition() >= targetAngle - Tolerances.SHOULDER_LOWER_TOLERANCE &&
-            armSubsystem.getShoulderEncoderPosition() < targetAngle + Tolerances.SHOULDER_UPPER_TOLERANCE;
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        armSubsystem.stop();
+        return true;
     }
 }

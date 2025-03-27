@@ -22,7 +22,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Motor controllers for shoulder and wrist
     private final SparkMax              shoulderMotor;
-    private final SparkMax              shoulderFollower;
+    // private final SparkMax shoulderFollower;
     private final SparkMax              wristMotor;
 
     // Controller for the intake wheels
@@ -47,7 +47,7 @@ public class ArmSubsystem extends SubsystemBase {
     public ArmSubsystem() {
         // Initialize motors
         shoulderMotor           = new SparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
-        shoulderFollower        = new SparkMax(ArmConstants.SHOULDER_FOLLOWER_ID, MotorType.kBrushless);
+        // shoulderFollower = new SparkMax(ArmConstants.SHOULDER_FOLLOWER_ID, MotorType.kBrushless);
         wristMotor              = new SparkMax(ArmConstants.WRIST_MOTOR_ID, MotorType.kBrushless);
         intakeMotor             = new VictorSPX(ArmConstants.INTAKE_MOTOR_ID);
 
@@ -69,14 +69,14 @@ public class ArmSubsystem extends SubsystemBase {
         shoulderConfig.idleMode(IdleMode.kBrake);
         shoulderConfig.inverted(true);
         shoulderConfig.absoluteEncoder.zeroOffset(ArmConstants.SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET);
-        shoulderConfig.absoluteEncoder.inverted(false); // FIXME
+        shoulderConfig.absoluteEncoder.inverted(false);
 
         shoulderMotor.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        SparkMaxConfig followerConfig = new SparkMaxConfig();
-        followerConfig.idleMode(IdleMode.kBrake);
-        followerConfig.inverted(true);
-        shoulderFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // SparkMaxConfig followerConfig = new SparkMaxConfig();
+        // followerConfig.idleMode(IdleMode.kBrake);
+        // followerConfig.inverted(true);
+        // shoulderFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         /*
          * Wrist Config
@@ -119,12 +119,11 @@ public class ArmSubsystem extends SubsystemBase {
         double error     = setpoint - getShoulderAngle();
         double PIDoutput = error * ArmConstants.kShoulderP;
         PIDoutput = Math.min(Math.abs(PIDoutput), ArmConstants.MAX_SHOULDER_UP_SPEED) * Math.signum(PIDoutput);
-        setShoulderSpeed(PIDoutput + getShoulderHoldSpeed());
+        setShoulderSpeed(PIDoutput);
     }
 
     public void setShoulderSpeed(double speed) {
         shoulderMotor.set(speed);
-        shoulderFollower.set(speed);
     }
 
     /**
