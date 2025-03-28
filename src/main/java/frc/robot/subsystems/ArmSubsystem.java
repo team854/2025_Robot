@@ -69,7 +69,7 @@ public class ArmSubsystem extends SubsystemBase {
         shoulderConfig.idleMode(IdleMode.kBrake);
         shoulderConfig.inverted(true);
         shoulderConfig.absoluteEncoder.zeroOffset(ArmConstants.SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET);
-        shoulderConfig.absoluteEncoder.inverted(false);
+        shoulderConfig.absoluteEncoder.inverted(true);
 
         shoulderMotor.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
