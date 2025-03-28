@@ -255,8 +255,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Update SmartDashboard
         SmartDashboard.putNumber("Elevator/Lower Stage Encoder", getLowerStageEncoderPosition());
         SmartDashboard.putNumber("Elevator/Upper Stage Encoder", getUpperStageEncoderPosition());
-        SmartDashboard.putNumber("Elevator/Lower Stage Position", getLowerStageHeight());
-        SmartDashboard.putNumber("Elevator/Upper Stage Position", getUpperStageHeight());
+        SmartDashboard.putNumber("Elevator/Upper Stage Absolute Encoder", getUpperStageAbsoluteEncoderPosition());
         SmartDashboard.putNumber("Elevator/Lower Stage Setpoint", lowerStageController.getSetpoint().position);
         SmartDashboard.putNumber("Elevator/Upper Stage Setpoint", upperStageController.getSetpoint().position);
 
