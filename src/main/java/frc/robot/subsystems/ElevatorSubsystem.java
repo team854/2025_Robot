@@ -39,11 +39,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         upperStageAbsoluteEncoder = upperStageMotor.getAbsoluteEncoder();
 
         // Define trapezoidal motion profile constraints
-        TrapezoidProfile.Constraints lowerStageConstraints = new TrapezoidProfile.Constraints(
+        TrapezoidProfile.Constraints lowerStageConstraints     = new TrapezoidProfile.Constraints(
             ElevatorConstants.LOWER_STAGE_MAX_VELOCITY,
             ElevatorConstants.LOWER_STAGE_MAX_ACCELERATION);
 
-        TrapezoidProfile.Constraints upperStageConstraints = new TrapezoidProfile.Constraints(
+        TrapezoidProfile.Constraints upperStageConstraints     = new TrapezoidProfile.Constraints(
             ElevatorConstants.UPPER_STAGE_MAX_VELOCITY,
             ElevatorConstants.UPPER_STAGE_MAX_ACCELERATION);
 
@@ -51,33 +51,31 @@ public class ElevatorSubsystem extends SubsystemBase {
          * Create SparkMAX configs and burn them to the motors
          * Both motors should be set to brake to minimize how fast the elevator slides when disabled
          */
-        SparkMaxConfig               lowerStageConfig      = new SparkMaxConfig();
+
+        SoftLimitConfig              upperStageSoftLimitConfig = new SoftLimitConfig();
+        SoftLimitConfig              lowerStageSoftLimitConfig = new SoftLimitConfig();
+
+        SparkMaxConfig               lowerStageConfig          = new SparkMaxConfig();
         lowerStageConfig.idleMode(IdleMode.kBrake);
-        lowerStageConfig.inverted(false); // FIX ME!!!!
+        lowerStageConfig.inverted(true);
+        lowerStageSoftLimitConfig.forwardSoftLimitEnabled(false);
+        lowerStageSoftLimitConfig.forwardSoftLimit(ElevatorConstants.ELEVATOR_UPPER_STAGE_UPPER_LIMIT);
+        lowerStageSoftLimitConfig.reverseSoftLimitEnabled(false);
+        lowerStageSoftLimitConfig.reverseSoftLimit(ElevatorConstants.ELEVATOR_UPPER_STAGE_LOWER_LIMIT);
+        lowerStageConfig.apply(lowerStageConfig);
         lowerStageMotor.configure(lowerStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         SparkMaxConfig upperStageConfig = new SparkMaxConfig();
         upperStageConfig.idleMode(IdleMode.kBrake);
-        upperStageConfig.inverted(false); // FIX ME!!!!!!!!
-        upperStageConfig.absoluteEncoder.inverted(false); // FIX ME AS WELL!!!
+        upperStageConfig.inverted(true);
+        upperStageConfig.absoluteEncoder.inverted(true);
         upperStageConfig.absoluteEncoder.zeroOffset(ElevatorConstants.ELEVATOR_TOP_STAGE_ENCODER_ZERO_OFFSET);
-        upperStageMotor.configure(upperStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        /*
-         * Initialize soft limits for elevator so that it will not go past a certain point
-         */
-        SoftLimitConfig upperStageSoftLimitConfig = new SoftLimitConfig();
-        SoftLimitConfig lowerStageSoftLimitConfig = new SoftLimitConfig();
-
-        upperStageSoftLimitConfig.forwardSoftLimitEnabled(true);
+        upperStageSoftLimitConfig.forwardSoftLimitEnabled(false);
         upperStageSoftLimitConfig.forwardSoftLimit(ElevatorConstants.ELEVATOR_LOWER_STAGE_UPPER_LIMIT);
-        upperStageSoftLimitConfig.reverseSoftLimitEnabled(true);
-        upperStageSoftLimitConfig.forwardSoftLimit(ElevatorConstants.ELEVATOR_LOWER_STAGE_LOWER_LIMIT);
-
-        lowerStageSoftLimitConfig.forwardSoftLimitEnabled(true);
-        lowerStageSoftLimitConfig.forwardSoftLimit(ElevatorConstants.ELEVATOR_UPPER_STAGE_UPPER_LIMIT);
-        lowerStageSoftLimitConfig.reverseSoftLimitEnabled(true);
-        lowerStageSoftLimitConfig.forwardSoftLimit(ElevatorConstants.ELEVATOR_UPPER_STAGE_LOWER_LIMIT);
+        upperStageSoftLimitConfig.reverseSoftLimitEnabled(false);
+        upperStageSoftLimitConfig.reverseSoftLimit(ElevatorConstants.ELEVATOR_LOWER_STAGE_LOWER_LIMIT);
+        upperStageConfig.apply(upperStageSoftLimitConfig);
+        upperStageMotor.configure(upperStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Initialize profiled PID controllers
         lowerStageController = new ProfiledPIDController(
@@ -241,7 +239,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        checkElevatorLimits(getUpperStageSpeed(), getLowerStageSpeed());
+        // checkElevatorLimits(getUpperStageSpeed(), getLowerStageSpeed());
         // Lower stage control
         // double lowerStageMeasurement = lowerStageEncoder.getPosition();
         // double lowerStageOutput = lowerStageController.calculate(lowerStageMeasurement);

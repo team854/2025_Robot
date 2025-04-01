@@ -89,10 +89,10 @@ public final class Constants {
         /*
          * Elevator Limits
          */
-        public static final double ELEVATOR_UPPER_STAGE_UPPER_LIMIT       = 0.0;
-        public static final double ELEVATOR_UPPER_STAGE_LOWER_LIMIT       = 0.0;
-        public static final double ELEVATOR_LOWER_STAGE_UPPER_LIMIT       = 0.0;
-        public static final double ELEVATOR_LOWER_STAGE_LOWER_LIMIT       = 0.0;
+        public static final double ELEVATOR_UPPER_STAGE_UPPER_LIMIT       = 50.0; // 62
+        public static final double ELEVATOR_UPPER_STAGE_LOWER_LIMIT       = -10;  // -55
+        public static final double ELEVATOR_LOWER_STAGE_UPPER_LIMIT       = 150;  // 215
+        public static final double ELEVATOR_LOWER_STAGE_LOWER_LIMIT       = 80;   // 4
 
 
         /*
@@ -174,7 +174,7 @@ public final class Constants {
         /*
          * Speed Limits
          */
-        public static final double MAX_SHOULDER_UP_SPEED                 = 0.45;
+        public static final double MAX_SHOULDER_UP_SPEED                 = 1.0;
         public static final double MAX_SHOULDER_DOWN_SPEED               = -0.15;
         public static final double MAX_DEGREES_PER_LOOP                  = 1.0;
 
@@ -189,7 +189,7 @@ public final class Constants {
         /*
          * Arm/shoulder scoring angles
          */
-        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.7130645 - 17.0 / 360.0;
+        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.7;
 
         public static final double ARM_L1_ANGLE                          = 20.0;
         public static final double ARM_L2_ANGLE                          = 90.0;
@@ -224,7 +224,8 @@ public final class Constants {
         public static final double kShoulderP                            = 0.008;
         public static final double kShoulderI                            = 0.0;
         public static final double kShoulderD                            = 1;
-        public static final double SHOULDER_GEAR_RATIO                   = 6;
+        public static final double SHOULDER_GEAR_RATIO                   = 1.85714;
+        public static final double SHOULDER_OFFSET                       = 25;
         public static final double SHOULDER_MAX_VELOCITY                 = 120;
         public static final double SHOULDER_MAX_ACCELERATION             = 120;
         public static final double SHOULDER_ALLOWED_CLOSED_LOOP_ERROR    = 1.0;

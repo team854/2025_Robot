@@ -67,9 +67,9 @@ public class ArmSubsystem extends SubsystemBase {
 
         // Optionally, set additional configuration options such as idle mode here.
         shoulderConfig.idleMode(IdleMode.kBrake);
-        shoulderConfig.inverted(true);
+        shoulderConfig.inverted(false);
         shoulderConfig.absoluteEncoder.zeroOffset(ArmConstants.SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET);
-        shoulderConfig.absoluteEncoder.inverted(true);
+        shoulderConfig.absoluteEncoder.inverted(false);
 
         shoulderMotor.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -116,6 +116,7 @@ public class ArmSubsystem extends SubsystemBase {
      * Conversion: rotations = degrees / (360 * gear ratio)
      */
     public void moveShoulderToSetpoint(double setpoint) {
+        shoulderSetpoint = setpoint;
         double error     = setpoint - getShoulderAngle();
         double PIDoutput = error * ArmConstants.kShoulderP;
         PIDoutput = Math.min(Math.abs(PIDoutput), ArmConstants.MAX_SHOULDER_UP_SPEED) * Math.signum(PIDoutput);
@@ -123,7 +124,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void setShoulderSpeed(double speed) {
-        shoulderMotor.set(speed);
+        shoulderMotor.set(speed + 0.045);
     }
 
     /**
@@ -179,30 +180,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public double getShoulderAngle() {
         // return the position as an angle
-        return shoulderAbsoluteEncoder.getPosition() * 360;
-    }
-
-    /**
-     * Get the shoulder hold speed required to hold the arm in position.
-     * <b>
-     * The hold speed is calculated based on the arm angle. An arm angle of 90 degrees (parallel to the
-     * ground) will require the full hold amount - other angles will require less based on the sine of
-     * the angle (where zero is straight down, and 180 is straight up).
-     *
-     * @return the percent motor output required to hold the arm in position.
-     */
-    public double getShoulderHoldSpeed() {
-        if (getShoulderAngle() < ArmConstants.ARM_DEFAULT_ANGLE + 60) {
-            return 0;
-        }
-
-        double angleDegrees = getShoulderAngle();
-
-        // Convert the angle to radians
-        double angleRadians = Math.toRadians(angleDegrees);
-
-        // return ArmConstants.MAX_SHOULDER_HOLD_SPEED * Math.sin(angleRadians);
-        return 0.2 * Math.sin(angleRadians) - ((180 - angleDegrees) * 0.0025 - 0.05);
+        return ((shoulderAbsoluteEncoder.getPosition() / ArmConstants.SHOULDER_GEAR_RATIO) * 360) - ArmConstants.SHOULDER_OFFSET;
     }
 
     /*
