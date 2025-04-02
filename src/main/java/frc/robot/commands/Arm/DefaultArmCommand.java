@@ -44,7 +44,7 @@ public class DefaultArmCommand extends Command {
             Math.max(10, shoulderSetpoint + ArmConstants.MAX_DEGREES_PER_LOOP * robotContainer.getShoulderSpeed()));
 
 
-        armSubsystem.moveShoulderToSetpoint(shoulderSetpoint);
+        armSubsystem.setShoulderSetpoint(shoulderSetpoint);
     }
 
     @Override

@@ -11,43 +11,40 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.Tolerances;
 
 public class ArmSubsystem extends SubsystemBase {
 
     // Motor controllers for shoulder and wrist
-    private final SparkMax              shoulderMotor;
-    // private final SparkMax shoulderFollower;
-    private final SparkMax              wristMotor;
+    private final SparkMax        shoulderMotor;
+    private final SparkMax        wristMotor;
 
     // Controller for the intake wheels
-    private final VictorSPX             intakeMotor;
+    private final VictorSPX       intakeMotor;
 
     // Intake Sensor
-    private final DigitalInput          intakeSensor;
+    private final DigitalInput    intakeSensor;
 
     // Encoders
-    private final RelativeEncoder       shoulderEncoder;
-    private final RelativeEncoder       wristEncoder;
-    private final AbsoluteEncoder       shoulderAbsoluteEncoder;
+    private final RelativeEncoder shoulderEncoder;
+    private final RelativeEncoder wristEncoder;
+    private final AbsoluteEncoder shoulderAbsoluteEncoder;
 
-    // WPILib Profiled PID controllers with trapezoidal constraints
-    private final ProfiledPIDController shoulderController;
-    private final ProfiledPIDController wristController;
+    // Desired setpoints (in appropriate units)
+    private double                shoulderTargetSetpoint; // in degrees
+    private double                wristSetpoint;
 
-    // Desired setpoints (in motor rotations)
-    private double                      shoulderSetpoint;
-    private double                      wristSetpoint;
+    // WPILib PID controller for the shoulder
+    private final PIDController   shoulderPID;
 
     public ArmSubsystem() {
         // Initialize motors
         shoulderMotor           = new SparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
-        // shoulderFollower = new SparkMax(ArmConstants.SHOULDER_FOLLOWER_ID, MotorType.kBrushless);
         wristMotor              = new SparkMax(ArmConstants.WRIST_MOTOR_ID, MotorType.kBrushless);
         intakeMotor             = new VictorSPX(ArmConstants.INTAKE_MOTOR_ID);
 
@@ -62,21 +59,12 @@ public class ArmSubsystem extends SubsystemBase {
         /*
          * Shoulder Config
          */
-        // Configure SparkMax controllers (basic configuration)
         SparkMaxConfig shoulderConfig = new SparkMaxConfig();
-
-        // Optionally, set additional configuration options such as idle mode here.
         shoulderConfig.idleMode(IdleMode.kBrake);
         shoulderConfig.inverted(false);
         shoulderConfig.absoluteEncoder.zeroOffset(ArmConstants.SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET);
         shoulderConfig.absoluteEncoder.inverted(false);
-
         shoulderMotor.configure(shoulderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        // SparkMaxConfig followerConfig = new SparkMaxConfig();
-        // followerConfig.idleMode(IdleMode.kBrake);
-        // followerConfig.inverted(true);
-        // shoulderFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         /*
          * Wrist Config
@@ -84,46 +72,47 @@ public class ArmSubsystem extends SubsystemBase {
         SparkMaxConfig wristConfig = new SparkMaxConfig();
         wristMotor.configure(wristConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        // Define trapezoidal motion profile constraints for shoulder and wrist.
-        TrapezoidProfile.Constraints shoulderConstraints = new TrapezoidProfile.Constraints(
-            ArmConstants.SHOULDER_MAX_VELOCITY,
-            ArmConstants.SHOULDER_MAX_ACCELERATION);
-        TrapezoidProfile.Constraints wristConstraints    = new TrapezoidProfile.Constraints(
-            ArmConstants.WRIST_MAX_VELOCITY,
-            ArmConstants.WRIST_MAX_ACCELERATION);
+        // Initialize the shoulder PID controller with gains from ArmConstants
+        shoulderPID = new PIDController(ArmConstants.kShoulderP, ArmConstants.kShoulderI, ArmConstants.kShoulderD);
+        // Set tolerance in degrees. This value is defined in your ArmConstants.
+        shoulderPID.setTolerance(Tolerances.SHOULDER_TOLERANCE);
 
-        // Initialize the ProfiledPIDControllers using your PID gains and constraints.
-        shoulderController = new ProfiledPIDController(
-            ArmConstants.kShoulderP,
-            ArmConstants.kShoulderI,
-            ArmConstants.kShoulderD,
-            shoulderConstraints);
-        wristController    = new ProfiledPIDController(
-            ArmConstants.kWristP,
-            ArmConstants.kWristI,
-            ArmConstants.kWristD,
-            wristConstraints);
-
-        // Initialize setpoints to the current positions.
-        // shoulderSetpoint = shoulderEncoder.getPosition();
-        // wristSetpoint = wristEncoder.getPosition();
-        // shoulderController.setGoal(shoulderSetpoint);
-        // wristController.setGoal(wristSetpoint);
+        // Initialize setpoint to the current angle to avoid an initial jump.
+        shoulderTargetSetpoint = getShoulderAngle();
     }
 
     /**
-     * Moves the shoulder to the desired angle (in degrees).
-     * Conversion: rotations = degrees / (360 * gear ratio)
+     * Sets the desired shoulder angle (in degrees) as the target for the PID controller.
      */
-    public void moveShoulderToSetpoint(double setpoint) {
-        shoulderSetpoint = setpoint;
-        double error     = setpoint - getShoulderAngle();
-        double PIDoutput = error * ArmConstants.kShoulderP;
-        PIDoutput = Math.min(Math.abs(PIDoutput), ArmConstants.MAX_SHOULDER_UP_SPEED) * Math.signum(PIDoutput);
-        setShoulderSpeed(PIDoutput);
+    public void setShoulderSetpoint(double setpoint) {
+        shoulderTargetSetpoint = setpoint;
+    }
+
+    /**
+     * Returns true if the shoulder is within the defined tolerance of the target setpoint.
+     */
+    public boolean isShoulderAtSetpoint() {
+        // atSetpoint() returns true if the error is within the tolerance specified via setTolerance.
+        return shoulderPID.atSetpoint();
+    }
+
+    /**
+     * Updates the shoulder PID control loop.
+     * This should be called in periodic() so that the PID loop continuously updates.
+     */
+    private void updateShoulderPID() {
+        double currentAngle = getShoulderAngle();
+        double pidOutput    = shoulderPID.calculate(currentAngle, shoulderTargetSetpoint);
+        // If within tolerance, we want to stop the motor.
+        if (shoulderPID.atSetpoint()) {
+            pidOutput = 0.0;
+        }
+        // Apply the PID output to the shoulder motor.
+        setShoulderSpeed(pidOutput);
     }
 
     public void setShoulderSpeed(double speed) {
+        // The offset of 0.045 can be adjusted or removed if not needed.
         shoulderMotor.set(speed + 0.045);
     }
 
@@ -131,8 +120,9 @@ public class ArmSubsystem extends SubsystemBase {
      * Moves the wrist to the desired angle (in degrees).
      */
     public void moveWristToSetpoint(double setpoint) {
-        wristController.setGoal(setpoint);
-        System.out.println("Setting wrist to: " + setpoint + " degrees (" + wristSetpoint + " rotations)");
+        wristSetpoint = setpoint;
+        System.out.println("Setting wrist to: " + setpoint + " degrees");
+        // Implementation for wrist PID control can be added similarly if needed.
     }
 
     public boolean hasGamePiece() {
@@ -141,10 +131,9 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     /*
-     * Set intake to desired speed
-     * if isReversed, wheels will intake coral
-     * if !isReversed, wheels will release coral
-     * The intake will stop once a game piece has been aquired
+     * Set intake to desired speed.
+     * If isReversed, wheels will intake the game piece.
+     * If not reversed, wheels will release the game piece.
      */
     public void setIntakeSpeed(double intakeSpeed, boolean isReversed) {
         intakeMotor.set(VictorSPXControlMode.PercentOutput, isReversed ? -intakeSpeed : intakeSpeed);
@@ -152,7 +141,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     /*
-     * Stop the wrist motor
+     * Stop the wrist motor.
      */
     public void stopWrist() {
         wristMotor.stopMotor();
@@ -163,7 +152,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     /*
-     * Stop all motors
+     * Stop all motors.
      */
     public void stop() {
         shoulderMotor.stopMotor();
@@ -171,21 +160,22 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     /*
-     * Returns shoulder encoder position
-     * If multiple rotations have occured, values will be added to total
+     * Returns the shoulder encoder position (in rotations).
      */
     public double getShoulderEncoderPosition() {
         return shoulderEncoder.getPosition();
     }
 
+    /**
+     * Returns the current shoulder angle in degrees.
+     * Calculation: (absolute encoder position / gear ratio) * 360, then adjusted by an offset.
+     */
     public double getShoulderAngle() {
-        // return the position as an angle
         return ((shoulderAbsoluteEncoder.getPosition() / ArmConstants.SHOULDER_GEAR_RATIO) * 360) - ArmConstants.SHOULDER_OFFSET;
     }
 
     /*
-     * Returns wrist encoder position
-     * If multiple rotations have occured, values will be added to total
+     * Returns the wrist encoder position.
      */
     public double getWristEncoderPosition() {
         return wristEncoder.getPosition();
@@ -193,25 +183,14 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Shoulder control: calculate output voltage from the ProfiledPIDController
-        // double shoulderMeasurement = shoulderEncoder.getPosition();
-        // double shoulderOutput = shoulderController.calculate(shoulderMeasurement);
-        // double shoulderFollowerOutput = shoulderFollower.getAppliedOutput();
-        // shoulderMotor.setVoltage(shoulderOutput);
+        // Update the shoulder PID control loop.
+        updateShoulderPID();
 
-        // // Wrist control: calculate output voltage from the ProfiledPIDController
-        // double wristMeasurement = wristEncoder.getPosition();
-        // double wristOutput = wristController.calculate(wristMeasurement);
-        // wristMotor.setVoltage(wristOutput);
-
-        // Update SmartDashboard
+        // Update SmartDashboard with current measurements and setpoints.
         SmartDashboard.putNumber("Arm/Shoulder Angle", getShoulderAngle());
-        SmartDashboard.putBoolean("Intake/Game Piece Detected", hasGamePiece());
-        // SmartDashboard.putNumber("Arm/Shoulder Motor Output", shoulderOutput);
-        // SmartDashboard.putNumber("Arm/Shoulder Follower Output", shoulderFollowerOutput);
-        // SmartDashboard.putNumber("Arm/Shoulder Position", shoulderMeasurement);
-        SmartDashboard.putNumber("Arm/Shoulder Setpoint", shoulderSetpoint);
-        // SmartDashboard.putNumber("Arm/Wrist Position", wristMeasurement);
+        SmartDashboard.putBoolean("Arm/Shoulder At Setpoint", isShoulderAtSetpoint());
+        SmartDashboard.putNumber("Arm/Shoulder Setpoint", shoulderTargetSetpoint);
         SmartDashboard.putNumber("Arm/Wrist Setpoint", wristSetpoint);
+        SmartDashboard.putBoolean("Intake/Game Piece Detected", hasGamePiece());
     }
 }

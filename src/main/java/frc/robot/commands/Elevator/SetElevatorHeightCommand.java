@@ -1,36 +1,34 @@
 package frc.robot.commands.Elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.Tolerances;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class SetElevatorHeightCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
-    private final double            upperStageTargetHeight; // Given in feet
-    private final double            lowerStageTargetHeight;
+    private final double            upperStageTargetHeight; // in feet
+    private final double            lowerStageTargetHeight; // in feet
 
-
-    public SetElevatorHeightCommand(ElevatorSubsystem elevatorSubsystem, double upperStageTargetHeight,
+    public SetElevatorHeightCommand(ElevatorSubsystem elevatorSubsystem,
+        double upperStageTargetHeight,
         double lowerStageTargetHeight) {
         this.elevatorSubsystem      = elevatorSubsystem;
         this.upperStageTargetHeight = upperStageTargetHeight;
         this.lowerStageTargetHeight = lowerStageTargetHeight;
-
-        // Declare subsystem dependencies
         addRequirements(elevatorSubsystem);
     }
 
     @Override
     public void initialize() {
+        // Set the desired setpoints using the PID controllers in the subsystem
         elevatorSubsystem.setUpperStage(upperStageTargetHeight);
-        System.out.println("Setting upper stage to: " + upperStageTargetHeight);
         elevatorSubsystem.setLowerStage(lowerStageTargetHeight);
-        System.out.println("Setting lower stage to: " + lowerStageTargetHeight);
-
+        System.out.println("Initializing Elevator Setpoints: Upper = " + upperStageTargetHeight
+            + ", Lower = " + lowerStageTargetHeight);
     }
 
     @Override
     public void execute() {
+        // No need for additional control here since the PID loops are running in periodic()
     }
 
     @Override
@@ -38,20 +36,14 @@ public class SetElevatorHeightCommand extends Command {
         // Stop both stages when the command ends
         elevatorSubsystem.stopUpperStage();
         elevatorSubsystem.stopLowerStage();
+        System.out.println("Elevator command ended" + (interrupted ? " due to interruption" : ""));
     }
 
     @Override
     public boolean isFinished() {
-        // Get the current encoder position
-        double currentUpperStageHeight = elevatorSubsystem.getUpperStageHeight();
-        double currentLowerStageHeight = elevatorSubsystem.getLowerStageHeight();
-
-        if (Math.abs(currentUpperStageHeight - upperStageTargetHeight) <= Tolerances.ELEVATOR_UPPER_TOLERANCE
-            && (Math.abs(currentLowerStageHeight - lowerStageTargetHeight) <= Tolerances.ELEVATOR_UPPER_TOLERANCE)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        /*
+         * Command finishes if within tolerance
+         */
+        return elevatorSubsystem.isUpperAtSetpoint() && elevatorSubsystem.isLowerAtSetpoint();
     }
 }

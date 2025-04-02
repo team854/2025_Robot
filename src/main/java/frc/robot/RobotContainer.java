@@ -14,7 +14,6 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.autos.AutoModeChooser;
 import frc.robot.commands.Arm.DefaultArmCommand;
 import frc.robot.commands.Arm.IntakeCommand;
-import frc.robot.commands.Arm.SetArmAngleCommand;
 import frc.robot.commands.Climb.ClimbCommand;
 import frc.robot.commands.CommandGroups.CoralIntake.GroundIntake;
 import frc.robot.commands.CommandGroups.CoralIntake.SourceIntake;
@@ -23,8 +22,7 @@ import frc.robot.commands.CommandGroups.CoralScoring.SetL1;
 import frc.robot.commands.CommandGroups.CoralScoring.SetL2;
 import frc.robot.commands.CommandGroups.CoralScoring.SetL3;
 import frc.robot.commands.CommandGroups.CoralScoring.SetL4;
-import frc.robot.commands.Elevator.SetBottomStageSpeed;
-import frc.robot.commands.Elevator.SetTopStageSpeed;
+import frc.robot.commands.Elevator.SetElevatorHeightCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -142,21 +140,41 @@ public class RobotContainer {
 
 
 
-        // // --------------------------------------------------------
-        // // Operator Controller Commands
-        // // --------------------------------------------------------
+        // --------------------------------------------------------
+        // Operator Controller Commands
+        // --------------------------------------------------------
 
-        // // Set elevator and arm to ground setpoint
-        m_operatorController.a().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE));
+        /*
+         * Set elevator
+         * Setpoint: GROUND
+         * Controller Binding: (A)
+         */
+        m_operatorController.a().onTrue(new SetElevatorHeightCommand(elevatorSubsystem,
+            ElevatorConstants.UPPER_ELEVATOR_GROUND_SETPOINT, ElevatorConstants.LOWER_ELEVATOR_GROUND_SETPOINT));
 
-        // // Set elevator and arm to horizontal setpoint
-        m_operatorController.x().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_HORIZONTAL_ANGLE));
+        /*
+         * Set elevator
+         * Setpoint: L2
+         * Controller Binding: (X)
+         */
+        m_operatorController.x().onTrue(new SetElevatorHeightCommand(elevatorSubsystem,
+            ElevatorConstants.UPPER_ELEVATOR_L2_SETPOINT, ElevatorConstants.LOWER_ELEVATOR_L2_SETPOINT));
 
-        // // Set elevator and arm to L4 setpoint
-        m_operatorController.y().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE));
+        /*
+         * Set elevator
+         * Setpoint: L3
+         * Controller Binding: (Y)
+         */
+        m_operatorController.y().onTrue(new SetElevatorHeightCommand(elevatorSubsystem,
+            ElevatorConstants.UPPER_ELEVATOR_L3_SETPOINT, ElevatorConstants.LOWER_ELEVATOR_L3_SETPOINT));
 
-        // // Set elevator and arm to top setpoint
-        m_operatorController.b().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_TOP_ANGLE));
+        /*
+         * Set elevator
+         * Setpoint: L4
+         * Controller Binding: (B)
+         */
+        m_operatorController.b().onTrue(new SetElevatorHeightCommand(elevatorSubsystem,
+            ElevatorConstants.UPPER_ELEVATOR_L4_SETPOINT, ElevatorConstants.LOWER_ELEVATOR_L4_SETPOINT));
 
         // // Set elevator and arm to source intake setpoints, begin intaking (LB)
         // m_operatorController.leftBumper().onTrue(sourceIntakeCommand);
@@ -172,14 +190,14 @@ public class RobotContainer {
         // m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem,
         // ClimbConstants.CLIMB_DOWN_SPEED));
 
-        m_operatorController.rightTrigger().whileTrue(new SetTopStageSpeed(elevatorSubsystem,
-            ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED * -1));
-        m_operatorController.rightBumper().whileTrue(new SetTopStageSpeed(elevatorSubsystem,
-            ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED));
-        m_operatorController.leftTrigger().whileTrue(new SetBottomStageSpeed(elevatorSubsystem,
-            ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED * -1));
-        m_operatorController.leftBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem,
-            ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED));
+        // m_operatorController.rightTrigger().whileTrue(new SetTopStageSpeed(elevatorSubsystem,
+        // ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED * -1));
+        // m_operatorController.rightBumper().whileTrue(new SetTopStageSpeed(elevatorSubsystem,
+        // ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED));
+        // m_operatorController.leftTrigger().whileTrue(new SetBottomStageSpeed(elevatorSubsystem,
+        // ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED * -1));
+        // m_operatorController.leftBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem,
+        // ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED));
 
         // m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));
         // m_operatorController.x().whileTrue(new SetWristSpeed(armSubsystem, 0.2));

@@ -6,27 +6,31 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.Tolerances;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    private final SparkMax              lowerStageMotor;
-    private final SparkMax              upperStageMotor;
+    private final SparkMax        lowerStageMotor;
+    private final SparkMax        upperStageMotor;
 
-    private final RelativeEncoder       lowerStageEncoder;
-    private final RelativeEncoder       upperStageEncoder;
-    private final AbsoluteEncoder       upperStageAbsoluteEncoder;
+    private final RelativeEncoder lowerStageEncoder;
+    private final RelativeEncoder upperStageEncoder;
+    private final AbsoluteEncoder upperStageAbsoluteEncoder;
 
-    private final ProfiledPIDController lowerStageController;
-    private final ProfiledPIDController upperStageController;
+    // WPILib PID controllers for the lower and upper stages
+    private final PIDController   lowerPID;
+    private final PIDController   upperPID;
+
+    // Setpoints for PID control (in encoder rotations)
+    private double                lowerSetpoint = 0.0;
+    private double                upperSetpoint = 0.0;
 
     public ElevatorSubsystem() {
         // Initialize motors
@@ -38,224 +42,212 @@ public class ElevatorSubsystem extends SubsystemBase {
         upperStageEncoder         = upperStageMotor.getEncoder();
         upperStageAbsoluteEncoder = upperStageMotor.getAbsoluteEncoder();
 
-        // Define trapezoidal motion profile constraints
-        TrapezoidProfile.Constraints lowerStageConstraints     = new TrapezoidProfile.Constraints(
-            ElevatorConstants.LOWER_STAGE_MAX_VELOCITY,
-            ElevatorConstants.LOWER_STAGE_MAX_ACCELERATION);
-
-        TrapezoidProfile.Constraints upperStageConstraints     = new TrapezoidProfile.Constraints(
-            ElevatorConstants.UPPER_STAGE_MAX_VELOCITY,
-            ElevatorConstants.UPPER_STAGE_MAX_ACCELERATION);
+        /*
+         * Create SparkMAX configs and burn them to the motors.
+         * Both motors should be set to brake to minimize how fast the elevator slides when disabled.
+         */
+        SparkMaxConfig upperStageConfig = new SparkMaxConfig();
+        SparkMaxConfig lowerStageConfig = new SparkMaxConfig();
 
         /*
-         * Create SparkMAX configs and burn them to the motors
-         * Both motors should be set to brake to minimize how fast the elevator slides when disabled
+         * Lower stage motor config
          */
-
-        SoftLimitConfig              upperStageSoftLimitConfig = new SoftLimitConfig();
-        SoftLimitConfig              lowerStageSoftLimitConfig = new SoftLimitConfig();
-
-        SparkMaxConfig               lowerStageConfig          = new SparkMaxConfig();
         lowerStageConfig.idleMode(IdleMode.kBrake);
         lowerStageConfig.inverted(true);
-        lowerStageSoftLimitConfig.forwardSoftLimitEnabled(false);
-        lowerStageSoftLimitConfig.forwardSoftLimit(ElevatorConstants.ELEVATOR_UPPER_STAGE_UPPER_LIMIT);
-        lowerStageSoftLimitConfig.reverseSoftLimitEnabled(false);
-        lowerStageSoftLimitConfig.reverseSoftLimit(ElevatorConstants.ELEVATOR_UPPER_STAGE_LOWER_LIMIT);
-        lowerStageConfig.apply(lowerStageConfig);
-        lowerStageMotor.configure(lowerStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        SparkMaxConfig upperStageConfig = new SparkMaxConfig();
-        upperStageConfig.idleMode(IdleMode.kBrake);
-        upperStageConfig.inverted(true);
-        upperStageConfig.absoluteEncoder.inverted(true);
-        upperStageConfig.absoluteEncoder.zeroOffset(ElevatorConstants.ELEVATOR_TOP_STAGE_ENCODER_ZERO_OFFSET);
-        upperStageSoftLimitConfig.forwardSoftLimitEnabled(false);
-        upperStageSoftLimitConfig.forwardSoftLimit(ElevatorConstants.ELEVATOR_LOWER_STAGE_UPPER_LIMIT);
-        upperStageSoftLimitConfig.reverseSoftLimitEnabled(false);
-        upperStageSoftLimitConfig.reverseSoftLimit(ElevatorConstants.ELEVATOR_LOWER_STAGE_LOWER_LIMIT);
-        upperStageConfig.apply(upperStageSoftLimitConfig);
-        upperStageMotor.configure(upperStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        // Initialize profiled PID controllers
-        lowerStageController = new ProfiledPIDController(
-            ElevatorConstants.kLowerStageP,
-            ElevatorConstants.kLowerStageI,
-            ElevatorConstants.kLowerStageD,
-            lowerStageConstraints);
-
-        upperStageController = new ProfiledPIDController(
-            ElevatorConstants.kUpperStageP,
-            ElevatorConstants.kUpperStageI,
-            ElevatorConstants.kUpperStageD,
-            upperStageConstraints);
 
         /*
-         * Set relative encoder offsets
+         * Upper stage motor config
          */
-        upperStageEncoder.setPosition(getUpperStageAbsoluteEncoderPosition());
+
+        upperStageConfig.idleMode(IdleMode.kBrake);
+        upperStageConfig.inverted(true);
+
+        /*
+         * Upper stage absolute encoder
+         */
+        upperStageConfig.absoluteEncoder.inverted(true);
+        upperStageConfig.absoluteEncoder.zeroOffset(ElevatorConstants.ELEVATOR_TOP_STAGE_ENCODER_ZERO_OFFSET);
+
+        /*
+         * Configure both sparkMAX controllers with the configs created
+         */
+        upperStageMotor.configure(upperStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        lowerStageMotor.configure(lowerStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+
+        /*
+         * Initialize WPILIB PIDControllers
+         * These use WPILIB's PIDController class and will run on the RoboRIO
+         */
+        lowerPID = new PIDController(ElevatorConstants.kLowerStageP, ElevatorConstants.kLowerStageI,
+            ElevatorConstants.kLowerStageD);
+        upperPID = new PIDController(ElevatorConstants.kUpperStageP, ElevatorConstants.kUpperStageI,
+            ElevatorConstants.kUpperStageD);
+
+        /*
+         * Set tolerances for the PID so we can later check if the elevator is in position
+         */
+        lowerPID.setTolerance(Tolerances.ELEVATOR_LOWER_TOLERANCE);
+        upperPID.setTolerance(Tolerances.ELEVATOR_UPPER_TOLERANCE);
     }
 
     /*
-     * Takes in a target height in feet, converts to rotations
-     * Sets the elevator height using a trapezoid profile
-     * Setting Lower Stage
+     * Sets the lower stage to the target height (in feet) using PID position control.
      */
     public void setLowerStage(double height) {
-        lowerStageController.setGoal(height);
-        System.out.println("Setting lower stage to: " + height);
-
+        System.out.println("Setting lower stage to: " + height + " feet");
+        lowerSetpoint = lowerFeetToRotations(height);
     }
 
-    // Stops lower stage
+    /*
+     * Stop lower stage motor
+     */
     public void stopLowerStage() {
         lowerStageMotor.stopMotor();
         System.out.println("Stopping lower stage");
     }
 
     /*
-     * Takes in a target height in feet, converts to rotations
-     * Sets the elevator height using a trapezoid profile
-     * Setting Upper Stage
+     * Sets the upper stage to the target height (in feet) using PID position control.
      */
     public void setUpperStage(double height) {
-        upperStageController.setGoal(height);
-        System.out.println("Setting upper stage to: " + height);
+        System.out.println("Setting upper stage to: " + height + " feet");
+        upperSetpoint = upperFeetToRotations(height);
     }
 
-    // Stops upper stage
+    /*
+     * Stops upper stage motor
+     */
     public void stopUpperStage() {
         upperStageMotor.stopMotor();
         System.out.println("Stopping upper stage");
     }
 
+    /*
+     * Directly sets top stage motor speed
+     */
     public void setTopStageSpeed(double speed) {
         upperStageMotor.set(speed);
     }
 
+    /*
+     * Directly sets bottom stage motor speed
+     */
     public void setBottomStageSpeed(double speed) {
         lowerStageMotor.set(speed);
     }
 
     /*
+     * Upper stage conversion
      * Conversion factor which converts a height in feet into expected encoder rotations
      */
     public double upperFeetToRotations(double heightFeet) {
         return heightFeet / ElevatorConstants.ROTATIONS_TO_FEET_UPPER;
     }
 
+    /*
+     * Lower stage conversion
+     * Conversion factor which converts a height in feet into expected encoder rotations
+     */
     public double lowerFeetToRotations(double heightFeet) {
         return heightFeet / ElevatorConstants.ROTATIONS_TO_FEET_LOWER;
     }
 
     /*
-     * Zeros the upper stage encoder position
+     * Zeros the upper stage encoder position.
      */
     public void resetUpperStageEncoder() {
         upperStageEncoder.setPosition(0.0);
     }
 
     /*
-     * Zeros the lower stage encoder position
+     * Zeros the lower stage encoder position.
      */
     public void resetLowerStageEncoder() {
         lowerStageEncoder.setPosition(0.0);
     }
 
     /*
-     * Returns the value of the upper stage encoder in degrees
-     * If the motor completes multiple rotations, the value of all rotations will be added into this value
+     * Returns the value of the upper stage encoder in rotations.
      */
     public double getUpperStageEncoderPosition() {
         return upperStageEncoder.getPosition();
     }
 
     /*
-     * Returns upper stage absolute encoder position
-     * use for setting initial relative encoder position
+     * Returns the upper stage absolute encoder position.
+     * Use for setting initial relative encoder position.
      */
     public double getUpperStageAbsoluteEncoderPosition() {
         return upperStageAbsoluteEncoder.getPosition();
     }
 
     /*
-     * Returns the height of the upper stage in feet
+     * Returns the height of the upper stage in feet.
      */
     public double getUpperStageHeight() {
         return getUpperStageEncoderPosition() * ElevatorConstants.ROTATIONS_TO_FEET_UPPER;
     }
 
     /*
-     * Returns the value of the lower stage encoder in degrees
-     * If the motor completes multiple rotations, the value of all rotations will be added into this value
+     * Returns the value of the lower stage encoder in rotations.
      */
     public double getLowerStageEncoderPosition() {
         return lowerStageEncoder.getPosition();
     }
 
     /*
-     * Returns the height of the lower stage in feet
+     * Returns the height of the lower stage in feet.
      */
     public double getLowerStageHeight() {
         return getLowerStageEncoderPosition() * ElevatorConstants.ROTATIONS_TO_FEET_LOWER;
     }
 
     /*
-     * Returns upper stage speed
+     * Returns upper stage speed.
      */
     public double getUpperStageSpeed() {
         return upperStageMotor.get();
     }
 
     /*
-     * Returns lower stage speed
+     * Returns lower stage speed.
      */
     public double getLowerStageSpeed() {
         return lowerStageMotor.get();
     }
 
     /*
-     * Sets motor speeds to zero if limit is exceeded
+     * Return true if the upper stage has reached its setpoint
      */
-    public void checkElevatorLimits(double upperStageSpeed, double lowerStageSpeed) {
-        if (getUpperStageEncoderPosition() <= ElevatorConstants.ELEVATOR_UPPER_STAGE_LOWER_LIMIT && upperStageSpeed < 0) {
-            upperStageMotor.set(0);
-            System.out.println("Upper stage at lower limit");
-        }
-        if (getUpperStageEncoderPosition() >= ElevatorConstants.ELEVATOR_UPPER_STAGE_UPPER_LIMIT && upperStageSpeed > 0) {
-            upperStageMotor.set(0);
-            System.out.println("Upper stage at upper limit");
-        }
-        if (getLowerStageEncoderPosition() >= ElevatorConstants.ELEVATOR_LOWER_STAGE_LOWER_LIMIT && lowerStageSpeed > 0) {
-            lowerStageMotor.set(0);
-            System.out.println("Lower stage at lower limit");
-        }
-        if (getLowerStageEncoderPosition() >= ElevatorConstants.ELEVATOR_LOWER_STAGE_UPPER_LIMIT && lowerStageSpeed > 0) {
-            lowerStageMotor.set(0);
-            System.out.println("Lower stage at upper limit");
-        }
+    public boolean isUpperAtSetpoint() {
+        return upperPID.atSetpoint();
+    }
+
+    /*
+     * Return true if the lower stage has reached its setpoint
+     */
+    public boolean isLowerAtSetpoint() {
+        return upperPID.atSetpoint();
     }
 
     @Override
     public void periodic() {
+        // Compute PID outputs based on current encoder positions and setpoints
+        double lowerOutput = lowerPID.calculate(lowerStageEncoder.getPosition(), lowerSetpoint);
+        double upperOutput = upperPID.calculate(upperStageEncoder.getPosition(), upperSetpoint);
 
-        // checkElevatorLimits(getUpperStageSpeed(), getLowerStageSpeed());
-        // Lower stage control
-        // double lowerStageMeasurement = lowerStageEncoder.getPosition();
-        // double lowerStageOutput = lowerStageController.calculate(lowerStageMeasurement);
-        // lowerStageMotor.setVoltage(lowerStageOutput);
+        // Set motor outputs using PID controller outputs
+        lowerStageMotor.set(lowerOutput);
+        upperStageMotor.set(upperOutput);
 
-        // // Upper stage control
-        // double upperStageMeasurement = upperStageEncoder.getPosition();
-        // double upperStageOutput = upperStageController.calculate(upperStageMeasurement);
-        // upperStageMotor.setVoltage(upperStageOutput);
-
-        // Update SmartDashboard
+        // Update SmartDashboard with encoder positions, setpoints, and PID outputs
         SmartDashboard.putNumber("Elevator/Lower Stage Encoder", getLowerStageEncoderPosition());
+        SmartDashboard.putNumber("Elevator/Lower Stage Setpoint", lowerSetpoint);
+        SmartDashboard.putNumber("Elevator/Lower Stage Output", lowerOutput);
         SmartDashboard.putNumber("Elevator/Upper Stage Encoder", getUpperStageEncoderPosition());
+        SmartDashboard.putNumber("Elevator/Upper Stage Setpoint", upperSetpoint);
+        SmartDashboard.putNumber("Elevator/Upper Stage Output", upperOutput);
         SmartDashboard.putNumber("Elevator/Upper Stage Absolute Encoder", getUpperStageAbsoluteEncoderPosition());
-        SmartDashboard.putNumber("Elevator/Lower Stage Setpoint", lowerStageController.getSetpoint().position);
-        SmartDashboard.putNumber("Elevator/Upper Stage Setpoint", upperStageController.getSetpoint().position);
-
     }
 }

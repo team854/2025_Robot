@@ -32,13 +32,13 @@ public final class Constants {
         /*
          * Shoulder
          */
-        public static final double SHOULDER_LOWER_TOLERANCE = 5;
-        public static final double SHOULDER_UPPER_TOLERANCE = 5;
+        public static final double SHOULDER_TOLERANCE       = 1.0;
+
         /*
          * Elevator
          */
-        public static final double ELEVATOR_LOWER_TOLERANCE = 7.0;
-        public static final double ELEVATOR_UPPER_TOLERANCE = 7.0;
+        public static final double ELEVATOR_LOWER_TOLERANCE = 1.0;
+        public static final double ELEVATOR_UPPER_TOLERANCE = 1.0;
     }
 
     public static class ElevatorConstants {
