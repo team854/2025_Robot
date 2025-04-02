@@ -247,9 +247,7 @@ public final class Constants {
         /*
          * Different limelight names
          */
-        public static final String LIMELIGHT_NAME1          = "Limelight 4";
-        public static final String LIMELIGHT_NAME2          = "Limelight 3G";
-        public static final String LIMELIGHT_NAME3          = "Limelight 3";
+        public static final String LIMELIGHT_NAME1          = "limelight";
 
         /*
          * Limelight distance offsets (meters)
