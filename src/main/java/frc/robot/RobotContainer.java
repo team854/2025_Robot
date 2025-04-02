@@ -23,8 +23,9 @@ import frc.robot.commands.CommandGroups.CoralScoring.SetL1;
 import frc.robot.commands.CommandGroups.CoralScoring.SetL2;
 import frc.robot.commands.CommandGroups.CoralScoring.SetL3;
 import frc.robot.commands.CommandGroups.CoralScoring.SetL4;
-import frc.robot.commands.Elevator.SetBottomStageSpeed;
-import frc.robot.commands.Elevator.SetTopStageSpeed;
+import frc.robot.commands.Elevator.MoveBottomStageDown;
+import frc.robot.commands.Elevator.MoveTopStageDown;
+import frc.robot.commands.Elevator.MoveTopStageUp;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -172,13 +173,13 @@ public class RobotContainer {
         // m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem,
         // ClimbConstants.CLIMB_DOWN_SPEED));
 
-        m_operatorController.rightTrigger().whileTrue(new SetTopStageSpeed(elevatorSubsystem,
+        m_operatorController.rightTrigger().whileTrue(new MoveTopStageDown(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED * -1));
-        m_operatorController.rightBumper().whileTrue(new SetTopStageSpeed(elevatorSubsystem,
+        m_operatorController.rightBumper().whileTrue(new MoveTopStageUp(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED));
-        m_operatorController.leftTrigger().whileTrue(new SetBottomStageSpeed(elevatorSubsystem,
+        m_operatorController.leftTrigger().whileTrue(new MoveBottomStageDown(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED * -1));
-        m_operatorController.leftBumper().whileTrue(new SetBottomStageSpeed(elevatorSubsystem,
+        m_operatorController.leftBumper().whileTrue(new MoveTopStageUp(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED));
 
         // m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));

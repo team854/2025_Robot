@@ -3,12 +3,12 @@ package frc.robot.commands.Elevator;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-public class SetBottomStageSpeed extends Command {
+public class MoveBottomStageUp extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
     private final double            bottomStageSpeed; // Given in feet
 
 
-    public SetBottomStageSpeed(ElevatorSubsystem elevatorSubsystem, double bottomStageSpeed) {
+    public MoveBottomStageUp(ElevatorSubsystem elevatorSubsystem, double bottomStageSpeed) {
         this.elevatorSubsystem = elevatorSubsystem;
         this.bottomStageSpeed  = bottomStageSpeed;
 
@@ -27,9 +27,6 @@ public class SetBottomStageSpeed extends Command {
     @Override
     public boolean isFinished() {
         if (bottomStageSpeed < 0) {
-            return elevatorSubsystem.isLowerStageAtLowerLimit();
-        }
-        if (bottomStageSpeed > 0) {
             return elevatorSubsystem.isLowerStageAtUpperLimit();
         }
         else {

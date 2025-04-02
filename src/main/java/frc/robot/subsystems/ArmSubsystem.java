@@ -124,7 +124,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void setShoulderSpeed(double speed) {
-        shoulderMotor.set(speed + 0.045);
+        shoulderMotor.set(speed);
     }
 
     /**

@@ -214,26 +214,20 @@ public class ElevatorSubsystem extends SubsystemBase {
         return lowerStageMotor.get();
     }
 
-    /*
-     * Sets motor speeds to zero if limit is exceeded
-     */
-    public void checkElevatorLimits(double upperStageSpeed, double lowerStageSpeed) {
-        if (getUpperStageEncoderPosition() <= ElevatorConstants.ELEVATOR_UPPER_STAGE_LOWER_LIMIT && upperStageSpeed < 0) {
-            upperStageMotor.set(0);
-            System.out.println("Upper stage at lower limit");
-        }
-        if (getUpperStageEncoderPosition() >= ElevatorConstants.ELEVATOR_UPPER_STAGE_UPPER_LIMIT && upperStageSpeed > 0) {
-            upperStageMotor.set(0);
-            System.out.println("Upper stage at upper limit");
-        }
-        if (getLowerStageEncoderPosition() >= ElevatorConstants.ELEVATOR_LOWER_STAGE_LOWER_LIMIT && lowerStageSpeed > 0) {
-            lowerStageMotor.set(0);
-            System.out.println("Lower stage at lower limit");
-        }
-        if (getLowerStageEncoderPosition() >= ElevatorConstants.ELEVATOR_LOWER_STAGE_UPPER_LIMIT && lowerStageSpeed > 0) {
-            lowerStageMotor.set(0);
-            System.out.println("Lower stage at upper limit");
-        }
+    public boolean isLowerStageAtLowerLimit() {
+        return getLowerStageEncoderPosition() < ElevatorConstants.ELEVATOR_LOWER_STAGE_LOWER_LIMIT;
+    }
+
+    public boolean isLowerStageAtUpperLimit() {
+        return getLowerStageEncoderPosition() < ElevatorConstants.ELEVATOR_LOWER_STAGE_UPPER_LIMIT;
+    }
+
+    public boolean isUpperStageAtLowerLimit() {
+        return getLowerStageEncoderPosition() < ElevatorConstants.ELEVATOR_UPPER_STAGE_LOWER_LIMIT;
+    }
+
+    public boolean isUpperStageAtUpperLimit() {
+        return getUpperStageEncoderPosition() < ElevatorConstants.ELEVATOR_UPPER_STAGE_UPPER_LIMIT;
     }
 
     @Override

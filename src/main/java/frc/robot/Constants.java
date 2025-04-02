@@ -89,10 +89,10 @@ public final class Constants {
         /*
          * Elevator Limits
          */
-        public static final double ELEVATOR_UPPER_STAGE_UPPER_LIMIT       = 50.0; // 62
-        public static final double ELEVATOR_UPPER_STAGE_LOWER_LIMIT       = -10;  // -55
-        public static final double ELEVATOR_LOWER_STAGE_UPPER_LIMIT       = 150;  // 215
-        public static final double ELEVATOR_LOWER_STAGE_LOWER_LIMIT       = 80;   // 4
+        public static final double ELEVATOR_UPPER_STAGE_UPPER_LIMIT       = 64;
+        public static final double ELEVATOR_UPPER_STAGE_LOWER_LIMIT       = -50;
+        public static final double ELEVATOR_LOWER_STAGE_UPPER_LIMIT       = 200;
+        public static final double ELEVATOR_LOWER_STAGE_LOWER_LIMIT       = 2.5;
 
 
         /*
@@ -189,7 +189,7 @@ public final class Constants {
         /*
          * Arm/shoulder scoring angles
          */
-        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.7;
+        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.4;
 
         public static final double ARM_L1_ANGLE                          = 20.0;
         public static final double ARM_L2_ANGLE                          = 90.0;
