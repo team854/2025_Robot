@@ -189,7 +189,7 @@ public final class Constants {
         /*
          * Arm/shoulder scoring angles
          */
-        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.4;
+        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.55;
 
         public static final double ARM_L1_ANGLE                          = 20.0;
         public static final double ARM_L2_ANGLE                          = 90.0;
