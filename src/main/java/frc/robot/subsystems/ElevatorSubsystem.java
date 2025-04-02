@@ -223,7 +223,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean isUpperStageAtLowerLimit() {
-        return getLowerStageEncoderPosition() < ElevatorConstants.ELEVATOR_UPPER_STAGE_LOWER_LIMIT;
+        return getUpperStageEncoderPosition() < ElevatorConstants.ELEVATOR_UPPER_STAGE_LOWER_LIMIT;
     }
 
     public boolean isUpperStageAtUpperLimit() {

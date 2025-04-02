@@ -8,11 +8,18 @@ public class ZeroGyroCommand extends Command {
 
     public ZeroGyroCommand(SwerveSubsystem swerveSubsystem) {
         this.swerveSubsystem = swerveSubsystem;
+
+        addRequirements(swerveSubsystem);
     }
 
     @Override
     public void initialize() {
         swerveSubsystem.zeroGyro();
         System.out.println("----------RESET GYRO TO ZERO----------");
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true;
     }
 }

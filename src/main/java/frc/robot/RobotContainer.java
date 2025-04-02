@@ -146,7 +146,7 @@ public class RobotContainer {
         /*
          * Zero the gyro
          */
-        m_driverController.button(6).onTrue(new ZeroGyroCommand(drivebase));
+        m_driverController.button(7).onTrue(new ZeroGyroCommand(drivebase));
 
 
 
@@ -227,5 +227,9 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         return autoModeChooser.getSelectedAutoCommand();
+    }
+
+    public void zeroGyro() {
+        drivebase.zeroGyro();
     }
 }
