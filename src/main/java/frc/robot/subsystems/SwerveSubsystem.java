@@ -21,6 +21,7 @@ import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -46,6 +47,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     AHRS                     navx            = new AHRS(NavXComType.kMXP_SPI);
 
+    Rotation3d               gyroOffset      = new Rotation3d(0.0, 0.0, 180);
+
     // Elastic notifications
     Elastic.Notification     nullAutoWarning = new Elastic.Notification(
         Elastic.Notification.NotificationLevel.WARNING,
@@ -67,6 +70,7 @@ public class SwerveSubsystem extends SubsystemBase {
             throw new RuntimeException(e);
         }
         swerveDrive.setAngularVelocityCompensation(true, true, 0.1);
+        swerveDrive.setGyroOffset(gyroOffset);
         setupPathPlanner();
 
         // RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyro));
