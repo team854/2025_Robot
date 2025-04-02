@@ -21,17 +21,12 @@ public class MoveBottomStageDown extends Command {
     @Override
     public void execute() {
         elevatorSubsystem.setBottomStageSpeed(bottomStageSpeed);
-        System.out.println("Moving Bottom Stage");
+        System.out.println("Moving Bottom Stage Down");
     }
 
     @Override
     public boolean isFinished() {
-        if (bottomStageSpeed < 0) {
-            return elevatorSubsystem.isLowerStageAtLowerLimit();
-        }
-        else {
-            return false;
-        }
+        return elevatorSubsystem.isLowerStageAtLowerLimit();
     }
 
     @Override

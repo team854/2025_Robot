@@ -24,8 +24,10 @@ import frc.robot.commands.CommandGroups.CoralScoring.SetL2;
 import frc.robot.commands.CommandGroups.CoralScoring.SetL3;
 import frc.robot.commands.CommandGroups.CoralScoring.SetL4;
 import frc.robot.commands.Elevator.MoveBottomStageDown;
+import frc.robot.commands.Elevator.MoveBottomStageUp;
 import frc.robot.commands.Elevator.MoveTopStageDown;
 import frc.robot.commands.Elevator.MoveTopStageUp;
+import frc.robot.commands.Swerve.ZeroGyroCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -141,6 +143,11 @@ public class RobotContainer {
         m_driverController.leftTrigger().whileTrue(new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED));
         m_driverController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED));
 
+        /*
+         * Zero the gyro
+         */
+        m_driverController.button(6).onTrue(new ZeroGyroCommand(drivebase));
+
 
 
         // // --------------------------------------------------------
@@ -179,7 +186,7 @@ public class RobotContainer {
         m_operatorController.rightTrigger().whileTrue(new MoveTopStageDown(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED));
 
-        m_operatorController.leftBumper().whileTrue(new MoveTopStageUp(elevatorSubsystem,
+        m_operatorController.leftBumper().whileTrue(new MoveBottomStageUp(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED));
 
         m_operatorController.leftTrigger().whileTrue(new MoveBottomStageDown(elevatorSubsystem,

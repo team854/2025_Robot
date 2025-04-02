@@ -21,17 +21,12 @@ public class MoveTopStageUp extends Command {
     @Override
     public void execute() {
         elevatorSubsystem.setTopStageSpeed(topStageSpeed);
-        System.out.println("Moving Bottom Stage");
+        System.out.println("Moving Bottom Stage Up");
     }
 
     @Override
     public boolean isFinished() {
-        if (topStageSpeed < 0) {
-            return elevatorSubsystem.isUpperStageAtUpperLimit();
-        }
-        else {
-            return false;
-        }
+        return elevatorSubsystem.isUpperStageAtUpperLimit();
     }
 
     @Override

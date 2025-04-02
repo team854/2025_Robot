@@ -89,8 +89,8 @@ public final class Constants {
         /*
          * Elevator Limits
          */
-        public static final double ELEVATOR_UPPER_STAGE_UPPER_LIMIT       = 64;
-        public static final double ELEVATOR_UPPER_STAGE_LOWER_LIMIT       = -50;
+        public static final double ELEVATOR_UPPER_STAGE_UPPER_LIMIT       = 56;
+        public static final double ELEVATOR_UPPER_STAGE_LOWER_LIMIT       = -53;
         public static final double ELEVATOR_LOWER_STAGE_UPPER_LIMIT       = 200;
         public static final double ELEVATOR_LOWER_STAGE_LOWER_LIMIT       = 2.5;
 
@@ -212,7 +212,7 @@ public final class Constants {
         /*
          * End Effector
          */
-        public static final double INTAKE_GROUND_SPEED                   = 0.6;
+        public static final double INTAKE_GROUND_SPEED                   = 0.8;
         public static final double INTAKE_SOURCE_SPEED                   = 1.0;
         public static final double BRANCH_SCORE_SPEED                    = 1.0;
         public static final double TROUGH_SCORE_SPEED                    = 0.3;
