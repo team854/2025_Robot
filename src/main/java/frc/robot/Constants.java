@@ -69,7 +69,7 @@ public final class Constants {
          * For manual control of top stage
          */
         public static final double ELEVATOR_TOP_STAGE_UP_SPEED            = 1.0;
-        public static final double ELEVATOR_TOP_STAGE_DOWN_SPEED          = 1.0;
+        public static final double ELEVATOR_TOP_STAGE_DOWN_SPEED          = -1.0;
 
         /*
          * Elevator bottom stage PID
@@ -84,7 +84,7 @@ public final class Constants {
          * For manual control of bottom stage
          */
         public static final double ELEVATOR_BOTTOM_STAGE_UP_SPEED         = 1.0;
-        public static final double ELEVATOR_BOTTOM_STAGE_DOWN_SPEED       = 1.0;
+        public static final double ELEVATOR_BOTTOM_STAGE_DOWN_SPEED       = -1.0;
 
         /*
          * Elevator Limits

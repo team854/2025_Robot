@@ -173,14 +173,18 @@ public class RobotContainer {
         // m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem,
         // ClimbConstants.CLIMB_DOWN_SPEED));
 
-        m_operatorController.rightTrigger().whileTrue(new MoveTopStageDown(elevatorSubsystem,
-            ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED * -1));
         m_operatorController.rightBumper().whileTrue(new MoveTopStageUp(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED));
-        m_operatorController.leftTrigger().whileTrue(new MoveBottomStageDown(elevatorSubsystem,
-            ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED * -1));
+
+        m_operatorController.rightTrigger().whileTrue(new MoveTopStageDown(elevatorSubsystem,
+            ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED));
+
         m_operatorController.leftBumper().whileTrue(new MoveTopStageUp(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED));
+
+        m_operatorController.leftTrigger().whileTrue(new MoveBottomStageDown(elevatorSubsystem,
+            ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED));
+
 
         // m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));
         // m_operatorController.x().whileTrue(new SetWristSpeed(armSubsystem, 0.2));
