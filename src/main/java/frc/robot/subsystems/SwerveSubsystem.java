@@ -24,6 +24,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,7 +48,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     AHRS                     navx            = new AHRS(NavXComType.kMXP_SPI);
 
-    Rotation3d               gyroOffset      = new Rotation3d(0.0, 0.0, OperatorConstants.GYRO_OFFSET);
+    Rotation3d               gyroOffset      = new Rotation3d(0.0, 0.0, Units.degreesToRadians(OperatorConstants.GYRO_OFFSET));
 
     // Elastic notifications
     Elastic.Notification     nullAutoWarning = new Elastic.Notification(
@@ -110,6 +111,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public void zeroGyro() {
         swerveDrive.zeroGyro();
     }
+
 
     public void slowSpeed(double slowSpeed, double slowRotation) {
         swerveDrive.setMaximumAttainableSpeeds(slowSpeed, slowRotation);

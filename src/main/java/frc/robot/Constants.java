@@ -190,12 +190,12 @@ public final class Constants {
         /*
          * Arm/shoulder scoring angles
          */
-        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.40;
+        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 168 * 1.78 / 360;
 
         public static final double ARM_L1_ANGLE                          = 20.0;
         public static final double ARM_L2_ANGLE                          = 90.0;
         public static final double ARM_L3_ANGLE                          = 90.0;
-        public static final double ARM_L4_ANGLE                          = 100.0;
+        public static final double ARM_L4_ANGLE                          = 130;
 
         /*
          * Arm intake angles
@@ -207,7 +207,7 @@ public final class Constants {
         /*
          * Other arm angles
          */
-        public static final double ARM_HORIZONTAL_ANGLE                  = 90.0;
+        public static final double ARM_HORIZONTAL_ANGLE                  = 100;
         public static final double ARM_TOP_ANGLE                         = 175.0;
 
         /*
@@ -215,7 +215,7 @@ public final class Constants {
          */
         public static final double INTAKE_GROUND_SPEED                   = 0.8;
         public static final double INTAKE_SOURCE_SPEED                   = 1.0;
-        public static final double BRANCH_SCORE_SPEED                    = 1.0;
+        public static final double BRANCH_SCORE_SPEED                    = 0.8;
         public static final double TROUGH_SCORE_SPEED                    = 0.3;
         public static final double PROCESSOR_SCORE_SPEED                 = 1.0;
 

@@ -20,11 +20,20 @@ public class SetArmAngleCommand extends Command {
     @Override
     public void execute() {
         armSubsystem.moveShoulderToSetpoint(targetAngle);
+    }
 
+    @Override
+    public void end(boolean interrupted) {
+        armSubsystem.stop();
+
+        // Update DefaultArmCommand with the last target angle
+        if (armSubsystem.getDefaultCommand() instanceof DefaultArmCommand) {
+            ((DefaultArmCommand) armSubsystem.getDefaultCommand()).setShoulderSetpoint(targetAngle);
+        }
     }
 
     @Override
     public boolean isFinished() {
-        return true;
+        return Math.abs(targetAngle - armSubsystem.getShoulderAngle()) < 10;
     }
 }

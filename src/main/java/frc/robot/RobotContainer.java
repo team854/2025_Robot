@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ArmConstants;
@@ -166,28 +167,34 @@ public class RobotContainer {
         m_driverController.button(7).onTrue(new ZeroGyroCommand(drivebase));
 
 
-
         // // --------------------------------------------------------
         // // Operator Controller Commands
         // // --------------------------------------------------------
 
         // // Set elevator and arm to ground setpoint
-        m_operatorController.a().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE));
+        // m_operatorController.a().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE));
 
         // // Set elevator and arm to horizontal setpoint
-        m_operatorController.x().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_HORIZONTAL_ANGLE));
+        // m_operatorController.x().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_HORIZONTAL_ANGLE));
 
         // // Set elevator and arm to L4 setpoint
-        m_operatorController.y().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE));
+        m_operatorController.a().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE));
 
         // // Set elevator and arm to top setpoint
-        m_operatorController.b().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_TOP_ANGLE));
+        // m_operatorController.b().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_TOP_ANGLE));
 
         // // Set elevator and arm to source intake setpoints, begin intaking (LB)
         // m_operatorController.leftBumper().onTrue(sourceIntakeCommand);
 
         // // Set elevator and arm to ground intake setpoints, begin intaking (LT)
         // m_operatorController.leftTrigger().onTrue(groundIntakeCommand);
+
+        /*
+         * Toggle defense mode
+         * This will allow the arm to be tucked inside the robot
+         */
+        m_operatorController.button(8)
+            .onTrue(new InstantCommand(() -> ((DefaultArmCommand) armSubsystem.getDefaultCommand()).toggleLowerLimit()));
 
         // Winch climb / raise robot (dpad up)
         m_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem,
@@ -248,5 +255,6 @@ public class RobotContainer {
 
     public void zeroGyro() {
         drivebase.zeroGyro();
+        System.out.println("----------RESET GYRO TO ZERO----------");
     }
 }

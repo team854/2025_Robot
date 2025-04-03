@@ -10,12 +10,11 @@ public class DefaultArmCommand extends Command {
     private final ArmSubsystem   armSubsystem;
     private final RobotContainer robotContainer;
     private double               shoulderSetpoint;
+    private boolean              useLowerLimit17 = true; // Toggle state variable
 
     public DefaultArmCommand(RobotContainer robotContainer, ArmSubsystem armSubsystem) {
-
         this.robotContainer = robotContainer;
         this.armSubsystem   = armSubsystem;
-
         addRequirements(armSubsystem);
     }
 
@@ -26,30 +25,28 @@ public class DefaultArmCommand extends Command {
 
     @Override
     public void execute() {
-
         double wristSpeed = robotContainer.getWristSpeed();
-
-        /*
-         * Set the wrist speed
-         */
         armSubsystem.setWristSpeed(wristSpeed * ArmConstants.MAX_WRIST_SPEED);
 
-        /*
-         * Set the shoulder speed
-         * 5
-         * The shoulder speed has different max up speed and down speed.
-         */
-
-        shoulderSetpoint = Math.min(155,
-            Math.max(14, shoulderSetpoint + ArmConstants.MAX_DEGREES_PER_LOOP * robotContainer.getShoulderSpeed()));
-
+        double lowerLimit = useLowerLimit17 ? 17 : 52;
+        shoulderSetpoint = Math.min(155, Math.max(lowerLimit,
+            shoulderSetpoint + ArmConstants.MAX_DEGREES_PER_LOOP * robotContainer.getShoulderSpeed()));
 
         armSubsystem.moveShoulderToSetpoint(shoulderSetpoint);
     }
 
+    public void setShoulderSetpoint(double newSetpoint) {
+        this.shoulderSetpoint = newSetpoint;
+    }
+
+    public void toggleLowerLimit() {
+        useLowerLimit17 = !useLowerLimit17;
+        System.out.println("----------TUCKED MODE TOGGLED----------");
+        System.out.println("Arm lower limit set to: " + (useLowerLimit17 ? 17 : 52));
+    }
+
     @Override
     public boolean isFinished() {
-        // Default Commands never end
-        return false;
+        return false; // Default commands never end
     }
 }
