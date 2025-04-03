@@ -174,7 +174,7 @@ public class RobotContainer {
 
         // Winch climb / raise robot (dpad up)
         m_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem,
-            -ClimbConstants.CLIMB_UP_SPEED));
+            ClimbConstants.CLIMB_UP_SPEED));
 
         // Unwinch climb / lower robot (dpad down)
         // m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem,

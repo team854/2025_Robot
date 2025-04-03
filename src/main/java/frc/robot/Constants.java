@@ -92,7 +92,7 @@ public final class Constants {
         public static final double ELEVATOR_UPPER_STAGE_UPPER_LIMIT       = 56;
         public static final double ELEVATOR_UPPER_STAGE_LOWER_LIMIT       = -53;
         public static final double ELEVATOR_LOWER_STAGE_UPPER_LIMIT       = 200;
-        public static final double ELEVATOR_LOWER_STAGE_LOWER_LIMIT       = 2.5;
+        public static final double ELEVATOR_LOWER_STAGE_LOWER_LIMIT       = 3.5;
 
 
         /*
@@ -128,17 +128,17 @@ public final class Constants {
         public static final double UPPER_ELEVATOR_L1_SETPOINT          = 4.66;
         public static final double UPPER_ELEVATOR_L2_SETPOINT          = 55.8;
         public static final double UPPER_ELEVATOR_L3_SETPOINT          = -31.9;
-        public static final double UPPER_ELEVATOR_L4_SETPOINT          = -66.9;
+        public static final double UPPER_ELEVATOR_L4_SETPOINT          = 200;
         public static final double UPPER_ELEVATOR_NET_SETPOINT         = 5.0;
         public static final double UPPER_ELEVATOR_PROCESSOR_SETPOINT   = 1.5;
         public static final double UPPER_ELEVATOR_SOURCE_SETPOINT      = 0;
 
         public static final double LOWER_ELEVATOR_DEFAULT_SETPOINT     = -1.85;
         public static final double LOWER_ELEVATOR_GROUND_SETPOINT      = -1.85;
-        public static final double LOWER_ELEVATOR_L1_SETPOINT          = -1.85;
-        public static final double LOWER_ELEVATOR_L2_SETPOINT          = -1.85;
-        public static final double LOWER_ELEVATOR_L3_SETPOINT          = -1.85;
-        public static final double LOWER_ELEVATOR_L4_SETPOINT          = -145.78;
+        public static final double LOWER_ELEVATOR_L1_SETPOINT          = 30;
+        public static final double LOWER_ELEVATOR_L2_SETPOINT          = 0;
+        public static final double LOWER_ELEVATOR_L3_SETPOINT          = 0;
+        public static final double LOWER_ELEVATOR_L4_SETPOINT          = 56;
         public static final double LOWER_ELEVATOR_NET_SETPOINT         = 5.0;
         public static final double LOWER_ELEVATOR_PROCESSOR_SETPOINT   = 1.5;
         public static final double LOWER_ELEVATOR_SOURCE_SETPOINT      = 0;
@@ -189,7 +189,7 @@ public final class Constants {
         /*
          * Arm/shoulder scoring angles
          */
-        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.55;
+        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.28;
 
         public static final double ARM_L1_ANGLE                          = 20.0;
         public static final double ARM_L2_ANGLE                          = 90.0;
