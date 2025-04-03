@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -15,6 +17,7 @@ import frc.robot.autos.AutoModeChooser;
 import frc.robot.commands.Arm.DefaultArmCommand;
 import frc.robot.commands.Arm.IntakeCommand;
 import frc.robot.commands.Arm.SetArmAngleCommand;
+import frc.robot.commands.Arm.SetWristPositionCommand;
 import frc.robot.commands.Climb.ClimbCommand;
 import frc.robot.commands.CommandGroups.CoralIntake.GroundIntake;
 import frc.robot.commands.CommandGroups.CoralIntake.SourceIntake;
@@ -86,7 +89,7 @@ public class RobotContainer {
         // Base commands
 
         // Register Named Commands
-        // configureNamedCommands();
+        configureNamedCommands();
 
         // Configure the trigger bindings
         configureBindings();
@@ -132,6 +135,20 @@ public class RobotContainer {
      * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
      */
+
+    private void configureNamedCommands() {
+        NamedCommands.registerCommand("Raise Lower Stage To Top",
+            new MoveBottomStageUp(elevatorSubsystem, ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED).withTimeout(5.0));
+        NamedCommands.registerCommand("Raise Upper Stage To Top",
+            new MoveTopStageUp(elevatorSubsystem, ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED).withTimeout(4.0));
+        NamedCommands.registerCommand("Set Wrist Vertical",
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES));
+        NamedCommands.registerCommand("Move Arm To L4",
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE));
+        NamedCommands.registerCommand("Drop Arm",
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_HORIZONTAL_ANGLE));
+    }
+
     private void configureBindings() {
 
         // --------------------------------------------------------

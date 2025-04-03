@@ -14,12 +14,14 @@ public class AutoModeChooser {
         autoChooser          = new SendableChooser<>();
 
         // Default autonomous routine
-        autoChooser.setDefaultOption("1x Trough", swerveSubsystem.getAutonomousCommand("1x Trough Auto"));
+        autoChooser.setDefaultOption("L4 Auto", swerveSubsystem.getAutonomousCommand("L4 Auto"));
 
         // Add PathPlanner auto options
-        autoChooser.addOption("1x Trough Auto", swerveSubsystem.getAutonomousCommand("1x Trough Auto"));
-        autoChooser.addOption("4x L4 Auto", swerveSubsystem.getAutonomousCommand("4x L4 Coral Auto"));
-        autoChooser.addOption("2x L4 Auto", swerveSubsystem.getAutonomousCommand("2x L4 Auto"));
+        autoChooser.addOption("L4 Auto", swerveSubsystem.getAutonomousCommand("L4 Auto"));
+        autoChooser.addOption("Delayed L4 Auto", swerveSubsystem.getAutonomousCommand("Delayed L4 Auto"));
+        autoChooser.addOption("Leave Auto", swerveSubsystem.getAutonomousCommand("Leave Auto"));
+        autoChooser.addOption("Delayed Leave Auto (5s)", swerveSubsystem.getAutonomousCommand("Delayed Leave Auto (5s)"));
+        autoChooser.addOption("Delayed Leave Auto (10s)", swerveSubsystem.getAutonomousCommand("Delayed Leave Auto (10s)"));
 
         // Add the chooser to Shuffleboard
         Shuffleboard.getTab("Autonomous").add("Auto Mode", autoChooser)
