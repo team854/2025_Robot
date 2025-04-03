@@ -25,6 +25,7 @@ public final class Constants {
         public static final double MAX_SPEED                = Units.feetToMeters(14.5);
         public static final double FINE_SPEED_REDUCTION     = Units.feetToMeters(2);
         public static final double FINE_ROTATION_REDUCTION  = 0.8;
+        public static final double GYRO_OFFSET              = 180;
 
     }
 
@@ -189,7 +190,7 @@ public final class Constants {
         /*
          * Arm/shoulder scoring angles
          */
-        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.28;
+        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 0.40;
 
         public static final double ARM_L1_ANGLE                          = 20.0;
         public static final double ARM_L2_ANGLE                          = 90.0;

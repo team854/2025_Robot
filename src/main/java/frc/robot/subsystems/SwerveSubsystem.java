@@ -47,7 +47,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     AHRS                     navx            = new AHRS(NavXComType.kMXP_SPI);
 
-    Rotation3d               gyroOffset      = new Rotation3d(0.0, 0.0, 0.0);
+    Rotation3d               gyroOffset      = new Rotation3d(0.0, 0.0, OperatorConstants.GYRO_OFFSET);
 
     // Elastic notifications
     Elastic.Notification     nullAutoWarning = new Elastic.Notification(
