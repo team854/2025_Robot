@@ -22,6 +22,7 @@ public class AutoModeChooser {
         autoChooser.addOption("Leave Auto", swerveSubsystem.getAutonomousCommand("Leave Auto"));
         autoChooser.addOption("Delayed Leave Auto (5s)", swerveSubsystem.getAutonomousCommand("Delayed Leave Auto (5s)"));
         autoChooser.addOption("Delayed Leave Auto (10s)", swerveSubsystem.getAutonomousCommand("Delayed Leave Auto (10s)"));
+        autoChooser.addOption("Side Auto", swerveSubsystem.getAutonomousCommand("TEST Side Reef Auto"));
 
         // Add the chooser to Shuffleboard
         Shuffleboard.getTab("Autonomous").add("Auto Mode", autoChooser)

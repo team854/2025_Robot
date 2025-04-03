@@ -13,13 +13,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "L4 Back Up Path"
+            "pathName": "Middle To L4 Path Red"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

@@ -226,7 +226,7 @@ public class RobotContainer {
     }
 
     public double getWristSpeed() {
-        return deadband(m_operatorController.getRightX(), 0.2);
+        return -deadband(m_operatorController.getRightX(), 0.2);
     }
 
     public double deadband(double input, double deadband) {

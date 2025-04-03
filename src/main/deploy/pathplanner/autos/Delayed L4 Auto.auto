@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle To L4 Path"
+            "pathName": "Middle To L4 Path Red"
           }
         },
         {
@@ -74,7 +74,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }
