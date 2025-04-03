@@ -131,8 +131,11 @@ public class ArmSubsystem extends SubsystemBase {
      * Moves the wrist to the desired angle (in degrees).
      */
     public void moveWristToSetpoint(double setpoint) {
-        wristController.setGoal(setpoint);
-        System.out.println("Setting wrist to: " + setpoint + " degrees (" + wristSetpoint + " rotations)");
+        shoulderSetpoint = setpoint;
+        double error     = setpoint - getWristEncoderPosition();
+        double PIDoutput = error * ArmConstants.kWristP;
+        PIDoutput = Math.min(Math.abs(PIDoutput), ArmConstants.MAX_WRIST_SPEED) * Math.signum(PIDoutput);
+        setWristSpeed(PIDoutput);
     }
 
     public boolean hasGamePiece() {
