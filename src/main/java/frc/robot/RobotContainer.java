@@ -179,15 +179,29 @@ public class RobotContainer {
         // m_operatorController.x().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_HORIZONTAL_ANGLE));
 
 
-        m_operatorController.x().onTrue(new ParallelCommandGroup(
-            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L1_ANGLE),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
-
+        /*
+         * ARM SETPOINT
+         * Setpoint: GROUND
+         * Wrist: Horizontal
+         */
         m_operatorController.a().onTrue(new ParallelCommandGroup(
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
             new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
 
+        /*
+         * ARM SETPOINT
+         * Setpoint: L1
+         * Wrist: Horizontal
+         */
+        m_operatorController.x().onTrue(new ParallelCommandGroup(
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L1_ANGLE),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
 
+        /*
+         * ARM SETPOINT
+         * Setpoint L4
+         * Wrist: Vertical
+         */
         m_operatorController.y().onTrue(new ParallelCommandGroup(
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE),
             new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE)));
