@@ -29,7 +29,7 @@ public class GroundIntake extends SequentialCommandGroup {
             /*
              * Rotate wrist to horizontal
              */
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_DEGREES),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE),
 
             /*
              * Set elevator to default setpoint

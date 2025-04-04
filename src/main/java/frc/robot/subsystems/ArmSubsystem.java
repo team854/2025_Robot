@@ -44,6 +44,8 @@ public class ArmSubsystem extends SubsystemBase {
     private double                      shoulderSetpoint;
     private double                      wristSetpoint;
 
+    private boolean                     isGroundLock;
+
     public ArmSubsystem() {
         // Initialize motors
         shoulderMotor           = new SparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
@@ -131,7 +133,7 @@ public class ArmSubsystem extends SubsystemBase {
      * Moves the wrist to the desired angle (in degrees).
      */
     public void moveWristToSetpoint(double setpoint) {
-        shoulderSetpoint = setpoint;
+        wristSetpoint = setpoint;
         double error     = setpoint - getWristEncoderPosition();
         double PIDoutput = error * ArmConstants.kWristP;
         PIDoutput = Math.min(Math.abs(PIDoutput), ArmConstants.MAX_WRIST_SPEED) * Math.signum(PIDoutput);
@@ -141,6 +143,10 @@ public class ArmSubsystem extends SubsystemBase {
     public boolean hasGamePiece() {
         // Assuming active-low signal (true when object is detected)
         return !intakeSensor.get();
+    }
+
+    public void isGroundLock(Boolean groundLock) {
+        isGroundLock = groundLock;
     }
 
     /*
@@ -210,11 +216,12 @@ public class ArmSubsystem extends SubsystemBase {
         // Update SmartDashboard
         SmartDashboard.putNumber("Arm/Shoulder Angle", getShoulderAngle());
         SmartDashboard.putBoolean("Intake/Game Piece Detected", hasGamePiece());
+        SmartDashboard.putBoolean("Arm/GroundLocked", isGroundLock);
         // SmartDashboard.putNumber("Arm/Shoulder Motor Output", shoulderOutput);
         // SmartDashboard.putNumber("Arm/Shoulder Follower Output", shoulderFollowerOutput);
         // SmartDashboard.putNumber("Arm/Shoulder Position", shoulderMeasurement);
         SmartDashboard.putNumber("Arm/Shoulder Setpoint", shoulderSetpoint);
-        // SmartDashboard.putNumber("Arm/Wrist Position", wristMeasurement);
+        SmartDashboard.putNumber("Arm/Wrist Position", getWristEncoderPosition());
         SmartDashboard.putNumber("Arm/Wrist Setpoint", wristSetpoint);
     }
 }

@@ -24,7 +24,7 @@ public class SetL3 extends ParallelCommandGroup {
             /*
              * Set wrist to vertical position
              */
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE),
 
             /*
              * Set arm to L3 angle

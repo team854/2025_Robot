@@ -4,24 +4,36 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class SetWristPositionCommand extends Command {
-    public final ArmSubsystem armSubsystem;
-    public final double       wristSetpoint;
+    private final ArmSubsystem armSubsystem;
+    private final double       targetAngle;
 
-    public SetWristPositionCommand(ArmSubsystem armSubsystem, double wristSetpoint) {
-        this.armSubsystem  = armSubsystem;
-        this.wristSetpoint = wristSetpoint;
-
+    public SetWristPositionCommand(ArmSubsystem armSubsystem, double targetAngle) {
+        this.armSubsystem = armSubsystem;
+        this.targetAngle  = targetAngle;
     }
 
     @Override
     public void initialize() {
-        armSubsystem.moveWristToSetpoint(wristSetpoint);
-        System.out.println("Moving wrist to: " + wristSetpoint);
-
+        System.out.println("Setting wrist angle to " + targetAngle);
     }
 
     @Override
     public void execute() {
+        armSubsystem.moveWristToSetpoint(targetAngle);
     }
 
+    @Override
+    public void end(boolean interrupted) {
+        armSubsystem.stop();
+
+        // Update DefaultArmCommand with the last target angle
+        if (armSubsystem.getDefaultCommand() instanceof DefaultArmCommand) {
+            ((DefaultArmCommand) armSubsystem.getDefaultCommand()).setWristSetpoint(targetAngle);
+        }
+    }
+
+    @Override
+    public boolean isFinished() {
+        return Math.abs(targetAngle - armSubsystem.getWristEncoderPosition()) < 5;
+    }
 }

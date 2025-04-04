@@ -10,6 +10,7 @@ public class DefaultArmCommand extends Command {
     private final ArmSubsystem   armSubsystem;
     private final RobotContainer robotContainer;
     private double               shoulderSetpoint;
+    private double               wristSetpoint;
     private boolean              useLowerLimit17 = true; // Toggle state variable
 
     public DefaultArmCommand(RobotContainer robotContainer, ArmSubsystem armSubsystem) {
@@ -21,22 +22,30 @@ public class DefaultArmCommand extends Command {
     @Override
     public void initialize() {
         shoulderSetpoint = armSubsystem.getShoulderAngle();
+        wristSetpoint    = armSubsystem.getWristEncoderPosition();
     }
 
     @Override
     public void execute() {
-        double wristSpeed = robotContainer.getWristSpeed();
-        armSubsystem.setWristSpeed(wristSpeed * ArmConstants.MAX_WRIST_SPEED);
+        wristSetpoint += ArmConstants.MAX_WRIST_SPEED * robotContainer.getWristSpeed();
+
+        armSubsystem.moveWristToSetpoint(wristSetpoint);
 
         double lowerLimit = useLowerLimit17 ? 17 : 52;
         shoulderSetpoint = Math.min(155, Math.max(lowerLimit,
             shoulderSetpoint + ArmConstants.MAX_DEGREES_PER_LOOP * robotContainer.getShoulderSpeed()));
 
         armSubsystem.moveShoulderToSetpoint(shoulderSetpoint);
+        armSubsystem.isGroundLock(!useLowerLimit17);
+
     }
 
     public void setShoulderSetpoint(double newSetpoint) {
         this.shoulderSetpoint = newSetpoint;
+    }
+
+    public void setWristSetpoint(double newSetpoint) {
+        this.wristSetpoint = newSetpoint;
     }
 
     public void toggleLowerLimit() {

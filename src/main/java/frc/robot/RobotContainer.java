@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ArmConstants;
@@ -143,7 +144,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Raise Upper Stage To Top",
             new MoveTopStageUp(elevatorSubsystem, ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED).withTimeout(4.0));
         NamedCommands.registerCommand("Set Wrist Vertical",
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_DEGREES));
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE));
         NamedCommands.registerCommand("Move Arm To L4",
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE));
         NamedCommands.registerCommand("Drop Arm",
@@ -177,8 +178,20 @@ public class RobotContainer {
         // // Set elevator and arm to horizontal setpoint
         // m_operatorController.x().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_HORIZONTAL_ANGLE));
 
-        // // Set elevator and arm to L4 setpoint
-        m_operatorController.a().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE));
+
+        m_operatorController.x().onTrue(new ParallelCommandGroup(
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L1_ANGLE),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
+
+        m_operatorController.a().onTrue(new ParallelCommandGroup(
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
+
+
+        m_operatorController.y().onTrue(new ParallelCommandGroup(
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE)));
+
 
         // // Set elevator and arm to top setpoint
         // m_operatorController.b().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_TOP_ANGLE));
