@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meter;
@@ -14,10 +10,10 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -33,187 +29,139 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.util.Elastic;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
-import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveSubsystem extends SubsystemBase {
-    /** Creates a new ExampleSubsystem. */
+    private final File                     directory       = new File(Filesystem.getDeployDirectory(), "swerve");
+    private final SwerveDrive              swerveDrive;
+    private final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+    private final AHRS                     navx            = new AHRS(NavXComType.kMXP_SPI);
+    private final Rotation3d               gyroOffset      = new Rotation3d(
+        0.0,
+        0.0,
+        Units.degreesToRadians(OperatorConstants.GYRO_OFFSET));
 
-
-    File                     directory       = new File(Filesystem.getDeployDirectory(), "swerve");
-    VisionSubsystem          visionSubsystem;
-
-    SwerveDrive              swerveDrive;
-    SwerveDrivePoseEstimator swerveDrivePoseEstimator;
-
-    AHRS                     navx            = new AHRS(NavXComType.kMXP_SPI);
-
-    Rotation3d               gyroOffset      = new Rotation3d(0.0, 0.0, Units.degreesToRadians(OperatorConstants.GYRO_OFFSET));
-
-    // Elastic notifications
-    Elastic.Notification     nullAutoWarning = new Elastic.Notification(
+    private final Elastic.Notification     nullAutoWarning = new Elastic.Notification(
         Elastic.Notification.NotificationLevel.WARNING,
         "No Auto Selected",
         "No auto is currently selected, auto will not run");
 
     public SwerveSubsystem() {
-        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+        // High‑verbosity telemetry
+        swervelib.telemetry.SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+
+        // Build the Swervelib drive from JSON
         try {
-            swerveDrive = new SwerveParser(directory).createSwerveDrive(OperatorConstants.MAX_SPEED,
-                new Pose2d(new Translation2d(Meter.of(1),
-                    Meter.of(4)),
-                    Rotation2d.fromDegrees(0)));
-            // Alternative method if you don't want to supply the conversion factor via JSON files.
-            // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor,
-            // driveConversionFactor);
+            swerveDrive = new SwerveParser(directory)
+                .createSwerveDrive(
+                    OperatorConstants.MAX_SPEED,
+                    new Pose2d(
+                        new Translation2d(Meter.of(1), Meter.of(4)),
+                        Rotation2d.fromDegrees(0)));
         }
         catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        // Configure gyro offset and velocity compensation
         swerveDrive.setAngularVelocityCompensation(true, true, 0.1);
         swerveDrive.setGyroOffset(gyroOffset);
+
+        // Initialize WPILib pose estimator (use Swervelib's internal kinematics field)
+        swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
+            swerveDrive.kinematics,
+            navx.getRotation2d(),
+            swerveDrive.getModulePositions(),
+            swerveDrive.getPose(),
+            VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(2.0)),
+            VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(5.0)));
+
+        // PathPlanner setup
         setupPathPlanner();
-
-        // RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyro));
-
     }
-
-    /**
-     * Example command factory method.
-     *
-     * @return a command
-     */
-    public Command exampleMethodCommand() {
-        // Inline construction of command goes here.
-        // Subsystem::RunOnce implicitly requires `this` subsystem.
-        return runOnce(
-            () -> {
-                /* one-time action goes here */
-            });
-    }
-
-    /**
-     * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-     *
-     * @return value of some boolean subsystem state, such as a digital sensor.
-     */
-    public boolean exampleCondition() {
-        // Query some boolean state, such as a digital sensor.
-        return false;
-    }
-
 
     @Override
     public void periodic() {
-        swerveDrive.updateOdometry();
+        // 1) Fuse wheel encoders + gyro into estimator
+        swerveDrivePoseEstimator.update(
+            navx.getRotation2d(),
+            swerveDrive.getModulePositions());
+
+        // 2) Push fused pose back into Swervelib for all consumers
+        Pose2d fused = swerveDrivePoseEstimator.getEstimatedPosition();
+        swerveDrive.resetOdometry(fused);
     }
 
+    /** Zero the gyro heading to 0. */
     public void zeroGyro() {
         swerveDrive.zeroGyro();
     }
 
-
-    public void slowSpeed(double slowSpeed, double slowRotation) {
-        swerveDrive.setMaximumAttainableSpeeds(slowSpeed, slowRotation);
+    /** Slow down maximum speeds (e.g. for precision modes). */
+    public void slowSpeed(double linear, double angular) {
+        swerveDrive.setMaximumAttainableSpeeds(linear, angular);
     }
 
+    /** @return the WPILib pose estimator (for vision fusion). */
     public SwerveDrivePoseEstimator getPoseEstimator() {
         return swerveDrivePoseEstimator;
     }
 
-    @Override
-    public void simulationPeriodic() {
-        // This method will be called once per scheduler run during simulation
-    }
-
+    /** @return the underlying Swervelib drive (for manual control). */
     public SwerveDrive getSwerveDrive() {
         return swerveDrive;
     }
 
-    public void driveFieldOriented(ChassisSpeeds velocity) {
-        swerveDrive.driveFieldOriented(velocity);
+    /** Field‑oriented drive (robot‑relative speeds). */
+    public void driveFieldOriented(ChassisSpeeds speeds) {
+        swerveDrive.driveFieldOriented(speeds);
     }
 
-    // Swerve Command
-    public Command driveFieldOriented(Supplier<ChassisSpeeds> velocity) {
-        return run(() -> {
-            swerveDrive.driveFieldOriented(velocity.get());
-        });
+    /** Field‑oriented drive command (for Command‑based). */
+    public Command driveFieldOriented(Supplier<ChassisSpeeds> speeds) {
+        return run(() -> swerveDrive.driveFieldOriented(speeds.get()));
     }
 
-    public void setupPathPlanner() {
-        // Load the RobotConfig from the GUI settings. You should probably
-        // store this in your Constants file
-        RobotConfig config;
+    private void setupPathPlanner() {
         try {
-            config = RobotConfig.fromGUISettings();
+            RobotConfig config   = RobotConfig.fromGUISettings();
+            boolean     enableFF = true;
 
-            final boolean enableFeedforward = true;
-            // Configure AutoBuilder last
             AutoBuilder.configure(
                 swerveDrive::getPose,
-                // Robot pose supplier
                 swerveDrive::resetOdometry,
-                // Method to reset odometry (will be called if your auto has a starting pose)
                 swerveDrive::getRobotVelocity,
-                // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                (speedsRobotRelative, moduleFeedForwards) -> {
-                    if (enableFeedforward) {
+                (robotSpeeds, moduleFF) -> {
+                    if (enableFF) {
                         swerveDrive.drive(
-                            speedsRobotRelative,
-                            swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
-                            moduleFeedForwards.linearForces());
+                            robotSpeeds,
+                            swerveDrive.kinematics.toSwerveModuleStates(robotSpeeds),
+                            moduleFF.linearForces());
                     }
                     else {
-                        swerveDrive.setChassisSpeeds(speedsRobotRelative);
+                        swerveDrive.setChassisSpeeds(robotSpeeds);
                     }
                 },
-                // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module
-                // feedforwards
                 new PPHolonomicDriveController(
-                    // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5.0, 0.0, 0.0),
-                    // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0)
-                // Rotation PID constants
-                ),
+                    new PIDConstants(5, 0, 0),
+                    new PIDConstants(5, 0, 0)),
                 config,
-                // The robot configuration
                 () -> {
-                    // Boolean supplier that controls when the path will be mirrored for the red alliance
-                    // This will flip the path being followed to the red side of the field.
-                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
                     var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
+                    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
                 },
-                this
-            // Reference to this subsystem to set requirements
-            );
-
+                this);
         }
         catch (Exception e) {
-            // Handle exception as needed
             e.printStackTrace();
         }
     }
 
-    /**
-     * Get the path follower with events.
-     *
-     * @param pathName PathPlanner path name.
-     * @return {@link AutoBuilder#followPath(PathPlannerPath)} path command.
-     */
+    /** Create a PathPlannerAuto for the given path. */
     public Command getAutonomousCommand(String pathName) {
-        // Create a path following command using AutoBuilder. This will also trigger event markers.
-
         if (pathName == null) {
             Elastic.sendNotification(nullAutoWarning);
         }
         return new PathPlannerAuto(pathName);
     }
-
 }
