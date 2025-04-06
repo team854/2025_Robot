@@ -2,9 +2,11 @@ package frc.robot.commands.Swerve;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -14,23 +16,24 @@ import frc.robot.util.LimelightHelpers;
  * Drives the robot to a fixed pose relative to a "reef" AprilTag using Limelight pose estimation.
  */
 public class AlignToReefTagRelative extends Command {
-    private final PIDController   xController;
-    private final PIDController   yController;
-    private final PIDController   rotController;
-    private final boolean         isRightScore;
-    private final Timer           dontSeeTagTimer = new Timer();
-    private final Timer           stopTimer       = new Timer();
-    private final SwerveSubsystem drivebase;
-    private int                   tagID           = -1;
+    private final PIDController         xController;
+    private final PIDController         yController;
+    private final PIDController         rotController;
+    private final boolean               isRightScore;
+    private final Timer                 dontSeeTagTimer = new Timer();
+    private final Timer                 stopTimer       = new Timer();
+    private final SwerveSubsystem       drivebase;
+    private final CommandXboxController driverController;
+    private int                         tagID           = -1;
 
-    public AlignToReefTagRelative(boolean isRightScore, SwerveSubsystem drivebase) {
-        this.isRightScore = isRightScore;
-        this.drivebase    = drivebase;
+    public AlignToReefTagRelative(boolean isRightScore, SwerveSubsystem drivebase, CommandXboxController driverController) {
+        this.isRightScore     = isRightScore;
+        this.drivebase        = drivebase;
+        this.driverController = driverController;
 
-        // PID gains (tunable via AutoAlignConstants.X/Y/ROT_REEF_ALIGNMENT_P)
-        xController       = new PIDController(AutoAlignConstants.X_REEF_ALIGNMENT_P, 0.0, 0.0);
-        yController       = new PIDController(AutoAlignConstants.Y_REEF_ALIGNMENT_P, 0.0, 0.0);
-        rotController     = new PIDController(AutoAlignConstants.ROT_REEF_ALIGNMENT_P, 0.0, 0.0);
+        xController           = new PIDController(AutoAlignConstants.X_REEF_ALIGNMENT_P, 0.0, 0.0);
+        yController           = new PIDController(AutoAlignConstants.Y_REEF_ALIGNMENT_P, 0.0, 0.0);
+        rotController         = new PIDController(AutoAlignConstants.ROT_REEF_ALIGNMENT_P, 0.0, 0.0);
 
         addRequirements(drivebase);
     }
@@ -55,8 +58,27 @@ public class AlignToReefTagRelative extends Command {
         yController.setSetpoint(ySet);
         yController.setTolerance(AutoAlignConstants.Y_TOLERANCE_REEF_ALIGNMENT);
 
-        // Capture the current tag ID so we only track one tag throughout
-        tagID = (int) LimelightHelpers.getFiducialID(VisionConstants.LIMELIGHT_NAME1);
+        // Get current tag ID if visible
+        String ll = VisionConstants.LIMELIGHT_NAME1;
+        if (LimelightHelpers.getTV(ll)) {
+            tagID = (int) LimelightHelpers.getFiducialID(ll);
+        }
+        else {
+            tagID = -1;
+
+            // Trigger a short rumble if tag not found
+            driverController.setRumble(RumbleType.kLeftRumble, 1.0);
+
+            new Thread(() -> {
+                try {
+                    Thread.sleep(500); // half-second rumble
+                }
+                catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                driverController.setRumble(RumbleType.kLeftRumble, 0.0);
+            }).start();
+        }
     }
 
     @Override
@@ -87,7 +109,7 @@ public class AlignToReefTagRelative extends Command {
             // Command the swerve in field-oriented mode
             drivebase.driveFieldOriented(new ChassisSpeeds(xSpeed, ySpeed, rotSpeed));
 
-            // If any controller is outside tolerance, reset the on-target dwell timer
+            // Reset timer if not at target
             if (!xController.atSetpoint()
                 || !yController.atSetpoint()
                 || !rotController.atSetpoint()) {
@@ -104,13 +126,11 @@ public class AlignToReefTagRelative extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        // Ensure we stop the robot when the command ends
         drivebase.driveFieldOriented(new ChassisSpeeds(0, 0, 0));
     }
 
     @Override
     public boolean isFinished() {
-        // Finish if we've lost the tag too long or held on target long enough
         return dontSeeTagTimer.hasElapsed(AutoAlignConstants.DONT_SEE_TAG_WAIT_TIME)
             || stopTimer.hasElapsed(AutoAlignConstants.POSE_VALIDATION_TIME);
     }

@@ -32,6 +32,7 @@ import frc.robot.commands.Elevator.MoveBottomStageDown;
 import frc.robot.commands.Elevator.MoveBottomStageUp;
 import frc.robot.commands.Elevator.MoveTopStageDown;
 import frc.robot.commands.Elevator.MoveTopStageUp;
+import frc.robot.commands.Swerve.AlignToReefTagRelative;
 import frc.robot.commands.Swerve.ZeroGyroCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -157,9 +158,14 @@ public class RobotContainer {
         // Driver Controller Commands
         // --------------------------------------------------------
 
-        // // Score coral and lower arm and elevator (RT)
-        // m_driverController.rightTrigger().onTrue(scoreCoralCommand);
+        /*
+         * Intake while holding
+         */
         m_driverController.leftTrigger().whileTrue(new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED));
+
+        /*
+         * Outtake when holding
+         */
         m_driverController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED));
 
         /*
@@ -167,17 +173,18 @@ public class RobotContainer {
          */
         m_driverController.button(7).onTrue(new ZeroGyroCommand(drivebase));
 
+        /*
+         * Auto reef alignment robot relative
+         * Right bumper: align to right branch
+         * Left bumper : align to left branch
+         */
+        m_driverController.rightBumper().onTrue(new AlignToReefTagRelative(true, drivebase, m_driverController));
+        m_driverController.leftBumper().onTrue(new AlignToReefTagRelative(false, drivebase, m_driverController));
+
 
         // // --------------------------------------------------------
         // // Operator Controller Commands
         // // --------------------------------------------------------
-
-        // // Set elevator and arm to ground setpoint
-        // m_operatorController.a().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE));
-
-        // // Set elevator and arm to horizontal setpoint
-        // m_operatorController.x().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_HORIZONTAL_ANGLE));
-
 
         /*
          * ARM SETPOINT
@@ -206,31 +213,23 @@ public class RobotContainer {
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE),
             new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE)));
 
-
-        // // Set elevator and arm to top setpoint
-        // m_operatorController.b().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_TOP_ANGLE));
-
-        // // Set elevator and arm to source intake setpoints, begin intaking (LB)
-        // m_operatorController.leftBumper().onTrue(sourceIntakeCommand);
-
-        // // Set elevator and arm to ground intake setpoints, begin intaking (LT)
-        // m_operatorController.leftTrigger().onTrue(groundIntakeCommand);
-
         /*
-         * Toggle defense mode
+         * Toggle ground lock mode
          * This will allow the arm to be tucked inside the robot
          */
         m_operatorController.button(8)
             .onTrue(new InstantCommand(() -> ((DefaultArmCommand) armSubsystem.getDefaultCommand()).toggleLowerLimit()));
 
-        // Winch climb / raise robot (dpad up)
+        /*
+         * Winch climb
+         * dpad up
+         */
         m_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem,
             ClimbConstants.CLIMB_UP_SPEED));
 
-        // Unwinch climb / lower robot (dpad down)
-        // m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem,
-        // ClimbConstants.CLIMB_DOWN_SPEED));
-
+        /*
+         * Manual elevator control
+         */
         m_operatorController.rightBumper().whileTrue(new MoveTopStageUp(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED));
 
@@ -242,14 +241,6 @@ public class RobotContainer {
 
         m_operatorController.leftTrigger().whileTrue(new MoveBottomStageDown(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED));
-
-
-        // m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));
-        // m_operatorController.x().whileTrue(new SetWristSpeed(armSubsystem, 0.2));
-        //
-        // m_operatorController.y().whileTrue(new SetShoulderSpeed(armSubsystem, 1));
-        // m_operatorController.a().whileTrue(new SetShoulderSpeed(armSubsystem, -1));
-
     }
 
     /*
