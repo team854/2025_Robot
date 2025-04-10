@@ -62,7 +62,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         lowerStageSoftLimitConfig.forwardSoftLimit(ElevatorConstants.ELEVATOR_UPPER_STAGE_UPPER_LIMIT);
         lowerStageSoftLimitConfig.reverseSoftLimitEnabled(false);
         lowerStageSoftLimitConfig.reverseSoftLimit(ElevatorConstants.ELEVATOR_UPPER_STAGE_LOWER_LIMIT);
-        lowerStageConfig.apply(lowerStageConfig);
         lowerStageMotor.configure(lowerStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         SparkMaxConfig upperStageConfig = new SparkMaxConfig();
@@ -74,7 +73,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         upperStageSoftLimitConfig.forwardSoftLimit(ElevatorConstants.ELEVATOR_LOWER_STAGE_UPPER_LIMIT);
         upperStageSoftLimitConfig.reverseSoftLimitEnabled(false);
         upperStageSoftLimitConfig.reverseSoftLimit(ElevatorConstants.ELEVATOR_LOWER_STAGE_LOWER_LIMIT);
-        upperStageConfig.apply(upperStageSoftLimitConfig);
         upperStageMotor.configure(upperStageConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Initialize profiled PID controllers

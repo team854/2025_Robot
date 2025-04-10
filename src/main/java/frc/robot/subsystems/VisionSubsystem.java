@@ -40,6 +40,13 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         updateVisionPose();
+
+        SmartDashboard.putNumber("Vision/Tag Count", vision.tagCount);
+        SmartDashboard.putNumber("Vision/Latency", latency);
+        SmartDashboard.putNumber("Vision/X", vision.pose.getX());
+        SmartDashboard.putNumber("Vision/Y", vision.pose.getY());
+        SmartDashboard.putNumber("Vision/Theta", vision.pose.getRotation().getDegrees());
+
     }
 
     private void updateVisionPose() {
