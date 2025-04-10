@@ -6,6 +6,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.util.LimelightHelpers;
@@ -40,13 +41,6 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         updateVisionPose();
-
-        SmartDashboard.putNumber("Vision/Tag Count", vision.tagCount);
-        SmartDashboard.putNumber("Vision/Latency", latency);
-        SmartDashboard.putNumber("Vision/X", vision.pose.getX());
-        SmartDashboard.putNumber("Vision/Y", vision.pose.getY());
-        SmartDashboard.putNumber("Vision/Theta", vision.pose.getRotation().getDegrees());
-
     }
 
     private void updateVisionPose() {
@@ -67,5 +61,9 @@ public class VisionSubsystem extends SubsystemBase {
             // Fuse into estimator
             poseEstimator.addVisionMeasurement(vision.pose, timestamp);
         }
+
+        SmartDashboard.putNumber("Vision/Tag Count", vision.tagCount);
+        SmartDashboard.putNumber("Vision/Latency", LimelightHelpers.getLatency_Pipeline(LIMELIGHT_NAME));
+        SmartDashboard.putNumber("Vision/Theta", vision.pose.getRotation().getDegrees());
     }
 }
