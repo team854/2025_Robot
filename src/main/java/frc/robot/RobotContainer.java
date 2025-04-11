@@ -167,6 +167,9 @@ public class RobotContainer {
          */
         m_driverController.button(7).onTrue(new ZeroGyroCommand(drivebase));
 
+        // m_driverController.leftBumper().onTrue(new AlignToReefTagRelative(false, drivebase));
+        // m_driverController.rightBumper().onTrue(new AlignToReefTagRelative(true, drivebase));
+
 
         // // --------------------------------------------------------
         // // Operator Controller Commands

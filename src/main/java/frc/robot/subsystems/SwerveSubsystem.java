@@ -13,8 +13,6 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -27,21 +25,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.util.Elastic;
+import frc.robot.util.LimelightHelpers;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveSubsystem extends SubsystemBase {
-    private final File                     directory       = new File(Filesystem.getDeployDirectory(), "swerve");
-    private final SwerveDrive              swerveDrive;
-    private final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
-    private final AHRS                     navx            = new AHRS(NavXComType.kMXP_SPI);
-    private final Rotation3d               gyroOffset      = new Rotation3d(
+    private final File                 directory       = new File(Filesystem.getDeployDirectory(), "swerve");
+    private final SwerveDrive          swerveDrive;
+    private final AHRS                 navx            = new AHRS(NavXComType.kMXP_SPI);
+    private final Rotation3d           gyroOffset      = new Rotation3d(
         0.0,
         0.0,
         Units.degreesToRadians(OperatorConstants.GYRO_OFFSET));
 
-    private final Elastic.Notification     nullAutoWarning = new Elastic.Notification(
+    private final Elastic.Notification nullAutoWarning = new Elastic.Notification(
         Elastic.Notification.NotificationLevel.WARNING,
         "No Auto Selected",
         "No auto is currently selected, auto will not run");
@@ -67,44 +65,39 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveDrive.setAngularVelocityCompensation(true, true, 0.1);
         swerveDrive.setGyroOffset(gyroOffset);
 
-        // Initialize WPILib pose estimator (use Swervelib's internal kinematics field)
-        swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
-            swerveDrive.kinematics,
-            navx.getRotation2d(),
-            swerveDrive.getModulePositions(),
-            swerveDrive.getPose(),
-            VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(2.0)),
-            VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(5.0)));
-
         // PathPlanner setup
         setupPathPlanner();
     }
 
     @Override
     public void periodic() {
-        // 1) Fuse wheel encoders + gyro into estimator
-        swerveDrivePoseEstimator.update(
-            navx.getRotation2d(),
-            swerveDrive.getModulePositions());
+        // Retrieve MegaTag2 pose estimate
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
 
-        // 2) Push fused pose back into Swervelib for all consumers
-        Pose2d fused = swerveDrivePoseEstimator.getEstimatedPosition();
-        swerveDrive.resetOdometry(fused);
+        // Validate the pose estimate
+        if (Math.abs(navx.getRate()) > 360 || mt2.tagCount == 0) {
+            return; // Discard unreliable vision data
+        }
+
+        // Zero the rotation in the vision estimate
+        Pose2d visionPose = new Pose2d(
+            mt2.pose.getTranslation(),
+            new Rotation2d() // Zero rotation
+        );
+
+        // Incorporate vision measurement into odometry
+        swerveDrive.addVisionMeasurement(visionPose, mt2.timestampSeconds);
     }
 
     /** Zero the gyro heading to 0. */
     public void zeroGyro() {
         swerveDrive.zeroGyro();
+        System.out.println("zeroed swerve");
     }
 
     /** Slow down maximum speeds (e.g. for precision modes). */
     public void slowSpeed(double linear, double angular) {
         swerveDrive.setMaximumAttainableSpeeds(linear, angular);
-    }
-
-    /** @return the WPILib pose estimator (for vision fusion). */
-    public SwerveDrivePoseEstimator getPoseEstimator() {
-        return swerveDrivePoseEstimator;
     }
 
     /** @return the underlying Swervelib drive (for manual control). */

@@ -28,15 +28,16 @@ public class AlignToReefTagRelative extends Command {
         this.drivebase    = drivebase;
 
         // PID gains (tunable via AutoAlignConstants.X/Y/ROT_REEF_ALIGNMENT_P)
-        xController       = new PIDController(AutoAlignConstants.X_REEF_ALIGNMENT_P, 0.0, 0.0);
-        yController       = new PIDController(AutoAlignConstants.Y_REEF_ALIGNMENT_P, 0.0, 0.0);
-        rotController     = new PIDController(AutoAlignConstants.ROT_REEF_ALIGNMENT_P, 0.0, 0.0);
+        xController       = new PIDController(0.01, 0.0, 0.001);
+        yController       = new PIDController(0.01, 0.0, 0.001);
+        rotController     = new PIDController(0.01, 0.0, 0.001);
 
         addRequirements(drivebase);
     }
 
     @Override
     public void initialize() {
+        System.out.println("Aligning to reef, Right Side: " + isRightScore);
         dontSeeTagTimer.reset();
         dontSeeTagTimer.start();
         stopTimer.reset();
