@@ -171,6 +171,8 @@ public final class Constants {
         public static final int    WRIST_MOTOR_ID          = 5;
         public static final int    INTAKE_MOTOR_ID         = 6;
         public static final int    INTAKE_SENSOR_PORT      = 0;
+        public static final double SHOULDER_GEAR_RATIO     = 1.85714;
+
 
         /*
          * Speed Limits
@@ -193,7 +195,7 @@ public final class Constants {
          */
         ///////////////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////////////
-        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 45 * 1.78 / 360;
+        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 105.6 * SHOULDER_GEAR_RATIO / 360;
         ///////////////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -233,7 +235,6 @@ public final class Constants {
         public static final double kShoulderP                            = 0.005;
         public static final double kShoulderI                            = 0.0;
         public static final double kShoulderD                            = 1;
-        public static final double SHOULDER_GEAR_RATIO                   = 1.85714;
         public static final double SHOULDER_OFFSET                       = 25;
         public static final double SHOULDER_MAX_VELOCITY                 = 120;
         public static final double SHOULDER_MAX_ACCELERATION             = 120;
