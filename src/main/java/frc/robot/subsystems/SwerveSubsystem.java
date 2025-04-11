@@ -21,6 +21,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.OperatorConstants;
@@ -38,6 +39,8 @@ public class SwerveSubsystem extends SubsystemBase {
         0.0,
         0.0,
         Units.degreesToRadians(OperatorConstants.GYRO_OFFSET));
+    LimelightHelpers.PoseEstimate      limelightMeasurement;
+
 
     private final Elastic.Notification nullAutoWarning = new Elastic.Notification(
         Elastic.Notification.NotificationLevel.WARNING,
@@ -71,22 +74,28 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Retrieve MegaTag2 pose estimate
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        getVisionEstimate();
+    }
 
-        // Validate the pose estimate
-        if (Math.abs(navx.getRate()) > 360 || mt2.tagCount == 0) {
-            return; // Discard unreliable vision data
+    public void getVisionEstimate() {
+        LimelightHelpers.SetRobotOrientation("limelight", (double) navx.getYaw(), 0.0, 0.0, 0.0, 0.0, 0.0);
+        limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
+        try {
+            if (limelightMeasurement != null && limelightMeasurement.pose != null) {
+                if (limelightMeasurement.pose.getX() != 0) {
+                    swerveDrive.addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
+                    SmartDashboard.putBoolean("LimeLight", true);
+                }
+                else {
+                    SmartDashboard.putBoolean("LimeLight", false);
+                }
+            }
         }
-
-        // Zero the rotation in the vision estimate
-        Pose2d visionPose = new Pose2d(
-            mt2.pose.getTranslation(),
-            new Rotation2d() // Zero rotation
-        );
-
-        // Incorporate vision measurement into odometry
-        swerveDrive.addVisionMeasurement(visionPose, mt2.timestampSeconds);
+        catch (Exception e) {
+            System.err.println("An error occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /** Zero the gyro heading to 0. */
