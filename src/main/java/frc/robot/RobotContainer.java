@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -91,7 +89,7 @@ public class RobotContainer {
         // Base commands
 
         // Register Named Commands
-        configureNamedCommands();
+        // configureNamedCommands();
 
         // Configure the trigger bindings
         configureBindings();
@@ -138,18 +136,18 @@ public class RobotContainer {
      * joysticks}.
      */
 
-    private void configureNamedCommands() {
-        NamedCommands.registerCommand("Raise Lower Stage To Top",
-            new MoveBottomStageUp(elevatorSubsystem, ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED).withTimeout(5.0));
-        NamedCommands.registerCommand("Raise Upper Stage To Top",
-            new MoveTopStageUp(elevatorSubsystem, ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED).withTimeout(4.0));
-        NamedCommands.registerCommand("Set Wrist Vertical",
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE));
-        NamedCommands.registerCommand("Move Arm To L4",
-            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE));
-        NamedCommands.registerCommand("Drop Arm",
-            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_HORIZONTAL_ANGLE));
-    }
+    // private void configureNamedCommands() {
+    // NamedCommands.registerCommand("Raise Lower Stage To Top",
+    // new MoveBottomStageUp(elevatorSubsystem, ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED).withTimeout(5.0));
+    // NamedCommands.registerCommand("Raise Upper Stage To Top",
+    // new MoveTopStageUp(elevatorSubsystem, ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED).withTimeout(4.0));
+    // NamedCommands.registerCommand("Set Wrist Vertical",
+    // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE));
+    // NamedCommands.registerCommand("Move Arm To L4",
+    // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE));
+    // NamedCommands.registerCommand("Drop Arm",
+    // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_HORIZONTAL_ANGLE));
+    // }
 
     private void configureBindings() {
 
@@ -167,6 +165,37 @@ public class RobotContainer {
          */
         m_driverController.button(7).onTrue(new ZeroGyroCommand(drivebase));
 
+        m_driverController.y().whileTrue(new MoveTopStageUp(elevatorSubsystem,
+            ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED));
+
+        m_driverController.b().whileTrue(new MoveTopStageDown(elevatorSubsystem,
+            ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED));
+
+        m_driverController.x().whileTrue(new MoveBottomStageUp(elevatorSubsystem,
+            ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED));
+
+        m_driverController.a().whileTrue(new MoveBottomStageDown(elevatorSubsystem,
+            ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED));
+
+
+        m_driverController.pov(180).onTrue(new ParallelCommandGroup(
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
+
+        m_driverController.pov(0).onTrue(new ParallelCommandGroup(
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE)));
+
+        m_driverController.pov(90).onTrue(new ParallelCommandGroup(
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L1_ANGLE),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
+
+        m_driverController.pov(270).onTrue(new ParallelCommandGroup(
+            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L3_ANGLE),
+            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE)));
+
+
+
         // m_driverController.leftBumper().onTrue(new AlignToReefTagRelative(false, drivebase));
         // m_driverController.rightBumper().onTrue(new AlignToReefTagRelative(true, drivebase));
 
@@ -182,32 +211,32 @@ public class RobotContainer {
         // m_operatorController.x().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_HORIZONTAL_ANGLE));
 
 
-        /*
-         * ARM SETPOINT
-         * Setpoint: GROUND
-         * Wrist: Horizontal
-         */
-        m_operatorController.a().onTrue(new ParallelCommandGroup(
-            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
+        // /*
+        // * ARM SETPOINT
+        // * Setpoint: GROUND
+        // * Wrist: Horizontal
+        // */
+        // m_operatorController.a().onTrue(new ParallelCommandGroup(
+        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
+        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
 
-        /*
-         * ARM SETPOINT
-         * Setpoint: L1
-         * Wrist: Horizontal
-         */
-        m_operatorController.x().onTrue(new ParallelCommandGroup(
-            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L1_ANGLE),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
+        // /*
+        // * ARM SETPOINT
+        // * Setpoint: L1
+        // * Wrist: Horizontal
+        // */
+        // m_operatorController.x().onTrue(new ParallelCommandGroup(
+        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L1_ANGLE),
+        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
 
-        /*
-         * ARM SETPOINT
-         * Setpoint L4
-         * Wrist: Vertical
-         */
-        m_operatorController.y().onTrue(new ParallelCommandGroup(
-            new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE),
-            new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE)));
+        // /*
+        // * ARM SETPOINT
+        // * Setpoint L4
+        // * Wrist: Vertical
+        // */
+        // m_operatorController.y().onTrue(new ParallelCommandGroup(
+        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE),
+        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE)));
 
 
         // // Set elevator and arm to top setpoint
@@ -234,17 +263,17 @@ public class RobotContainer {
         // m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem,
         // ClimbConstants.CLIMB_DOWN_SPEED));
 
-        m_operatorController.rightBumper().whileTrue(new MoveTopStageUp(elevatorSubsystem,
-            ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED));
+        // m_operatorController.rightBumper().whileTrue(new MoveTopStageUp(elevatorSubsystem,
+        // ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED));
 
-        m_operatorController.rightTrigger().whileTrue(new MoveTopStageDown(elevatorSubsystem,
-            ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED));
+        // m_operatorController.rightTrigger().whileTrue(new MoveTopStageDown(elevatorSubsystem,
+        // ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED));
 
-        m_operatorController.leftBumper().whileTrue(new MoveBottomStageUp(elevatorSubsystem,
-            ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED));
+        // m_operatorController.leftBumper().whileTrue(new MoveBottomStageUp(elevatorSubsystem,
+        // ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED));
 
-        m_operatorController.leftTrigger().whileTrue(new MoveBottomStageDown(elevatorSubsystem,
-            ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED));
+        // m_operatorController.leftTrigger().whileTrue(new MoveBottomStageDown(elevatorSubsystem,
+        // ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED));
 
 
         // m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));
@@ -255,12 +284,24 @@ public class RobotContainer {
 
     }
 
+    public double getShoulderSpeed() {
+        if (m_driverController.rightBumper().getAsBoolean()) {
+            return 0.5;
+        }
+        if (m_driverController.leftBumper().getAsBoolean()) {
+            return -0.5;
+        }
+        else
+            return 0;
+    }
+
+
     /*
      * Methods used by arm default commands
      */
-    public double getShoulderSpeed() {
-        return -deadband(m_operatorController.getLeftY(), 0.2);
-    }
+    // public double getShoulderSpeed() {
+    // return -deadband(m_operatorController.getLeftY(), 0.2);
+    // }
 
     public double getWristSpeed() {
         return -deadband(m_operatorController.getRightX(), 0.2);

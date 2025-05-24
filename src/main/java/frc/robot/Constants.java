@@ -19,9 +19,9 @@ public final class Constants {
     public static class OperatorConstants {
         public static final int    kDriverControllerPort    = 0;
         public static final int    kOperatorControllerPort  = 1;
-        public static final double DEADBAND                 = 0.1;
+        public static final double DEADBAND                 = 0.04;
         public static final double SWERVE_TRANSLATION_SCALE = 0.75;
-        public static final double SWERVE_ROTATION_SCALE    = 1.0;                     // Negative values invert right stick
+        public static final double SWERVE_ROTATION_SCALE    = 0.5;                     // Negative values invert right stick
         public static final double MAX_SPEED                = Units.feetToMeters(14.5);
         public static final double FINE_SPEED_REDUCTION     = Units.feetToMeters(2);
         public static final double FINE_ROTATION_REDUCTION  = 0.8;
@@ -182,52 +182,46 @@ public final class Constants {
         /*
          * IDs and ports
          */
-        public static final int    SHOULDER_MOTOR_ID       = 4;
-        public static final int    SHOULDER_FOLLOWER_ID    = 8;
-        public static final int    WRIST_MOTOR_ID          = 5;
-        public static final int    INTAKE_MOTOR_ID         = 6;
-        public static final int    INTAKE_SENSOR_PORT      = 0;
-        public static final double SHOULDER_GEAR_RATIO     = 1.85714;
+        public static final int    SHOULDER_MOTOR_ID                     = 4;
+        public static final int    SHOULDER_FOLLOWER_ID                  = 8;
+        public static final int    WRIST_MOTOR_ID                        = 5;
+        public static final int    INTAKE_MOTOR_ID                       = 6;
+        public static final int    INTAKE_SENSOR_PORT                    = 0;
+        public static final double SHOULDER_GEAR_RATIO                   = 1;
 
 
         /*
          * Speed Limits
          */
-        public static final double MAX_SHOULDER_UP_SPEED   = 1.0;
-        public static final double MAX_SHOULDER_DOWN_SPEED = -0.15;
-        public static final double MAX_DEGREES_PER_LOOP    = 2.0;
+        public static final double MAX_SHOULDER_UP_SPEED                 = 1.0;
+        public static final double MAX_SHOULDER_DOWN_SPEED               = -0.15;
+        public static final double MAX_DEGREES_PER_LOOP                  = 2.0;
 
-        public static final double MAX_WRIST_SPEED         = 1.0;
+        public static final double MAX_WRIST_SPEED                       = 1.0;
 
         /*
          * Wrist rotation angles
          */
-        public static final double WRIST_VERTICAL_ANGLE    = 25;
-        public static final double WRIST_HORIZONTAL_ANGLE  = 0;
+        public static final double WRIST_VERTICAL_ANGLE                  = 25;
+        public static final double WRIST_HORIZONTAL_ANGLE                = 0;
 
 
-        /*
-         * UPDATE THE FIRST TERM IN THIS VALUE IF CHAIN SKIPS AGAIN
-         */
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 105.6 * SHOULDER_GEAR_RATIO / 360;
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////
+        public static final double SHOULDER_ABSOLUTE_ENCODER_ZERO_OFFSET = 91.9 / 360;
+
 
         /*
          * Arm/shoulder scoring angles
          */
-        public static final double ARM_L1_ANGLE                          = 75;
-        public static final double ARM_L2_ANGLE                          = 90.0;
-        public static final double ARM_L3_ANGLE                          = 90.0;
-        public static final double ARM_L4_ANGLE                          = 130;
+        public static final double ARM_L1_ANGLE                          = 41;
+        public static final double ARM_L2_ANGLE                          = 122;
+        public static final double ARM_L3_ANGLE                          = 110;
+        public static final double ARM_L4_ANGLE                          = 122;
 
         /*
          * Arm intake angles
          */
-        public static final double ARM_SOURCE_ANGLE                      = 90;
-        public static final double ARM_GROUND_ANGLE                      = 52;
+        public static final double ARM_SOURCE_ANGLE                      = 110;
+        public static final double ARM_GROUND_ANGLE                      = 44;
         public static final double ARM_DEFAULT_ANGLE                     = 0;
 
         /*

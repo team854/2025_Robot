@@ -74,7 +74,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        getVisionEstimate();
+        // getVisionEstimate();
     }
 
     public void getVisionEstimate() {

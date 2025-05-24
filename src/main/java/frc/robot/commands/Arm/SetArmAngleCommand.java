@@ -34,6 +34,6 @@ public class SetArmAngleCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(targetAngle - armSubsystem.getShoulderAngle()) < 10;
+        return Math.abs(targetAngle - armSubsystem.getShoulderAngle()) < 20;
     }
 }
