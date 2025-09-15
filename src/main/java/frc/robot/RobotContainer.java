@@ -19,13 +19,6 @@ import frc.robot.commands.Arm.IntakeCommand;
 import frc.robot.commands.Arm.SetArmAngleCommand;
 import frc.robot.commands.Arm.SetWristPositionCommand;
 import frc.robot.commands.Climb.ClimbCommand;
-import frc.robot.commands.CommandGroups.CoralIntake.GroundIntake;
-import frc.robot.commands.CommandGroups.CoralIntake.SourceIntake;
-import frc.robot.commands.CommandGroups.CoralScoring.ScoreCoral;
-import frc.robot.commands.CommandGroups.CoralScoring.SetL1;
-import frc.robot.commands.CommandGroups.CoralScoring.SetL2;
-import frc.robot.commands.CommandGroups.CoralScoring.SetL3;
-import frc.robot.commands.CommandGroups.CoralScoring.SetL4;
 import frc.robot.commands.Elevator.MoveBottomStageDown;
 import frc.robot.commands.Elevator.MoveBottomStageUp;
 import frc.robot.commands.Elevator.MoveTopStageDown;
@@ -35,7 +28,6 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
-// import frc.robot.subsystems.VisionSubsystem;
 import swervelib.SwerveInputStream;
 
 /**
@@ -45,25 +37,15 @@ import swervelib.SwerveInputStream;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-    // The robot's subsystems and commands are defined here...
+
+    // All subsystems go here
     private final SwerveSubsystem       drivebase            = new SwerveSubsystem();
-    // private final VisionSubsystem visionSubsystem = new VisionSubsystem();
     private final ElevatorSubsystem     elevatorSubsystem    = new ElevatorSubsystem();
     private final ArmSubsystem          armSubsystem         = new ArmSubsystem();
     private final ClimbSubsystem        climbSubsystem       = new ClimbSubsystem();
 
+    // Jonathan's custom auto mode chooser
     private final AutoModeChooser       autoModeChooser      = new AutoModeChooser(drivebase);
-
-    /*
-     * Command Groups
-     */
-    private final ScoreCoral            scoreCoralCommand;
-    private final SetL1                 setL1Command;
-    private final SetL2                 setL2Command;
-    private final SetL3                 setL3Command;
-    private final SetL4                 setL4Command;
-    private final GroundIntake          groundIntakeCommand;
-    private final SourceIntake          sourceIntakeCommand;
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController   = new CommandXboxController(
@@ -73,23 +55,6 @@ public class RobotContainer {
 
     // The container for the robot. Contains subsystems, OI devices, and commands.
     public RobotContainer() {
-
-        /*
-         * All commands
-         */
-        // Command groups
-        scoreCoralCommand   = new ScoreCoral(elevatorSubsystem, armSubsystem);
-        setL1Command        = new SetL1(elevatorSubsystem, armSubsystem);
-        setL2Command        = new SetL2(elevatorSubsystem, armSubsystem);
-        setL3Command        = new SetL3(elevatorSubsystem, armSubsystem);
-        setL4Command        = new SetL4(elevatorSubsystem, armSubsystem);
-        groundIntakeCommand = new GroundIntake(elevatorSubsystem, armSubsystem);
-        sourceIntakeCommand = new SourceIntake(elevatorSubsystem, armSubsystem);
-
-        // Base commands
-
-        // Register Named Commands
-        // configureNamedCommands();
 
         // Configure the trigger bindings
         configureBindings();
@@ -151,139 +116,65 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        // --------------------------------------------------------
-        // Driver Controller Commands
-        // --------------------------------------------------------
-
-        // // Score coral and lower arm and elevator (RT)
-        // m_driverController.rightTrigger().onTrue(scoreCoralCommand);
+        /*----------------------------------------------------------------
+         * DRIVER CONTROLLER COMMANDS
+         * ----------------------------------------------------------------
+         */
+        // Intake and Outtake
         m_driverController.leftTrigger().whileTrue(new IntakeCommand(armSubsystem, true, ArmConstants.INTAKE_GROUND_SPEED));
         m_driverController.rightTrigger().whileTrue(new IntakeCommand(armSubsystem, false, ArmConstants.BRANCH_SCORE_SPEED));
 
-        /*
-         * Zero the gyro
-         */
+        // Zero gyro
         m_driverController.button(7).onTrue(new ZeroGyroCommand(drivebase));
 
+        // ----------Manual Elevator Control----------\\
+        // Top stage up
         m_driverController.y().whileTrue(new MoveTopStageUp(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED));
-
+        // Top stage down
         m_driverController.b().whileTrue(new MoveTopStageDown(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED));
-
+        // Bottom stage up
         m_driverController.x().whileTrue(new MoveBottomStageUp(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED));
-
+        // Bottom stage down
         m_driverController.a().whileTrue(new MoveBottomStageDown(elevatorSubsystem,
             ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED));
 
-
+        // ----------Arm and wrist position presets----------\\
+        // Ground Intake
         m_driverController.pov(180).onTrue(new ParallelCommandGroup(
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
             new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
-
+        // L4
         m_driverController.pov(0).onTrue(new ParallelCommandGroup(
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE),
             new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE)));
-
+        // Trough
         m_driverController.pov(90).onTrue(new ParallelCommandGroup(
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L1_ANGLE),
             new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
-
+        // L2 and L3
         m_driverController.pov(270).onTrue(new ParallelCommandGroup(
             new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L3_ANGLE),
             new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE)));
 
 
-
-        // m_driverController.leftBumper().onTrue(new AlignToReefTagRelative(false, drivebase));
-        // m_driverController.rightBumper().onTrue(new AlignToReefTagRelative(true, drivebase));
-
-
-        // // --------------------------------------------------------
-        // // Operator Controller Commands
-        // // --------------------------------------------------------
-
-        // // Set elevator and arm to ground setpoint
-        // m_operatorController.a().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE));
-
-        // // Set elevator and arm to horizontal setpoint
-        // m_operatorController.x().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_HORIZONTAL_ANGLE));
-
-
-        // /*
-        // * ARM SETPOINT
-        // * Setpoint: GROUND
-        // * Wrist: Horizontal
-        // */
-        // m_operatorController.a().onTrue(new ParallelCommandGroup(
-        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_GROUND_ANGLE),
-        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
-
-        // /*
-        // * ARM SETPOINT
-        // * Setpoint: L1
-        // * Wrist: Horizontal
-        // */
-        // m_operatorController.x().onTrue(new ParallelCommandGroup(
-        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L1_ANGLE),
-        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_HORIZONTAL_ANGLE)));
-
-        // /*
-        // * ARM SETPOINT
-        // * Setpoint L4
-        // * Wrist: Vertical
-        // */
-        // m_operatorController.y().onTrue(new ParallelCommandGroup(
-        // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE),
-        // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE)));
-
-
-        // // Set elevator and arm to top setpoint
-        // m_operatorController.b().onTrue(new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_TOP_ANGLE));
-
-        // // Set elevator and arm to source intake setpoints, begin intaking (LB)
-        // m_operatorController.leftBumper().onTrue(sourceIntakeCommand);
-
-        // // Set elevator and arm to ground intake setpoints, begin intaking (LT)
-        // m_operatorController.leftTrigger().onTrue(groundIntakeCommand);
-
-        /*
-         * Toggle defense mode
-         * This will allow the arm to be tucked inside the robot
+        /*----------------------------------------------------------------
+         * OPERATOR CONTROLLER COMMANDS
+         * ----------------------------------------------------------------
          */
+        // Allow arm to be tucked inside robot (safety toggle)
         m_operatorController.button(8)
             .onTrue(new InstantCommand(() -> ((DefaultArmCommand) armSubsystem.getDefaultCommand()).toggleLowerLimit()));
 
-        // Winch climb / raise robot (dpad up)
+        // Climb (dpad up)
         m_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem,
             ClimbConstants.CLIMB_UP_SPEED));
 
-        // Unwinch climb / lower robot (dpad down)
-        // m_operatorController.pov(180).whileTrue(new ClimbCommand(climbSubsystem,
-        // ClimbConstants.CLIMB_DOWN_SPEED));
-
-        // m_operatorController.rightBumper().whileTrue(new MoveTopStageUp(elevatorSubsystem,
-        // ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED));
-
-        // m_operatorController.rightTrigger().whileTrue(new MoveTopStageDown(elevatorSubsystem,
-        // ElevatorConstants.ELEVATOR_TOP_STAGE_DOWN_SPEED));
-
-        // m_operatorController.leftBumper().whileTrue(new MoveBottomStageUp(elevatorSubsystem,
-        // ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED));
-
-        // m_operatorController.leftTrigger().whileTrue(new MoveBottomStageDown(elevatorSubsystem,
-        // ElevatorConstants.ELEVATOR_BOTTOM_STAGE_DOWN_SPEED));
-
-
-        // m_operatorController.b().whileTrue(new SetWristSpeed(armSubsystem, -0.2));
-        // m_operatorController.x().whileTrue(new SetWristSpeed(armSubsystem, 0.2));
-        //
-        // m_operatorController.y().whileTrue(new SetShoulderSpeed(armSubsystem, 1));
-        // m_operatorController.a().whileTrue(new SetShoulderSpeed(armSubsystem, -1));
-
     }
 
+    // Manual control of the arm angle (driver)
     public double getShoulderSpeed() {
         if (m_driverController.rightBumper().getAsBoolean()) {
             return 0.5;
@@ -295,18 +186,12 @@ public class RobotContainer {
             return 0;
     }
 
-
-    /*
-     * Methods used by arm default commands
-     */
-    // public double getShoulderSpeed() {
-    // return -deadband(m_operatorController.getLeftY(), 0.2);
-    // }
-
+    // Manual control of the wrist (operator)
     public double getWristSpeed() {
         return -deadband(m_operatorController.getRightX(), 0.2);
     }
 
+    // Controller deadband
     public double deadband(double input, double deadband) {
 
         if (Math.abs(input) > deadband) {
@@ -324,6 +209,7 @@ public class RobotContainer {
         return autoModeChooser.getSelectedAutoCommand();
     }
 
+    // Zero gyro to match the drivers field relative perspective
     public void zeroGyro() {
         drivebase.zeroGyro();
         System.out.println("----------RESET GYRO TO ZERO----------");

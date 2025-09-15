@@ -31,7 +31,6 @@ public class MoveTopStageDown extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        // Stop both stages when the command ends
         elevatorSubsystem.stopUpperStage();
     }
 

@@ -5,17 +5,13 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public class MoveTopStageUp extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
-    private final double            topStageSpeed;    // Given in feet
+    private final double            topStageSpeed;
 
 
     public MoveTopStageUp(ElevatorSubsystem elevatorSubsystem, double topStageSpeed) {
         this.elevatorSubsystem = elevatorSubsystem;
         this.topStageSpeed     = topStageSpeed;
 
-    }
-
-    @Override
-    public void initialize() {
     }
 
     @Override
@@ -31,7 +27,6 @@ public class MoveTopStageUp extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        // Stop both stages when the command ends
         elevatorSubsystem.stopUpperStage();
     }
 

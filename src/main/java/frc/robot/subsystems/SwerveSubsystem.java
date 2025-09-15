@@ -74,7 +74,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // getVisionEstimate();
     }
 
     public void getVisionEstimate() {
@@ -102,11 +101,6 @@ public class SwerveSubsystem extends SubsystemBase {
     public void zeroGyro() {
         swerveDrive.zeroGyro();
         System.out.println("zeroed swerve");
-    }
-
-    /** Slow down maximum speeds (e.g. for precision modes). */
-    public void slowSpeed(double linear, double angular) {
-        swerveDrive.setMaximumAttainableSpeeds(linear, angular);
     }
 
     /** @return the underlying Swervelib drive (for manual control). */

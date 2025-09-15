@@ -12,8 +12,6 @@ public class IntakeCommand extends Command {
         this.armSubsystem = armSubsystem;
         this.intakeSpeed  = intakeSpeed;
         this.isReversed   = isReversed;
-
-        // addRequirements(armSubsystem);
     }
 
     @Override

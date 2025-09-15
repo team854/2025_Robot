@@ -5,7 +5,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public class MoveBottomStageDown extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
-    private final double            bottomStageSpeed; // Given in feet
+    private final double            bottomStageSpeed;
 
 
     public MoveBottomStageDown(ElevatorSubsystem elevatorSubsystem, double bottomStageSpeed) {
@@ -31,7 +31,6 @@ public class MoveBottomStageDown extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        // Stop both stages when the command ends
         elevatorSubsystem.stopLowerStage();
     }
 
