@@ -101,19 +101,6 @@ public class RobotContainer {
      * joysticks}.
      */
 
-    // private void configureNamedCommands() {
-    // NamedCommands.registerCommand("Raise Lower Stage To Top",
-    // new MoveBottomStageUp(elevatorSubsystem, ElevatorConstants.ELEVATOR_TOP_STAGE_UP_SPEED).withTimeout(5.0));
-    // NamedCommands.registerCommand("Raise Upper Stage To Top",
-    // new MoveTopStageUp(elevatorSubsystem, ElevatorConstants.ELEVATOR_BOTTOM_STAGE_UP_SPEED).withTimeout(4.0));
-    // NamedCommands.registerCommand("Set Wrist Vertical",
-    // new SetWristPositionCommand(armSubsystem, ArmConstants.WRIST_VERTICAL_ANGLE));
-    // NamedCommands.registerCommand("Move Arm To L4",
-    // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_L4_ANGLE));
-    // NamedCommands.registerCommand("Drop Arm",
-    // new SetArmAngleCommand(armSubsystem, ArmConstants.ARM_HORIZONTAL_ANGLE));
-    // }
-
     private void configureBindings() {
 
         /*----------------------------------------------------------------
