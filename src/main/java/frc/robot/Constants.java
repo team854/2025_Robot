@@ -67,7 +67,6 @@ public final class Constants {
 
         // CAN IDs and ports
         public static final int    SHOULDER_MOTOR_ID                     = 4;
-        public static final int    SHOULDER_FOLLOWER_ID                  = 8;
         public static final int    WRIST_MOTOR_ID                        = 5;
         public static final int    INTAKE_MOTOR_ID                       = 6;
         public static final int    INTAKE_SENSOR_PORT                    = 0;
@@ -96,14 +95,14 @@ public final class Constants {
          * best angle of attack on the reef branch, always better to be a few inches higher than needed since being too low makes
          * it incredibly hard to score whereas too high is a very easy adjustment for the driver
          */
-        public static final double ARM_L1_ANGLE                          = 41;
-        public static final double ARM_L2_ANGLE                          = 122;
-        public static final double ARM_L3_ANGLE                          = 110;
-        public static final double ARM_L4_ANGLE                          = 122;
+        public static final double ARM_L1_ANGLE                          = 41;        // 41
+        public static final double ARM_L2_ANGLE                          = 122;       // 122
+        public static final double ARM_L3_ANGLE                          = 110;       // 110
+        public static final double ARM_L4_ANGLE                          = 122;       // 122
 
-        public static final double ARM_SOURCE_ANGLE                      = 110;
-        public static final double ARM_GROUND_ANGLE                      = 44;
-        public static final double ARM_DEFAULT_ANGLE                     = 0;
+        public static final double ARM_SOURCE_ANGLE                      = 110;       // 110
+        public static final double ARM_GROUND_ANGLE                      = 44;        // 44
+        public static final double ARM_DEFAULT_ANGLE                     = 0;         // 0
 
         /*
          * Other arm angles can be tuned if needed
