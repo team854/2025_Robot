@@ -111,7 +111,7 @@ public final class Constants {
         public static final double ARM_TOP_ANGLE                         = 175.0;
 
         // End effector speeds
-        public static final double INTAKE_GROUND_SPEED                   = 0.8;
+        public static final double INTAKE_GROUND_SPEED                   = 0.6;
         public static final double INTAKE_SOURCE_SPEED                   = 1.0;
         public static final double BRANCH_SCORE_SPEED                    = 0.4;
         public static final double TROUGH_SCORE_SPEED                    = 0.3;
