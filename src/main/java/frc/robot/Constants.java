@@ -109,6 +109,7 @@ public final class Constants {
          */
         public static final double ARM_HORIZONTAL_ANGLE                  = 100;
         public static final double ARM_TOP_ANGLE                         = 175.0;
+        public static final double ARM_SLOWDOWN_ANGLE                    = 120;
 
         // End effector speeds
         public static final double INTAKE_GROUND_SPEED                   = 0.6;
