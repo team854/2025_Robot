@@ -17,15 +17,17 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
     public static class OperatorConstants {
-        public static final int    kDriverControllerPort    = 0;
-        public static final int    kOperatorControllerPort  = 1;
-        public static final double DEADBAND                 = 0.04;
-        public static final double SWERVE_TRANSLATION_SCALE = 1.0;
-        public static final double SWERVE_ROTATION_SCALE    = 0.6;                     // Negative values invert right stick
-        public static final double MAX_SPEED                = Units.feetToMeters(14.5);
-        public static final double FINE_SPEED_REDUCTION     = Units.feetToMeters(2);
-        public static final double FINE_ROTATION_REDUCTION  = 0.8;
-        public static final double GYRO_OFFSET              = 180;
+        public static final int    kDriverControllerPort               = 0;
+        public static final int    kOperatorControllerPort             = 1;
+        public static final double DEADBAND                            = 0.04;
+        public static final double SWERVE_TRANSLATION_SCALE            = 1.0;
+        public static final double SWERVE_ROTATION_SCALE               = 0.6;                     // Negative values invert right
+                                                                                                  // stick
+        public static final double MAX_SPEED                           = Units.feetToMeters(14.5);
+        public static final double GYRO_OFFSET                         = 180;
+
+        public static final double REDUCED_SCORING_SPEED_MULTIPLIER    = 0.3;
+        public static final double REDUCED_SCORING_ROTATION_MULTIPLIER = 0.15;
     }
 
     public class Tolerances {

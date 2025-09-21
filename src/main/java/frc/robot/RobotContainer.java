@@ -95,8 +95,8 @@ public class RobotContainer {
 
     // -------------------------Slow Drive Code (when arm is up)-------------------------\\
     SwerveInputStream slowDriveAngularVelocity              = driveAngularVelocity.copy()
-        .scaleTranslation(0.3)
-        .scaleRotation(0.15);
+        .scaleTranslation(OperatorConstants.REDUCED_SCORING_SPEED_MULTIPLIER)
+        .scaleRotation(OperatorConstants.REDUCED_SCORING_ROTATION_MULTIPLIER);
 
     Command           slowDriveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(slowDriveAngularVelocity);
 
