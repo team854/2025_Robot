@@ -71,34 +71,27 @@ public class RobotContainer {
 
     // -------------------------Swerve Drive Code-------------------------\\
 
-    // Rotational velocity for drive base
-    SwerveInputStream driveAngularVelocity                  = SwerveInputStream.of(drivebase.getSwerveDrive(),
+    SwerveInputStream driveAngularVelocity              = SwerveInputStream.of(drivebase.getSwerveDrive(),
         () -> m_driverController.getLeftY() * -1,
         () -> m_driverController.getLeftX() * -1)
         .withControllerRotationAxis(
             () -> m_driverController.getRightX() * OperatorConstants.SWERVE_ROTATION_SCALE)
         .deadband(OperatorConstants.DEADBAND)
         .scaleTranslation(OperatorConstants.SWERVE_TRANSLATION_SCALE)
+        .cubeTranslationControllerAxis(OperatorConstants.IS_TRANSLATION_CURVE)
+        .cubeRotationControllerAxis(OperatorConstants.IS_ROTATION_CURVE)
 
         // Swerve perspective changes depending on which side of the field the driverstation is on
         .allianceRelativeControl(true);
 
-    // Desired angle of rotation for drive base
-    SwerveInputStream driveDirectAngle                      = driveAngularVelocity.copy().withControllerHeadingAxis(
+    SwerveInputStream driveDirectAngle                  = driveAngularVelocity.copy().withControllerHeadingAxis(
         () -> m_driverController.getRightX() * OperatorConstants.SWERVE_ROTATION_SCALE,
         () -> m_driverController.getRightY() * OperatorConstants.SWERVE_ROTATION_SCALE)
         .headingWhile(true);
 
     // Drive Commands
-    Command           driveFieldOrientedDirectAngle         = drivebase.driveFieldOriented(driveDirectAngle);
-    Command           driveFieldOrientedAngularVelocity     = drivebase.driveFieldOriented(driveAngularVelocity);
-
-    // -------------------------Slow Drive Code (when arm is up)-------------------------\\
-    SwerveInputStream slowDriveAngularVelocity              = driveAngularVelocity.copy()
-        .scaleTranslation(OperatorConstants.REDUCED_SCORING_SPEED_MULTIPLIER)
-        .scaleRotation(OperatorConstants.REDUCED_SCORING_ROTATION_MULTIPLIER);
-
-    Command           slowDriveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(slowDriveAngularVelocity);
+    Command           driveFieldOrientedDirectAngle     = drivebase.driveFieldOriented(driveDirectAngle);
+    Command           driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
 
     // -------------------------------------------------------------------\\
 
@@ -169,14 +162,6 @@ public class RobotContainer {
         // Climb (dpad up)
         m_operatorController.pov(0).whileTrue(new ClimbCommand(climbSubsystem,
             ClimbConstants.CLIMB_UP_SPEED));
-
-        // ----------------------------------------------------------------
-        // ARM SLOWDOWN TRIGGER BINDING
-        // ----------------------------------------------------------------
-        scoreSlowTrigger.whileTrue(
-            new InstantCommand(() -> drivebase.setDefaultCommand(slowDriveFieldOrientedAngularVelocity))).onFalse(
-                new InstantCommand(() -> drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity)));
-
     }
 
     // Manual control of the arm angle (driver)
