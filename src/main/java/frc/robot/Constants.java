@@ -20,14 +20,11 @@ public final class Constants {
         public static final int    kDriverControllerPort               = 0;
         public static final int    kOperatorControllerPort             = 1;
         public static final double DEADBAND                            = 0.04;
-        public static final double SWERVE_TRANSLATION_SCALE            = 1.0;
+        public static final double SWERVE_TRANSLATION_SCALE    = 1.0;//1.0;
         public static final double SWERVE_ROTATION_SCALE               = 0.6;                     // Negative values invert right
                                                                                                   // stick
-        public static final double MAX_SPEED                           = Units.feetToMeters(14.5);
+        public static final double MAX_SPEED                = Units.feetToMeters(14.5); //0.05;
         public static final double GYRO_OFFSET                         = 180;
-
-        public static final double REDUCED_SCORING_SPEED_MULTIPLIER    = 0.3;
-        public static final double REDUCED_SCORING_ROTATION_MULTIPLIER = 0.15;
     }
 
     public class Tolerances {
@@ -111,7 +108,6 @@ public final class Constants {
          */
         public static final double ARM_HORIZONTAL_ANGLE                  = 100;
         public static final double ARM_TOP_ANGLE                         = 175.0;
-        public static final double ARM_SLOWDOWN_ANGLE                    = 120;
 
         // End effector speeds
         public static final double INTAKE_GROUND_SPEED                   = 0.6;
