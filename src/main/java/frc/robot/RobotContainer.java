@@ -80,8 +80,6 @@ public class RobotContainer {
                 return m_driverController.getRightX() * OperatorConstants.SWERVE_ROTATION_SCALE;
             })
         .scaleTranslation(OperatorConstants.SWERVE_TRANSLATION_SCALE)
-        .cubeTranslationControllerAxis(OperatorConstants.IS_TRANSLATION_CURVE)
-        .cubeRotationControllerAxis(OperatorConstants.IS_ROTATION_CURVE)
 
         // Swerve perspective changes depending on which side of the field the driverstation is on
         .allianceRelativeControl(true);
